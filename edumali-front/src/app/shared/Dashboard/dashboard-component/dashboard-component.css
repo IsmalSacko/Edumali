@@ -1,0 +1,31 @@
+/* Styles for dashboard icons and stat cards */
+.dashboard-icon {
+	font-size: 20px;
+	width: 28px;
+	height: 28px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;        
+	border-radius: 6px;
+}
+
+
+/* Semantic colors for sidebar icons */
+.icon-home { background: rgba(63,81,181,0.08); color: #3f51b5; }
+.icon-people { background: rgba(33,150,243,0.08); color: #2196F3; }
+.icon-school { background: rgba(76,175,80,0.08); color: #4CAF50; }
+.icon-layers { background: rgba(255,152,0,0.08); color: #FF9800; }
+.icon-calendar { background: rgba(156,39,176,0.08); color: #9C27B0; }
+.icon-clipboard { background: rgba(255,87,34,0.06); color: #FF5722; }
+.icon-stats { background: rgba(0,150,136,0.06); color: #009688; }
+.icon-settings { background: rgba(121,85,72,0.06); color: #795548; }
+
+/* Small adjustments for stat-card icons (if used) */
+.stat-card .dashboard-icon { width: 36px; height: 36px; font-size: 18px; }
+
+/* Responsive spacing for icon + label */
+.sidebar-item ion-label { margin-left: 8px; }
+
+/* Nice rounded cards */
+.stat-card { border-radius: 8px; }
+
