@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db.models import Q
+
+from apps.accounts.models import Student
 
 # Register your models here. EmploiDuTemps, Matiere, Classe
 from .models import EmploiDuTemps, Matiere, Classe
@@ -31,4 +34,17 @@ class ClasseAdmin(admin.ModelAdmin):
     def get_matieres(self, obj):
         return ", ".join([str(matiere) for matiere in obj.matieres.all()])
     get_matieres.short_description = 'Matières'
-    
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+            if db_field.name == 'eleves':
+                # On récupère l'ID de l'objet en cours de modification depuis l'URL
+                obj_id = request.resolver_match.kwargs.get('object_id')
+                if obj_id:
+                    # Edition : garder les élèves libres ou déjà dans cette classe
+                    kwargs["queryset"] = Student.objects.filter(
+                        Q(classes__isnull=True) | Q(classes__id=obj_id)
+                    )
+                else:
+                    # Création : seulement les élèves libres
+                    kwargs["queryset"] = Student.objects.filter(classes__isnull=True)
+            return super().formfield_for_manytomany(db_field, request, **kwargs)

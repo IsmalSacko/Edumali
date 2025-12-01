@@ -88,6 +88,8 @@ TEMPLATES = [
         },
     },
 ]
+# Chemin vers ton CSS custom pour l'admin
+
 
 WSGI_APPLICATION = 'edumali.wsgi.application'
 JAZZMIN_SETTINGS = {
@@ -99,13 +101,14 @@ JAZZMIN_SETTINGS = {
 
     # Marque dans le coin en haut à gauche
     "site_brand": "EduMali",
+    "site_logo": "school/logo/logo-edumali.png",
 
     # Logo sur la page de login
-    "login_logo": "edumali/img/logo.png",
+    "login_logo": "school/logo/logo-edumali.png",
     "login_logo_dark": None,
     "site_logo_classes": "img-circle",
-    "site_icon": None,
-
+    "site_icon": "school/logo/logo-edumali.png",
+    "custom_css": "school/css/custom_admin.css",
     # Texte de bienvenue sur login
     "welcome_sign": "Bienvenue sur EduMali",
 
@@ -113,7 +116,10 @@ JAZZMIN_SETTINGS = {
     "copyright": "EduMali SaaS",
 
     # Avatar utilisateur
-    "user_avatar": "accounts.User.profile_photo",
+   # "user_avatar": "accounts.User.profile_photo",
+   "user_avatar": "profile_photo",
+   
+
 
     ############
     # Top Menu #
@@ -175,6 +181,7 @@ JAZZMIN_SETTINGS = {
         "dashboard.ActionLog": "fas fa-clipboard-list",
         "authtoken.tokenproxy": "fas fa-key",
     },
+    
 
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
@@ -187,7 +194,7 @@ JAZZMIN_SETTINGS = {
     #############
     # UI Tweaks #
     #############
-    "custom_css": None,
+    
     "custom_js": None,
     "use_google_fonts_cdn": True,
     "show_ui_builder": False,
@@ -289,7 +296,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'core/static',  # pour dev seulement
+   BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # pour collectstatic en prod
 MEDIA_URL = '/media/'
