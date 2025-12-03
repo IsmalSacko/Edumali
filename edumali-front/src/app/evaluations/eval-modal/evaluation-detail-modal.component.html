@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Détails de l'évaluation</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Fermer</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="evaluation">
+    <h2>{{ evaluation.student_info?.prenom }} {{ evaluation.student_info?.nom }}</h2>
+    <p><strong>Matière:</strong> {{ evaluation.matiere_info?.nom }}</p>
+    <p><strong>Professeur:</strong> {{ evaluation.teacher_info?.prenom }} {{ evaluation.teacher_info?.nom }}</p>
+    <p><strong>Type:</strong> {{ evaluation.eval_type_display || evaluation.eval_type }}</p>
+    <p><strong>Score:</strong> {{ evaluation.score }} / {{ evaluation.max_score }}</p>
+    <p><strong>Normalisée:</strong> {{ evaluation.normalized_note }} / 20</p>
+    <p><strong>Note pondérée:</strong> {{ evaluation.note_ponderee }}</p>
+    <p><strong>Coefficient:</strong> {{ evaluation.matiere_info.coefficient ?? '—' }}</p>
+    <p><strong>Date:</strong> {{ evaluation.date | date }}</p>
+
+    <div *ngIf="evaluation.comment">
+      <h3>Commentaire</h3>
+      <p>{{ evaluation.comment }}</p>
+    </div>
+
+    <!-- espace pour pièces jointes ou autres infos -->
+  </div>
+</ion-content>

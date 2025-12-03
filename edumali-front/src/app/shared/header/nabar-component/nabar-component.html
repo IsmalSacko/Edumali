@@ -1,0 +1,19 @@
+<!-- src/app/dashboard/dashboard.component.html -->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>MaliSchool</ion-title>
+    <ion-buttons slot="end">
+          @if (currentUser) {
+            <ion-button>
+          {{ currentUser?.username }}
+          <img [src]="currentUser?.profile_photo || '/logo-edumali.png'" alt="Profil" class="profile-img">
+            </ion-button>
+            <ion-button  color="danger" (click)="logout()">Déconnexion</ion-button>
+         }
+       @else {
+         <ion-button color="primary" routerLink="/login">Connexion</ion-button>
+       }
+
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

@@ -1,0 +1,111 @@
+/* Container général */
+.container {
+  padding: 12px;
+}
+
+/* Titre de la page */
+.container h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #333;
+}
+.avatar-student {
+  width: 50px !important;
+  height: auto !important;
+  object-fit: cover;
+  border-radius: 50%;
+}
+/* Wrapper pour scroll horizontal */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* Ligne d'en-tête */
+.header-row {
+  font-weight: bold;
+  background-color: #f2f2f2;
+  border-bottom: 2px solid #ccc;
+  text-align: center;
+}
+
+/* Ligne de données */
+.data-row {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Texte en petit / muted */
+.muted {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+/* Colonnes */
+ion-col {
+  padding: 4px 8px;
+  word-break: break-word;
+  font-size: 0.95rem;
+}
+
+/* Score pondéré par couleur */
+.score-high { color: #4CAF50; font-weight: bold; }
+.score-medium { color: #FFC107; font-weight: bold; }
+.score-low { color: #F44336; font-weight: bold; }
+
+/* Survol ligne (desktop) */
+.data-row:hover {
+  background-color: #f9f9f9;
+}
+
+/* Icônes */
+ion-icon {
+  vertical-align: middle;
+  margin-right: 4px;
+  color: #666;
+}
+
+/* Responsive mobile */
+/* Mobile-first defaults */
+.mobile-list { display: block; }
+.desktop-table { display: none; }
+
+.student-avatar img { width: 44px; height: 44px; object-fit: cover; border-radius: 50%; }
+.student-name { margin: 0; font-size: 1rem; }
+.meta { margin: 0.2rem 0; color: var(--ion-color-medium); font-size: 0.9rem; }
+.scores { font-size: 0.9rem; margin-top: 0.2rem; }
+.muted { color: var(--ion-color-medium); font-size: 0.85rem; }
+.comment { margin-top: 6px; color: #333; }
+
+.empty-state { text-align: center; color: var(--ion-color-medium); padding: 24px 12px; }
+
+/* color score classes (mobile/desktop shared) */
+.score-high { color: #2e7d32; font-weight: 600; }
+.score-medium { color: #f57c00; }
+.score-low { color: #d32f2f; }
+
+@media (max-width: 768px) {
+  .container h2 { font-size: 1.4rem; }
+  ion-col { font-size: 0.85rem; padding: 4px 4px; }
+}
+
+/* Desktop: table-like layout using CSS grid */
+@media (min-width: 768px) {
+  .mobile-list { display: none; }
+  .desktop-table { display: block; }
+
+  .desktop-table .table-header,
+  .desktop-table .table-row {
+    display: grid;
+      /* 11 columns: Élève, Matière, Professeur, Type, Score, Normalisée, Note pondérée, Coefficient, Date, Cycle, Commentaire */
+      grid-template-columns: 2fr 1fr 1fr 0.9fr 0.9fr 0.9fr 0.9fr 0.7fr 1fr 0.9fr 2fr;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 12px;
+  }
+  .desktop-table .table-header {
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    background: rgba(0,0,0,0.02);
+  }
+  .table-row { border-bottom: 1px solid rgba(0,0,0,0.04); }
+}

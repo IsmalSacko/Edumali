@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';    
+import { ApiService } from '../api/api.service';
 import { inject } from '@angular/core/primitives/di';
 import { environment } from '../../../environments/environment';
 

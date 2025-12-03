@@ -1,0 +1,83 @@
+<div class="container">
+  <h2>Liste des évaluations</h2>
+
+  <ng-container *ngIf="!evaluations || evaluations.length === 0">
+    <div class="empty-state">
+      <ion-icon name="document-text-outline"></ion-icon>
+      <p>Aucune évaluation disponible.</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="evaluations && evaluations.length > 0">
+    <!-- MOBILE: ion-list / ion-items -->
+    <div class="mobile-list">
+      <ion-list>
+        <ion-item *ngFor="let e of evaluations; trackBy: trackByEval" button (click)="openEvaluation(e)" detail="false">
+          <ion-avatar slot="start" class="student-avatar">
+            <img class="avatar-student" [src]="e.student_info?.photo || '/logo-edumali.png'" (error)="onImgError($event)" loading="lazy">
+          </ion-avatar>
+
+          <ion-label>
+            <h3 class="student-name">{{ e.student_info?.prenom }} {{ e.student_info?.nom }}</h3>
+            <p class="meta"><strong>{{ e.matiere_info?.nom }}</strong> — {{ e.teacher_info?.prenom }} {{ e.teacher_info?.nom }}</p>
+            <p class="scores">
+              <span class="score">{{ e.score }} / {{ e.max_score }}</span>
+              <span class="sep">•</span>
+              <span class="norm">{{ e.normalized_note }} / 20</span>
+              <span class="sep">•</span>
+              <span class="pond">{{ e.note_ponderee }}</span>
+              <span class="sep">•</span>
+              <span class="coef">Coef: {{ e.coefficient ?? '—' }}</span>
+            </p>
+            <p class="date muted">{{ e.date | date:'short' }}</p>
+            <p class="comment" *ngIf="e.comment && e.comment !== ''">{{ e.comment }}</p>
+          </ion-label>
+
+          <ion-button fill="clear" slot="end" aria-label="Voir détail">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <!-- DESKTOP: grid/table-like -->
+    <div class="desktop-table">
+      <div class="table-header">
+        <div>Élève</div>
+        <div>Matière</div>
+        <div>Professeur</div>
+        <div>Type</div>
+        <div>Score</div>
+        <div>Normalisée</div>
+        <div>Pondérée</div>
+        <div>Coefficient</div>
+        <div>Date</div>
+        <div>Cycle</div>
+        <div>Commentaire</div>
+      </div>
+
+      <div class="table-body">
+        <div class="table-row" *ngFor="let e of evaluations; trackBy: trackByEval">
+          <div class="cell student">
+            <div class="name">{{ e.student_info?.prenom }} {{ e.student_info?.nom }}</div>
+            <div class="muted small">({{ e.student_info?.username }})</div>
+          </div>
+          <div class="cell">{{ e.matiere_info?.nom }}</div>
+          <div class="cell">{{ e.teacher_info?.prenom }} {{ e.teacher_info?.nom }}</div>
+          <div class="cell">{{ e.eval_type_display || e.eval_type }}</div>
+          <div class="cell">{{ e.score }} / {{ e.max_score }}</div>
+          <div class="cell">{{ e.normalized_note }} / 20</div>
+          <div class="cell" [ngClass]="{
+             'score-high': e.note_ponderee >= 16,
+             'score-medium': e.note_ponderee >= 10 && e.note_ponderee < 16,
+             'score-low': e.note_ponderee < 10
+          }">{{ e.note_ponderee }}</div>
+            <div class="cell">{{ e.matiere_info?.coefficient ?? '—' }}</div>
+          <div class="cell">{{ e.date | date:'shortDate' }}</div>
+          <div class="cell">{{ e.cycle || '—' }}</div>
+          <div class="cell">{{ e.comment || '—' }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

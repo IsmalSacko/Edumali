@@ -29,3 +29,34 @@
 /* Nice rounded cards */
 .stat-card { border-radius: 8px; }
 
+/* Profile image in header */
+.profile-img { height: 32px; width: 32px; margin-left: 10px; border-radius: 50%; object-fit: cover; }
+
+/* KPI layout */
+.kpi-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.kpi-value { margin:0; }
+
+/* Sparkline canvas */
+.sparkline-canvas { width: 90px; height: 30px; }
+
+/* Gauge wrapper */
+.gauge-wrap { position: relative; width: 80px; height: 80px; }
+.gauge-canvas { width: 100%; height: 100%; }
+.gauge-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:600; pointer-events:none; }
+
+/* Mini bar */
+.mini-bar-wrap { height:28px; display:flex; align-items:center; margin-top:8px; }
+.mini-bar-track { flex:1; height:10px; background:#eee; border-radius:6px; overflow:hidden; }
+.mini-bar-inner { height:100%; width:0%; border-radius:6px; transition: width 700ms cubic-bezier(.2,.9,.2,1); }
+.students-bar { background:#3f51b5; }
+.teachers-bar { background:#2196F3; }
+.classes-bar { background:#FF9800; }
+.average-bar { background:#4CAF50; }
+
+/* Chart container sizing */
+.students-by-cycle-chart { width:100%; height:220px; }
+
+/* Small helper classes */
+.tiny-note { font-size: 12px; }
+.muted { color: var(--ion-color-medium); margin:0 }
+

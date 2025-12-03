@@ -1,8 +1,8 @@
 // api.service.ts
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { AuthService } from '../auth/auth.service.ts';
-import { environment } from '../../../environments/environment.js';
+import { AuthService } from '../auth/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
