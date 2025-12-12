@@ -1,0 +1,7 @@
+{
+  "name": "edumali",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
