@@ -1,0 +1,131 @@
+.nav-shell {
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+}
+
+.navbar {
+	--background: linear-gradient(120deg, #0f172a, #111827);
+	--color: #e2e8f0;
+	padding: 20px 12px;
+	border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.brand {
+	gap: 10px;
+	align-items: center;
+}
+
+
+
+.brand-text {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.1;
+}
+
+.brand-text .eyebrow {
+	font-size: 11px;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: #67e8f9;
+	margin: 0;
+}
+
+.brand-text .title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #e2e8f0;
+}
+
+.nav-links {
+	gap: 4px;
+	padding-left: 12px;
+}
+
+.nav-links ion-button {
+	--color: #cbd5e1;
+	--padding-start: 12px;
+	--padding-end: 12px;
+	--background: transparent;
+}
+
+.nav-links ion-button.active {
+	--background: rgba(45, 212, 191, 0.16);
+	--color: #22d3ee;
+	border-radius: 12px;
+}
+
+.nav-icon {
+	font-size: 18px;
+}
+
+.nav-icon.home { color: #22d3ee; }
+.nav-icon.students { color: #f59e0b; }
+.nav-icon.teachers { color: #a78bfa; }
+.nav-icon.classes { color: #2dd4bf; }
+.nav-icon.timetable { color: #38bdf8; }
+.nav-icon.evaluations { color: #fb7185; }
+.nav-icon.stats { color: #10b981; }
+.nav-icon.settings { color: #eab308; }
+
+.nav-links ion-button.active .nav-icon {
+	color: inherit;
+}
+
+.nav-home-img {
+	width: 18px;
+	height: 18px;
+	border-radius: 4px;
+	object-fit: cover;
+    margin-right: 12px;
+}
+
+.user-actions {
+	gap: 4px;
+}
+
+.profile-trigger {
+	--padding-start: 10px;
+	--padding-end: 10px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: #e2e8f0;
+}
+
+.profile-img {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-left: 4px;
+
+}
+
+.username {
+	font-weight: 600;
+
+    color: #e2e8f0;
+   
+}
+
+.mobile-menu {
+	display: inline-flex;
+}
+
+.nav-links {
+	display: none;
+}
+
+@media (min-width: 900px) {
+	.nav-links {
+		display: inline-flex;
+	}
+	.mobile-menu {
+		display: none;
+	}
+}
+
+ion-popover {
+	--backdrop-opacity: 0.3;
+}

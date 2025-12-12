@@ -1,0 +1,56 @@
+<ion-content class="auth-shell" [fullscreen]="true">
+  <div class="gradient-bg"></div>
+  <div class="auth-wrapper">
+    <div class="hero">
+      <div class="badge">
+        <ion-icon name="shield-checkmark-outline"></ion-icon>
+        Sécurité
+      </div>
+      <h1>Bienvenue sur Edumali</h1>
+      <p class="subtitle">Connectez-vous pour accéder au tableau de bord et piloter votre établissement.</p>
+    </div>
+
+    <ion-card class="auth-card" mode="ios">
+      <ion-card-header>
+        <ion-card-title>Connexion</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <ion-item fill="outline" class="field">
+            <ion-label position="floating">Nom d'utilisateur</ion-label>
+            <ion-input type="text" autocomplete="username" formControlName="username"></ion-input>
+          </ion-item>
+          @if (form.controls.username.touched && form.controls.username.invalid) {
+            <ion-note color="danger">Le nom d'utilisateur est requis.</ion-note>
+          }
+
+          <ion-item fill="outline" class="field">
+            <ion-label position="floating">Mot de passe</ion-label>
+            <ion-input [type]="hidePassword() ? 'password' : 'text'" autocomplete="current-password" formControlName="password"></ion-input>
+            <ion-buttons slot="end">
+              <ion-button type="button" fill="clear" (click)="togglePasswordVisibility()">
+                <ion-icon [name]="hidePassword() ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+          @if (form.controls.password.touched && form.controls.password.invalid) {
+            <ion-note color="danger">Mot de passe requis (min 4 caractères).</ion-note>
+          }
+
+          @if (errorMsg()) {
+            <div class="error">{{ errorMsg() }}</div>
+          }
+
+          <ion-button expand="block" type="submit" [disabled]="loading()" class="submit-btn">
+            @if (loading()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              <ion-icon slot="start" name="log-in-outline"></ion-icon>
+              Se connecter
+            }
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

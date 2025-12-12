@@ -1,20 +1,167 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="home-page">
+  <section class="hero">
+    <div class="hero__title">
+      <ion-icon name="stats-chart-outline"></ion-icon>
+      <div>
+        <p class="eyebrow">Pilotage temps réel</p>
+        <h1>Vue d'ensemble de votre école</h1>
+        <p class="subtitle">Statistiques, cycles et présence, optimisées pour mobile et desktop.</p>
+      </div>
+    </div>
+    <div class="hero__actions">
+      <ion-button fill="clear" color="light" size="small" (click)="loadStats()" [disabled]="loading()">
+        Rafraîchir
+      </ion-button>
+    </div>
+  </section>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  @if (error()) {
+    <div class="error-card">
+      <p>{{ error() }}</p>
+      <ion-button size="small" fill="outline" color="danger" (click)="loadStats()">Réessayer</ion-button>
+    </div>
+  }
+
+  @if (loading()) {
+    <ion-grid class="stats-grid">
+      @for (item of [1,2,3,4,5]; track item) {
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="stat-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-skeleton-text animated style="width: 60%;"></ion-skeleton-text>
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-skeleton-text animated style="width: 100%; height: 20px;"></ion-skeleton-text>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      }
+    </ion-grid>
+  } @else if (stats()) {
+    <ion-grid class="stats-grid">
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="stat-card accent-1">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="people-outline"></ion-icon>
+                Élèves inscrits
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p class="stat-value">{{ stats()!.totalStudents }}</p>
+              <p class="muted">Cycle complet</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="stat-card accent-2">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="school-outline"></ion-icon>
+                Enseignants
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p class="stat-value">{{ stats()!.totalTeachers }}</p>
+              <p class="muted">Actifs</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="stat-card accent-3">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="people-circle-outline"></ion-icon>
+                Parents
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p class="stat-value">{{ stats()!.totalParents }}</p>
+              <p class="muted">Comptes connectés</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="stat-card accent-4">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="book-outline"></ion-icon>
+                Matières
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p class="stat-value">{{ stats()!.totalMatieres }}</p>
+              <p class="muted">Référentiel pédagogique</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="stat-card accent-5">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="stats-chart-outline"></ion-icon>
+                Moyenne globale
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="avg">
+                <p class="stat-value">{{ stats()!.averageGlobal | number:'1.1-1' }}/20</p>
+                <ion-progress-bar [value]="(stats()!.averageGlobal || 0) / 20"></ion-progress-bar>
+              </div>
+              <p class="muted">Performance scolaire</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="stat-card accent-6">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="school-outline"></ion-icon>
+                Cycles scolaires
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content class="cycles">
+              <div class="cycle-row">
+                <div>
+                  <p class="label">Primaire</p>
+                  <p class="value">{{ stats()!.studentsByCycle.primaire }}</p>
+                </div>
+                <ion-progress-bar color="primary" [value]="cycleValue(stats()!.studentsByCycle.primaire)"></ion-progress-bar>
+              </div>
+              <div class="cycle-row">
+                <div>
+                  <p class="label">Secondaire</p>
+                  <p class="value">{{ stats()!.studentsByCycle.secondaire }}</p>
+                </div>
+                <ion-progress-bar color="tertiary" [value]="cycleValue(stats()!.studentsByCycle.secondaire)"></ion-progress-bar>
+              </div>
+              <div class="cycle-row">
+                <div>
+                  <p class="label">Lycée</p>
+                  <p class="value">{{ stats()!.studentsByCycle.lycee }}</p>
+                </div>
+                <ion-progress-bar color="success" [value]="cycleValue(stats()!.studentsByCycle.lycee)"></ion-progress-bar>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  }
 </ion-content>
