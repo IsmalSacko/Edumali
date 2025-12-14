@@ -1,12 +1,15 @@
 .nav-shell {
-	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+	background: var(--ion-background-color);
+	box-shadow: 0 12px 40px color-mix(in srgb, var(--ion-text-color) 10%, transparent);
 }
 
 .navbar {
-	--background: linear-gradient(120deg, #0f172a, #111827);
-	--color: #e2e8f0;
+	--background: var(--ion-background-color);
+	--color: var(--ion-text-color);
+	background: var(--ion-background-color);
+	color: var(--ion-text-color);
 	padding: 20px 12px;
-	border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+	border-bottom: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
 }
 
 .brand {
@@ -15,7 +18,11 @@
 }
 
 
-
+.login-text {
+	--color: var(--ion-text-color) !important;
+	font-size: 20px;
+	font-weight: 700;
+}
 .brand-text {
 	display: flex;
 	flex-direction: column;
@@ -42,30 +49,31 @@
 }
 
 .nav-links ion-button {
-	--color: #cbd5e1;
+	--color: var(--ion-text-color);
 	--padding-start: 12px;
 	--padding-end: 12px;
 	--background: transparent;
 }
 
 .nav-links ion-button.active {
-	--background: rgba(45, 212, 191, 0.16);
-	--color: #22d3ee;
+	--background: color-mix(in srgb, var(--ion-color-primary) 18%, transparent);
+	--color: var(--ion-color-primary);
 	border-radius: 12px;
 }
 
 .nav-icon {
 	font-size: 18px;
+	color: var(--ion-color-primary);
 }
 
-.nav-icon.home { color: #22d3ee; }
-.nav-icon.students { color: #f59e0b; }
-.nav-icon.teachers { color: #a78bfa; }
-.nav-icon.classes { color: #2dd4bf; }
-.nav-icon.timetable { color: #38bdf8; }
-.nav-icon.evaluations { color: #fb7185; }
-.nav-icon.stats { color: #10b981; }
-.nav-icon.settings { color: #eab308; }
+.nav-icon.home { color: var(--ion-color-primary); }
+.nav-icon.students { color: var(--ion-color-secondary); }
+.nav-icon.teachers { color: var(--ion-color-primary); }
+.nav-icon.classes { color: var(--ion-color-secondary); }
+.nav-icon.timetable { color: var(--ion-color-primary); }
+.nav-icon.evaluations { color: var(--ion-color-secondary); }
+.nav-icon.stats { color: var(--ion-color-primary); }
+.nav-icon.settings { color: var(--ion-color-secondary); }
 
 .nav-links ion-button.active .nav-icon {
 	color: inherit;
@@ -89,7 +97,7 @@
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	color: #e2e8f0;
+	color: var(--ion-text-color);
 }
 
 .profile-img {
@@ -97,20 +105,57 @@
 	height: 32px;
 	border-radius: 50%;
 	object-fit: cover;
-	border: 1px solid rgba(255, 255, 255, 0.2);
+	border: 1px solid color-mix(in srgb, var(--ion-text-color) 20%, transparent);
     margin-left: 4px;
 
 }
 
 .username {
 	font-weight: 600;
-
-    color: #e2e8f0;
-   
+    color: var(--ion-text-color);
 }
 
 .mobile-menu {
 	display: inline-flex;
+	--color: var(--ion-text-color);
+	ion-icon {
+		color: var(--ion-text-color);
+	}
+}
+
+/* Coloration spéciale de l'icône de thème selon le thème actif */
+.theme-btn .theme-icon {
+	color: var(--ion-color-secondary) !important;
+}
+
+.theme-btn:hover .theme-icon,
+.theme-btn:active .theme-icon {
+	color: var(--ion-color-primary) !important;
+}
+
+/* Variantes de couleur selon le thème */
+.theme-light .theme-icon {
+	color: #fbbf24 !important; /* Jaune pour light */
+}
+
+.theme-dark .theme-icon {
+	color: #22d3ee !important; /* Cyan pour dark */
+}
+
+.theme-blue .theme-icon {
+	color: #3b82f6 !important; /* Bleu pour blue */
+}
+
+.theme-green .theme-icon {
+	color: #10b981 !important; /* Vert pour green */
+}
+
+.theme-purple .theme-icon {
+	color: #a855f7 !important; /* Violet pour purple */
+}
+
+.theme-orange .theme-icon {
+	color: #f97316 !important; /* Orange pour orange */
 }
 
 .nav-links {

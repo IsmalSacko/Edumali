@@ -1,8 +1,10 @@
 .home-page {
-  --ion-background-color: #0f172a;
-  color: #e2e8f0;
+  --ion-background-color: var(--ion-background-color);
+  color: var(--ion-text-color);
   position: relative;
   top: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero {
@@ -10,10 +12,11 @@
   flex-direction: column;
   gap: 12px;
   padding: 24px 20px 12px;
-  background: radial-gradient(circle at 20% 20%, rgba(45, 212, 191, 0.15), transparent 35%),
-    radial-gradient(circle at 80% 0%, rgba(94, 234, 212, 0.12), transparent 40%),
-    linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  background: linear-gradient(135deg, rgba(var(--ion-background-color-rgb), 0.12), rgba(var(--ion-background-color-rgb), 0.32)),
+              radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--ion-color-secondary) 24%, transparent), transparent 38%),
+              radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--ion-color-primary) 18%, transparent), transparent 42%),
+              linear-gradient(135deg, rgba(var(--ion-background-color-rgb), 0.94), rgba(var(--ion-background-color-rgb), 0.98));
+  border-bottom: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
 }
 
 .hero__title {
@@ -24,7 +27,7 @@
 
 .hero__title ion-icon {
   font-size: 32px;
-  color: #22d3ee;
+  color: var(--ion-color-primary);
 }
 
 .hero__title h1 {
@@ -37,7 +40,7 @@
 .eyebrow {
   margin: 0;
   text-transform: uppercase;
-  color: #67e8f9;
+  color: var(--ion-color-secondary);
   letter-spacing: 0.12em;
   font-size: 11px;
   font-weight: 600;
@@ -45,13 +48,29 @@
 
 .subtitle {
   margin: 0;
-  color: #94a3b8;
+  color: color-mix(in srgb, var(--ion-text-color) 70%, transparent);
   font-size: 14px;
 }
 
+/* Bouton Rafraîchir thématisé */
 .hero__actions {
-  display: flex;
-  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.refresh-btn {
+  --color: var(--ion-text-color);
+  --border-color: var(--ion-color-primary);
+  --background: transparent;
+  font-weight: 600;
+  border-radius: 12px;
+
+  ion-icon {
+    color: var(--ion-color-primary);
+  }
+
+  &:hover {
+    --background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
+  }
 }
 
 .stats-grid {
@@ -59,10 +78,10 @@
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: var(--ion-card-background, rgba(var(--ion-background-color-rgb), 0.9));
+  border: 1px solid color-mix(in srgb, var(--ion-border-color) 50%, transparent);
   border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 40px color-mix(in srgb, var(--ion-text-color) 10%, transparent);
   backdrop-filter: blur(10px);
 }
 
@@ -71,11 +90,12 @@
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--ion-text-color);
 }
 
 .stat-card ion-icon {
   font-size: 20px;
+  color: var(--ion-color-primary);
 }
 
 .stat-value {
@@ -86,7 +106,7 @@
 
 .muted {
   margin: 0;
-  color: #94a3b8;
+  color: color-mix(in srgb, var(--ion-text-color) 65%, transparent);
   font-size: 13px;
 }
 
@@ -110,7 +130,7 @@
 
 .cycle-row .label {
   margin: 0;
-  color: #cbd5e1;
+  color: var(--ion-text-color);
   font-weight: 600;
 }
 

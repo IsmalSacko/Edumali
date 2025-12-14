@@ -1,0 +1,225 @@
+:host {
+	display: block;
+}
+
+.profile-content {
+	position: relative;
+	--background: var(--ion-background-color);
+	color: var(--ion-text-color);
+	
+}
+
+.backdrop {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(135deg, color-mix(in srgb, var(--ion-text-color) 4%, transparent), color-mix(in srgb, var(--ion-text-color) 0%, transparent));
+	pointer-events: none;
+}
+
+ion-card-title.info-texte {
+	color: var(--ion-text-color);
+}
+.glass {
+	background: var(--ion-card-background);
+	backdrop-filter: blur(14px);
+	border: 1px solid color-mix(in srgb, var(--ion-border-color) 50%, transparent);
+}
+
+ion-toolbar.glass {
+	--color: var(--ion-text-color);
+	--background: var(--ion-background-color);
+	--min-height: 64px;
+}
+
+.top-row {
+	margin-top: 24px;
+}
+
+.profile-card {
+	text-align: center;
+	padding-top: 10px;
+}
+
+.avatar-wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.avatar {
+	width: 120px;
+	height: 120px;
+	border: 3px solid color-mix(in srgb, var(--ion-text-color) 14%, transparent);
+	box-shadow: 0 20px 40px color-mix(in srgb, var(--ion-text-color) 20%, transparent);
+}
+
+.badges {
+	display: flex;
+	gap: 8px;
+}
+
+h2 {
+	margin: 12px 0 4px;
+	font-size: 22px;
+	color: var(--ion-text-color);
+}
+
+.role {
+	margin: 0;
+	color: color-mix(in srgb, var(--ion-text-color) 65%, transparent);
+}
+
+.contact-card ion-item {
+	--background: transparent;
+	--color: var(--ion-text-color);
+	border: 1px solid color-mix(in srgb, var(--ion-border-color) 50%, transparent);
+	border-radius: 12px;
+	margin: 8px 0;
+}
+
+.contact-card ion-icon {
+	color: var(--ion-color-primary);
+}
+
+.contact-card h3 {
+	margin: 2px 0 0;
+	color: var(--ion-text-color);
+}
+
+.info-card {
+	padding-top: 6px;
+}
+
+.info-grid {
+	--ion-grid-padding: 0;
+}
+
+.info-block {
+	display: flex;
+	gap: 12px;
+	padding: 14px;
+	border: 1px solid color-mix(in srgb, var(--ion-border-color) 50%, transparent);
+	border-radius: 14px;
+	margin-bottom: 12px;
+	background: color-mix(in srgb, var(--ion-background-color) 98%, var(--ion-text-color) 2%);
+}
+
+.info-block ion-icon {
+	color: var(--ion-color-primary);
+	font-size: 22px;
+}
+
+.info-block p {
+	margin: 0;
+	color: color-mix(in srgb, var(--ion-text-color) 70%, transparent);
+}
+
+.info-block h3 {
+	margin: 4px 0 0;
+	color: var(--ion-text-color);
+}
+
+.skeletons {
+	padding: 24px;
+	display: grid;
+	gap: 16px;
+}
+
+ion-card {
+	--background: var(--ion-card-background);
+	--color: var(--ion-text-color);
+	border: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
+}
+
+.modal-wrapper {
+	padding: 18px;
+	background: var(--ion-background-color);
+	color: var(--ion-text-color);
+	min-height: 100%;
+}
+
+.modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.modal-form {
+	padding: 0;
+}
+
+.modal-form ion-item {
+	--background: color-mix(in srgb, var(--ion-text-color) 4%, var(--ion-background-color) 96%);
+	--border-color: color-mix(in srgb, var(--ion-border-color) 50%, transparent);
+	--color: var(--ion-text-color);
+	border-radius: 12px;
+	margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+	.modal-wrapper {
+		padding: 32px;
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	.modal-form {
+		padding: 0 16px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.modal-wrapper {
+		padding: 48px;
+		max-width: 700px;
+	}
+
+	.modal-form {
+		padding: 0 24px;
+	}
+}
+
+.modal-form ion-button {
+	margin-top: 12px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.action-buttons ion-button {
+  --color: var(--ion-text-color);
+  --border-color: var(--ion-color-primary);
+  --background: transparent;
+  flex: 1;
+  min-width: 160px;
+}
+
+.action-buttons ion-button:hover {
+  --background: color-mix(in srgb, var(--ion-color-primary) 12%, transparent);
+}
+
+@media (max-width: 767px) {
+  .glass {
+    border-radius: 16px;
+  }
+
+  .avatar {
+    width: 104px;
+    height: 104px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons ion-button {
+    flex: 1 1 auto;
+    min-width: unset;
+  }
+}

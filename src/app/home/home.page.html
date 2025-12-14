@@ -14,11 +14,12 @@
         <p class="subtitle">Statistiques, cycles et présence, optimisées pour mobile et desktop.</p>
       </div>
     </div>
-    <div class="hero__actions">
-      <ion-button fill="clear" color="light" size="small" (click)="loadStats()" [disabled]="loading()">
-        Rafraîchir
-      </ion-button>
-    </div>
+      <div class="hero__actions">
+        <ion-button fill="clear" size="small" (click)="loadStats()" [disabled]="loading()" class="refresh-btn">
+          <ion-icon slot="start" name="reload-outline"></ion-icon>
+          Rafraîchir
+        </ion-button>
+      </div>
   </section>
 
   @if (error()) {

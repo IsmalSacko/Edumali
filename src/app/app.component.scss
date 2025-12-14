@@ -1,0 +1,32 @@
+ion-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+app-nav {
+  flex-shrink: 0;
+}
+
+ion-router-outlet {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+app-footer {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  ion-router-outlet {
+    padding-bottom: 68px;
+  }
+}
+
+@media (max-width: 480px) {
+  ion-router-outlet {
+    padding-bottom: 64px;
+  }
+}

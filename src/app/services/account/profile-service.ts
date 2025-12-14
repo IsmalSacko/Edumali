@@ -28,7 +28,7 @@ export class ProfileService {
   }
 
   async changePassword(data: any) {
-    return this.api.patch(`${this.base}/users/me/`, data);
+    return this.api.patch(`${this.profileURL}`, data);
   }
 
 }  

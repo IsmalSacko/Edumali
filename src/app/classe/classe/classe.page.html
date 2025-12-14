@@ -1,0 +1,298 @@
+<ion-content>
+  <!-- Hero section avec titre distinct et filtres intégrés -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <ion-icon name="layers-outline" class="hero-icon"></ion-icon>
+      <div class="hero-text">
+        <p class="hero-eyebrow">Gestion pédagogique</p>
+        <h1>Classes & Matières</h1>
+        <p class="hero-description">Organisez et visualisez l'ensemble de vos structures pédagogiques</p>
+      </div>
+      <div class="hero__actions">
+        <ion-button fill="clear" size="small" (click)="loadClasses()" [disabled]="loading()" class="refresh-btn">
+          <ion-icon slot="start" name="reload-outline"></ion-icon>
+          Rafraîchir
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Search & Filters Integrated in Hero -->
+    <div class="search-section">
+      <div class="search-bar">
+        <ion-searchbar
+          animated
+          placeholder="Rechercher une classe..."
+          [value]="search()"
+          (ionInput)="onSearchChange($event)"
+          inputmode="search"
+        ></ion-searchbar>
+      </div>
+
+      <div class="filter-item">
+        <label>Année</label>
+        <ion-select
+          placeholder="Toutes les années"
+          [value]="yearFilter()"
+          (ionChange)="onYearFilterChange($event)"
+        >
+          <ion-select-option [value]="null">Toutes les années</ion-select-option>
+          @for (year of availableYears(); track year) {
+            <ion-select-option [value]="year">Année {{ year }}</ion-select-option>
+          }
+        </ion-select>
+      </div>
+
+      <div class="filter-item">
+        <label>Cycle</label>
+        <ion-select
+          placeholder="Tous les cycles"
+          [value]="cycleFilter()"
+          (ionChange)="onCycleFilterChange($event)"
+        >
+          <ion-select-option [value]="null">Tous les cycles</ion-select-option>
+          <ion-select-option value="primaire">Primaire</ion-select-option>
+          <ion-select-option value="secondaire">Collège</ion-select-option>
+          <ion-select-option value="lycee">Lycée</ion-select-option>
+        </ion-select>
+      </div>
+
+      <ion-button
+        (click)="resetFilters()"
+        fill="clear"
+        class="reset-btn"
+      >
+        <ion-icon slot="start" name="reload-outline"></ion-icon>
+        Réinitialiser
+      </ion-button>
+    </div>
+  </div>
+
+  <div class="page-container">
+    <!-- Stats -->
+    <div class="header-section">
+      <div class="section-title">
+        <h3>Vue d'ensemble</h3>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <ion-icon name="layers-outline" class="stat-icon home"></ion-icon>
+          <div class="stat-content">
+            <span class="stat-label">Classes</span>
+            <span class="stat-value">{{ filteredClasses().length }}</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <ion-icon name="book-outline" class="stat-icon book"></ion-icon>
+          <div class="stat-content">
+            <span class="stat-label">Matières</span>
+            <span class="stat-value">{{ totalMatieres() }}</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <ion-icon name="people-outline" class="stat-icon people"></ion-icon>
+          <div class="stat-content">
+            <span class="stat-label">Élèves</span>
+            <span class="stat-value">{{ totalEleves() }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    @if (loading()) {
+      <div class="state-container">
+        <ion-spinner></ion-spinner>
+        <p>Chargement des classes...</p>
+      </div>
+    }
+    @else if (error()) {
+      <div class="error-container">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <p>{{ error() }}</p>
+      </div>
+    }
+    @else {
+      @if (filteredClasses().length === 0) {
+        <div class="empty-container">
+          <ion-icon name="search-outline"></ion-icon>
+          <p>Aucune classe trouvée</p>
+        </div>
+      }
+      @else {
+        <!-- Classes Cards Grid -->
+        <div class="classes-grid">
+          @for (classe of filteredClasses(); let i = $index; track classe.id) {
+            <ion-card class="classe-card">
+              <ion-card-header>
+                <div class="card-icon-header">
+                  <ion-icon
+                    [name]="getClasseIcon(i).name"
+                    [color]="getClasseIcon(i).color"
+                    class="classe-icon"
+                  ></ion-icon>
+                  <div>
+                    <ion-card-title>{{ classe.nom }}</ion-card-title>
+                    <p class="card-subtitle">{{ classe.annee_display }}</p>
+                  </div>
+                </div>
+              </ion-card-header>
+
+              <ion-card-content>
+                <div class="card-stats">
+                  <div class="card-stat">
+                    <span class="card-stat-label">Élèves</span>
+                    <ion-badge color="primary">{{ classe.nombre_eleves }}</ion-badge>
+                  </div>
+                  <div class="card-stat">
+                    <span class="card-stat-label">Matières</span>
+                    <ion-badge color="secondary">{{ classe.nombre_matieres }}</ion-badge>
+                  </div>
+                </div>
+              </ion-card-content>
+
+              <ion-button expand="block" fill="clear" (click)="openClasseDetail(classe.id)">
+                <ion-icon slot="start" name="chevron-forward-outline"></ion-icon>
+                Voir détails
+              </ion-button>
+            </ion-card>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Modal détails classe -->
+  @if (selectedClasse()) {
+    <div class="detail-modal-overlay" (click)="closeClasseDetail()">
+      <ion-card class="detail-modal" (click)="$event.stopPropagation()">
+        <ion-card-header>
+          <div class="modal-header">
+            <div>
+              <ion-card-title>{{ selectedClasse()!.nom }}</ion-card-title>
+              <p class="modal-subtitle">{{ selectedClasse()!.annee_display }}</p>
+            </div>
+            <ion-button (click)="closeClasseDetail()" fill="clear" color="medium">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-header>
+
+        <ion-card-content>
+          @if (detailLoading()) {
+            <div class="loading-detail">
+              <ion-spinner></ion-spinner>
+            </div>
+          }
+          @else {
+            <!-- Matières -->
+            <div class="detail-section">
+              <h3>
+                <ion-icon name="book-outline"></ion-icon>
+                Matières
+              </h3>
+              @if (selectedClasse()!.matieres.length === 0) {
+                <p class="empty-text">Aucune matière</p>
+              }
+              @else {
+                <div class="items-list">
+                  @for (mat of selectedClasse()!.matieres; track mat.id) {
+                    <div class="item">
+                      <div class="item-header">
+                        <span class="item-name">{{ mat.nom }}</span>
+                        <span class="item-badge">{{ mat.cycle_display }}</span>
+                      </div>
+                      @if (mat.coefficient) {
+                        <p class="item-meta">Coefficient: {{ mat.coefficient }}</p>
+                      }
+                      @if (mat.description) {
+                        <p class="item-description">{{ mat.description }}</p>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Enseignants -->
+            <div class="detail-section">
+              <h3>
+                <ion-icon name="school-outline"></ion-icon>
+                Enseignants
+              </h3>
+              @if (selectedClasse()!.enseignants.length === 0) {
+                <p class="empty-text">Aucun enseignant</p>
+              }
+              @else {
+                <div class="items-list">
+                  @for (ens of selectedClasse()!.enseignants; track ens.id) {
+                    <div class="item">
+                      <span class="item-name">{{ ens.full_name }}</span>
+                      @if (ens.specialty) {
+                        <p class="item-meta">Spécialité: {{ ens.specialty }}</p>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Élèves -->
+            <div class="detail-section">
+              <h3>
+                <ion-icon name="people-outline"></ion-icon>
+                Élèves
+              </h3>
+              @if (selectedClasse()!.eleves.length === 0) {
+                <p class="empty-text">Aucun élève</p>
+              }
+              @else {
+                <div class="items-list">
+                  @for (eleve of selectedClasse()!.eleves; track eleve.id) {
+                    <div class="item">
+                      <div class="item-header">
+                        <span class="item-name">{{ eleve.full_name }}</span>
+                        <span class="item-badge matricule">{{ eleve.matricule }}</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Emploi du temps -->
+            <div class="detail-section">
+              <h3>
+                <ion-icon name="calendar-outline"></ion-icon>
+                Emploi du temps
+              </h3>
+              @if (selectedClasse()!.emplois_du_temps.length === 0) {
+                <p class="empty-text">Aucun cours programmé</p>
+              }
+              @else {
+                <div class="timetable-list">
+                  @for (edt of selectedClasse()!.emplois_du_temps; track edt.id) {
+                    <div class="timetable-item">
+                      <div class="timetable-day">
+                        <strong>{{ edt.jour_semaine_display }}</strong>
+                      </div>
+                      <div class="timetable-content">
+                        <div class="timetable-subject">
+                          <span class="subject-name">{{ edt.matiere.nom }}</span>
+                          <span class="subject-cycle">{{ edt.matiere.cycle_display }}</span>
+                        </div>
+                        <div class="timetable-teacher">
+                          {{ edt.enseignant.full_name }}
+                        </div>
+                        <div class="timetable-time">
+                          {{ edt.heure_debut }} - {{ edt.heure_fin }}
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </ion-card-content>
+      </ion-card>
+    </div>
+  }
+</ion-content>

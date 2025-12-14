@@ -23,8 +23,7 @@ import {
   schoolOutline,
   peopleCircleOutline,
   bookOutline,
-  statsChartOutline,
-} from 'ionicons/icons';
+  statsChartOutline, refreshOutline, reloadOutline } from 'ionicons/icons';
 import { DashboardService, DashboardStats } from '../services/dashboard/dashboard.service';
 
 @Component({
@@ -35,7 +34,7 @@ import { DashboardService, DashboardStats } from '../services/dashboard/dashboar
   imports: [
     IonHeader,
     IonToolbar,
-    IonTitle,
+    //IonTitle,
     IonContent,
     IonGrid,
     IonRow,
@@ -59,13 +58,7 @@ export class HomePage {
   error = signal<string | null>(null);
 
   constructor() {
-    addIcons({
-      peopleOutline,
-      schoolOutline,
-      peopleCircleOutline,
-      bookOutline,
-      statsChartOutline,
-    });
+    addIcons({statsChartOutline,reloadOutline,peopleOutline,schoolOutline,peopleCircleOutline,bookOutline,refreshOutline,});
     this.loadStats();
   }
 

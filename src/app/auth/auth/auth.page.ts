@@ -33,8 +33,8 @@ import { AuthService } from '../../services/auth/auth.service';
     RouterModule,
     ReactiveFormsModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
+   // IonHeader,
+   // IonToolbar,
     IonButtons,
     IonButton,
     IonCard,
@@ -68,7 +68,18 @@ export class AuthPage implements OnInit {
     addIcons({ eyeOutline, eyeOffOutline, logInOutline, shieldCheckmarkOutline });
   }
 
-  ngOnInit() {}
+  async ngOnInit() {
+    // Attendre que l'utilisateur soit chargé si un token existe
+    // Attendre un peu pour que le signal soit mis à jour
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Si l'utilisateur est déjà connecté, rediriger vers l'URL de retour ou l'accueil
+    if (this.auth.user()) {
+      const raw = this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
+      const returnUrl = raw.startsWith('/') ? raw : '/home';
+      this.router.navigateByUrl(returnUrl);
+    }
+  }
 
   togglePasswordVisibility() {
     this.hidePassword.update((v) => !v);

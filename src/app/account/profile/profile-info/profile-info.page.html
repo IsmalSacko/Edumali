@@ -1,0 +1,194 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="glass">
+    <ion-title>Profil</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" size="small" (click)="openEditModal()">
+        <ion-icon slot="start" name="pencil-outline"></ion-icon>
+        Modifier
+      </ion-button>
+      <ion-button fill="clear" size="small" (click)="openPasswordModal()">
+        <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+        Mot de passe
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="profile-content">
+  <div class="backdrop"></div>
+
+  <ng-container *ngIf="!loading(); else loadingState">
+    <ion-grid fixed>
+      <ion-row class="top-row">
+        <ion-col size="12" sizeMd="4">
+          <ion-card class="profile-card glass">
+            <ion-card-content>
+              <div class="avatar-wrap">
+                <ion-avatar class="avatar">
+                  <img [src]="getImageUrl(profile()?.profile_photo) || 'assets/icon/icon.png'" alt="Avatar" />
+                </ion-avatar>
+                <div class="badges">
+                  <ion-badge color="success" *ngIf="profile()?.is_active">
+                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    Actif
+                  </ion-badge>
+                  <ion-badge color="medium" *ngIf="profile()?.is_staff">Staff</ion-badge>
+                </div>
+              </div>
+              <h2>{{ profile()?.first_name }} {{ profile()?.last_name }}</h2>
+              <p class="role">{{ profile()?.role || 'Utilisateur' }}</p>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card class="contact-card glass">
+            <ion-card-header>
+              <ion-card-title>Contact</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-icon slot="start" name="mail-outline"></ion-icon>
+                  <ion-label>
+                    <p>Email</p>
+                    <h3>{{ profile()?.email || 'Non renseigné' }}</h3>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-icon slot="start" name="call-outline"></ion-icon>
+                  <ion-label>
+                    <p>Téléphone</p>
+                    <h3>{{ profile()?.phone_number || 'Non renseigné' }}</h3>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" sizeMd="8">
+          <ion-card class="info-card glass">
+            <ion-card-header>
+              <ion-card-title  class="info-texte">Informations personnelles</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-grid class="info-grid">
+                <ion-row>
+                  <ion-col size="12" sizeMd="6">
+                    <div class="info-block">
+                      <ion-icon name="person-outline"></ion-icon>
+                      <div>
+                        <p>Nom complet</p>
+                        <h3>{{ profile()?.first_name }} {{ profile()?.last_name }}</h3>
+                      </div>
+                    </div>
+                  </ion-col>
+                  <ion-col size="12" sizeMd="6">
+                    <div class="info-block">
+                      <ion-icon name="calendar-outline"></ion-icon>
+                      <div>
+                        <p>Date d'inscription</p>
+                        <h3>{{ profile()?.date_joined | date: 'mediumDate' }}</h3>
+                      </div>
+                    </div>
+                  </ion-col>
+                  <ion-col size="12" sizeMd="6">
+                    <div class="info-block">
+                      <ion-icon name="lock-closed-outline"></ion-icon>
+                      <div>
+                        <p>Compte</p>
+                        <h3>{{ profile()?.username || '—' }}</h3>
+                      </div>
+                    </div>
+                  </ion-col>
+                  <ion-col size="12" sizeMd="6">
+                    <div class="info-block">
+                      <ion-icon name="checkmark-circle-outline"></ion-icon>
+                      <div>
+                        <p>Statut</p>
+                        <h3>{{ profile()?.is_active ? 'Actif' : 'Inactif' }}</h3>
+                      </div>
+                    </div>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <div class="action-buttons">
+                <ion-button expand="block" fill="outline" (click)="openEditModal()">
+                  <ion-icon slot="start" name="pencil-outline"></ion-icon>
+                  Modifier le profil
+                </ion-button>
+                <ion-button expand="block" fill="outline" (click)="openPasswordModal()">
+                  <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+                  Changer le mot de passe
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+
+  <ng-template #loadingState>
+    <div class="skeletons">
+      <ion-skeleton-text animated style="width: 60%; height: 32px"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 100%; height: 220px"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 100%; height: 220px"></ion-skeleton-text>
+    </div>
+  </ng-template>
+
+  <ion-modal [isOpen]="editOpen()" (didDismiss)="closeEditModal()">
+    <ng-template>
+      <div class="modal-wrapper">
+        <div class="modal-header">
+          <h3>Modifier le profil</h3>
+          <ion-button fill="clear" size="small" (click)="closeEditModal()">Fermer</ion-button>
+        </div>
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="modal-form">
+          <ion-item>
+            <ion-label position="stacked">Prénom</ion-label>
+            <ion-input formControlName="first_name" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Nom</ion-label>
+            <ion-input formControlName="last_name" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Email</ion-label>
+            <ion-input type="email" formControlName="email" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Téléphone</ion-label>
+            <ion-input formControlName="phone_number"></ion-input>
+          </ion-item>
+          <ion-button type="submit" expand="block" [disabled]="profileForm.invalid">Enregistrer</ion-button>
+        </form>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="passwordOpen()" (didDismiss)="closePasswordModal()">
+    <ng-template>
+      <div class="modal-wrapper">
+        <div class="modal-header">
+          <h3>Changer le mot de passe</h3>
+          <ion-button fill="clear" size="small" (click)="closePasswordModal()">Fermer</ion-button>
+        </div>
+        <form [formGroup]="passwordForm" (ngSubmit)="savePassword()" class="modal-form">
+          <ion-item>
+            <ion-label position="stacked">Mot de passe actuel</ion-label>
+            <ion-input type="password" formControlName="current_password" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Nouveau mot de passe</ion-label>
+            <ion-input type="password" formControlName="password" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Confirmer le mot de passe</ion-label>
+            <ion-input type="password" formControlName="password_confirmation" required></ion-input>
+          </ion-item>
+          <ion-button type="submit" expand="block" [disabled]="passwordForm.invalid">Mettre à jour</ion-button>
+        </form>
+      </div>
+    </ng-template>
+  </ion-modal>
+</ion-content>
