@@ -14,5 +14,9 @@ export const routes: Routes = [
   {path: 'profile', component: ProfileInfPage, canActivate: [authGuard]},
   {
     path: 'classes', component: ClassePage, canActivate: [authGuard]},
+  {
+    path: 'emplois-du-temps',
+    loadComponent: () => import('./empplois-du-temps/emplois-du-temps/emplois-du-temps.page').then( m => m.EmploisDuTempsPage)
+  },
  
 ];

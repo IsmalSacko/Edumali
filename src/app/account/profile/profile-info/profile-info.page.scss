@@ -1,12 +1,20 @@
 :host {
 	display: block;
+	color: var(--ion-text-color);
 }
 
 .profile-content {
 	position: relative;
 	--background: var(--ion-background-color);
+	background: var(--ion-background-color);
+	--color: var(--ion-text-color);
 	color: var(--ion-text-color);
-	
+	/* Override global padding for profile page - needs more space */
+	--padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 110px) !important;
+}
+
+.profile-content::part(scroll) {
+	padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 110px) !important;
 }
 
 .backdrop {
@@ -20,7 +28,10 @@ ion-card-title.info-texte {
 	color: var(--ion-text-color);
 }
 .glass {
+	--background: var(--ion-card-background);
 	background: var(--ion-card-background);
+	--color: var(--ion-text-color);
+	color: var(--ion-text-color);
 	backdrop-filter: blur(14px);
 	border: 1px solid color-mix(in srgb, var(--ion-border-color) 50%, transparent);
 }
@@ -38,6 +49,10 @@ ion-toolbar.glass {
 .profile-card {
 	text-align: center;
 	padding-top: 10px;
+	--background: var(--ion-card-background);
+	background: var(--ion-card-background);
+	--color: var(--ion-text-color);
+	color: var(--ion-text-color);
 }
 
 .avatar-wrap {
@@ -89,6 +104,10 @@ h2 {
 
 .info-card {
 	padding-top: 6px;
+	--background: var(--ion-card-background);
+	background: var(--ion-card-background);
+	--color: var(--ion-text-color);
+	color: var(--ion-text-color);
 }
 
 .info-grid {
@@ -128,8 +147,36 @@ h2 {
 
 ion-card {
 	--background: var(--ion-card-background);
+	background: var(--ion-card-background);
 	--color: var(--ion-text-color);
+	color: var(--ion-text-color);
 	border: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
+}
+
+ion-card-title {
+	color: var(--ion-text-color) !important;
+}
+
+ion-card-header {
+	--color: var(--ion-text-color);
+	color: var(--ion-text-color);
+}
+
+ion-list {
+	background: transparent;
+	--background: transparent;
+}
+
+ion-label {
+	color: var(--ion-text-color) !important;
+}
+
+ion-label p {
+	color: color-mix(in srgb, var(--ion-text-color) 70%, transparent) !important;
+}
+
+ion-label h3 {
+	color: var(--ion-text-color) !important;
 }
 
 .modal-wrapper {

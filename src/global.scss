@@ -10,20 +10,20 @@ ion-app {
 
 ion-router-outlet {
 	flex: 1 0 auto;
-	padding-bottom: 48px; /* espace réduit pour ne pas coller au footer */
+	padding-bottom: 48px; /* espace pour le footer */
 	padding-top: 56px; /* espace pour ne pas coller à la barre de navigation */
 }
 
 ion-content {
-	--padding-bottom: 64px;
-	padding-bottom: 64px;
+	--padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
+	padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
 	--padding-top: 72px;
 	padding-top: 72px; /* espace pour dégager sous le header/nav */
 }
 
 /* Force aussi le padding dans la zone scroll d'ion-content (Shadow DOM) */
 ion-content::part(scroll) {
-	padding-bottom: 64px;
+	padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px) !important;
 	padding-top: 90px;
 }
 

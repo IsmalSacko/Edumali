@@ -1,0 +1,192 @@
+<ion-content>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <ion-icon name="calendar-outline" class="hero-icon"></ion-icon>
+      <div class="hero-text">
+        <p class="hero-eyebrow">Planning scolaire</p>
+        <h1>Emploi du temps</h1>
+        <p class="hero-description">Consultez et gérez les horaires des cours par classe et par jour</p>
+      </div>
+      <div class="hero-actions">
+        <ion-button fill="clear" size="small" (click)="loadEmplois()" [disabled]="loading()" class="refresh-btn">
+          <ion-icon slot="start" name="reload-outline"></ion-icon>
+          Rafraîchir
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+      <div class="filter-item">
+        <label>Classe</label>
+        <ion-select
+          placeholder="Toutes les classes"
+          [value]="selectedClasse()"
+          (ionChange)="onClasseChange($event)"
+          [interface]="'popover'"
+          [interfaceOptions]="{ cssClass: 'edt-select-popover' }"
+        >
+          <ion-select-option [value]="null">Toutes les classes</ion-select-option>
+          @for (classe of classes(); track classe.id) {
+            <ion-select-option [value]="classe.id">{{ classe.nom }}</ion-select-option>
+          }
+        </ion-select>
+      </div>
+
+      <div class="filter-item">
+        <label>Jour</label>
+        <ion-select
+          placeholder="Tous les jours"
+          [value]="selectedDay() ?? 'all'"
+          (ionChange)="onDayChange($event)"
+          [interface]="'popover'"
+          [interfaceOptions]="{ cssClass: 'edt-select-popover' }"
+        >
+          <ion-select-option value="all">Tous les jours</ion-select-option>
+          @for (jour of jours; track jour) {
+            <ion-select-option [value]="jour">{{ jourLabels[jour] }}</ion-select-option>
+          }
+        </ion-select>
+      </div>
+
+      <div class="search-bar">
+        <ion-searchbar
+          animated
+          placeholder="Rechercher matière ou enseignant..."
+          [value]="search()"
+          (ionInput)="onSearchChange($event)"
+          inputmode="search"
+        ></ion-searchbar>
+      </div>
+
+      <ion-button (click)="resetFilters()" fill="clear" class="reset-btn">
+        <ion-icon slot="start" name="filter-outline"></ion-icon>
+        Réinitialiser
+      </ion-button>
+    </div>
+
+    <!-- View Mode Toggle -->
+    <div class="view-toggle">
+      <ion-segment [value]="viewMode()" (ionChange)="onViewModeChange($event)">
+        <ion-segment-button value="week">
+          <ion-label>Vue Semaine</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="list">
+          <ion-label>Vue Liste</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+  </div>
+
+  <div class="page-container">
+    @if (loading()) {
+      <div class="state-container">
+        <ion-spinner></ion-spinner>
+        <p>Chargement de l'emploi du temps...</p>
+      </div>
+    }
+    @else if (error()) {
+      <div class="error-container">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <p>{{ error() }}</p>
+        <ion-button size="small" fill="outline" (click)="loadEmplois()">Réessayer</ion-button>
+      </div>
+    }
+    @else {
+      @if (filteredEmplois().length === 0) {
+        <div class="empty-container">
+          <ion-icon name="search-outline"></ion-icon>
+          <p>Aucun cours trouvé</p>
+        </div>
+      }
+      @else {
+        <!-- Week View -->
+        @if (viewMode() === 'week') {
+          <div class="week-grid">
+            @for (jour of jours; track jour) {
+              <div class="day-column">
+                <div class="day-header">
+                  <h3>{{ jourLabels[jour] }}</h3>
+                  <ion-badge color="primary">{{ getEmploisForDay(jour).length }}</ion-badge>
+                </div>
+                <div class="day-content">
+                  @for (emploi of getEmploisForDay(jour); track emploi.id) {
+                    <ion-card class="emploi-card">
+                      <ion-card-header>
+                        <div class="card-time">
+                          <ion-icon name="time-outline"></ion-icon>
+                          <span>{{ formatTime(emploi.heure_debut) }} - {{ formatTime(emploi.heure_fin) }}</span>
+                        </div>
+                      </ion-card-header>
+                      <ion-card-content>
+                        <div class="card-matiere">
+                          <ion-icon name="book-outline"></ion-icon>
+                          <span>{{ emploi.matiere?.nom }}</span>
+                        </div>
+                        <div class="card-enseignant">
+                          <ion-icon name="person-outline"></ion-icon>
+                          <span>{{ emploi.enseignant?.full_name }}</span>
+                        </div>
+                        @if (emploi.matiere?.cycle_display) {
+                          <ion-chip class="cycle-chip" color="secondary">
+                            {{ emploi.matiere?.cycle_display }}
+                          </ion-chip>
+                        }
+                      </ion-card-content>
+                    </ion-card>
+                  } @empty {
+                    <div class="empty-day">
+                      <p>Aucun cours</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- List View -->
+        @if (viewMode() === 'list') {
+          <div class="list-view">
+            @for (emploi of filteredEmplois(); track emploi.id) {
+              <ion-card class="emploi-list-card">
+                <ion-card-content>
+                  <div class="list-card-header">
+                    <div class="day-badge">
+                      <ion-badge color="primary">{{ emploi.jour_semaine_display }}</ion-badge>
+                    </div>
+                    <div class="time-badge">
+                      <ion-icon name="time-outline"></ion-icon>
+                      <span>{{ formatTime(emploi.heure_debut) }} - {{ formatTime(emploi.heure_fin) }}</span>
+                    </div>
+                  </div>
+                  <div class="list-card-body">
+                    <div class="matiere-info">
+                      <ion-icon name="book-outline" color="primary"></ion-icon>
+                      <div>
+                        <h3>{{ emploi.matiere?.nom }}</h3>
+                        @if (emploi.matiere?.cycle_display) {
+                          <p class="cycle-label">{{ emploi.matiere?.cycle_display }}</p>
+                        }
+                      </div>
+                    </div>
+                    <div class="enseignant-info">
+                      <ion-icon name="person-outline" color="secondary"></ion-icon>
+                      <div>
+                        <p class="enseignant-name">{{ emploi.enseignant?.full_name }}</p>
+                        @if (emploi.enseignant?.specialty) {
+                          <p class="specialty">{{ emploi.enseignant?.specialty }}</p>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            }
+          </div>
+        }
+      }
+    }
+  </div>
+</ion-content>

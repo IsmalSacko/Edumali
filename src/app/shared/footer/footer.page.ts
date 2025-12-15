@@ -17,8 +17,7 @@ import {
   informationCircleOutline,
   callOutline,
   moonOutline,
-  checkmarkOutline,
-} from 'ionicons/icons';
+  checkmarkOutline, calendarOutline } from 'ionicons/icons';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
@@ -30,12 +29,10 @@ import { ThemeService } from '../../services/theme.service';
     CommonModule,
     RouterModule,
     IonIcon,
-    IonFooter,
     IonPopover,
     IonList,
     IonItem,
     IonContent,
-    IonButton,
     IonLabel,
   ]
 })
@@ -50,20 +47,7 @@ export class FooterPage implements OnInit {
   themePopoverEvent: Event | null = null;
 
   constructor() {
-    addIcons({
-      homeOutline,
-      peopleOutline,
-      schoolOutline,
-      clipboardOutline,
-      settingsOutline,
-      logoFacebook,
-      logoTwitter,
-      logoLinkedin,
-      informationCircleOutline,
-      callOutline,
-      moonOutline,
-      checkmarkOutline,
-    });
+    addIcons({homeOutline,peopleOutline,schoolOutline,calendarOutline,clipboardOutline,moonOutline,settingsOutline,checkmarkOutline,logoFacebook,logoTwitter,logoLinkedin,informationCircleOutline,callOutline,});
   }
 
   ngOnInit() {
