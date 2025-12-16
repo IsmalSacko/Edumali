@@ -27,8 +27,8 @@ import {
   settingsOutline,
   personCircleOutline,
   logOutOutline,
-  moonOutline, 
-  checkmarkOutline 
+  moonOutline,
+  checkmarkOutline
 } from 'ionicons/icons';
 import { AuthService } from '../../services/auth/auth.service';
 import { ThemeService } from '../../services/theme.service';
@@ -67,7 +67,7 @@ export class NavPage implements OnInit {
   themePopoverEvent: Event | null = null;
 
   constructor() {
-    addIcons({peopleOutline,schoolOutline,layersOutline,calendarOutline,clipboardOutline,barChartOutline,settingsOutline,menuOutline,homeOutline,personCircleOutline,logOutOutline,checkmarkOutline,moonOutline,});
+    addIcons({ peopleOutline, schoolOutline, layersOutline, calendarOutline, clipboardOutline, barChartOutline, settingsOutline, menuOutline, homeOutline, personCircleOutline, logOutOutline, checkmarkOutline, moonOutline, });
   }
 
   async ngOnInit() {
@@ -76,7 +76,7 @@ export class NavPage implements OnInit {
 
   get avatar() {
     const photo = this.currentUser()?.profile_photo;
-    return photo?.startsWith('http') ? photo : photo ? `${environment.imageUrl}${photo}` : 'assets/logo-edumali.png';
+    return photo?.startsWith('http') ? photo : photo ? 'assets/logo-edumali.png' : 'assets/logo-edumali.png';
   }
 
   goToHome() {

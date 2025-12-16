@@ -3,8 +3,11 @@ export interface Alert {
   id?: number;
   name: string; // type d'alerte (ex: absences, notes...)
   description: string;
-  active: boolean;
+  active?: boolean;
   created_at?: string;
+  is_read?: boolean; // Statut de lecture pour les alertes personnalisées
+  read_at?: string | null; // Date de lecture
+  is_global?: boolean; // Alerte globale (non liée à un utilisateur spécifique)
 }
 
 // Profil d'établissement (SchoolProfileSerializer)

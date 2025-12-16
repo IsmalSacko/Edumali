@@ -8,10 +8,12 @@ ion-content {
   --background: var(--ion-background-color);
   --color: var(--ion-text-color);
 }
+
 .hero__actions {
   display: flex;
   justify-content: flex-end;
 }
+
 /* Hero Section */
 .hero-section {
   background: linear-gradient(135deg,
@@ -377,6 +379,7 @@ ion-searchbar {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -415,6 +418,7 @@ ion-searchbar {
     transform: translateY(32px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -438,6 +442,34 @@ ion-searchbar {
     font-size: 14px;
     color: color-mix(in srgb, var(--ion-text-color) 65%, transparent);
   }
+
+  /* Rendre le bouton de fermeture (X) lisible sur tous thèmes */
+  ion-button[fill="clear"],
+  ion-button[fill="clear"] ion-icon {
+    --color: var(--ion-text-color);
+    color: var(--ion-text-color);
+  }
+}
+
+/* Lisibilité des boutons dans le contenu du modal (classe) */
+.detail-modal ion-button {
+  --color: var(--ion-text-color);
+}
+
+.detail-modal ion-button[fill="outline"] {
+  --background: transparent;
+  --border-color: var(--ion-color-primary);
+  --color: var(--ion-color-primary);
+}
+
+.detail-modal ion-button[fill="clear"],
+.detail-modal ion-button[fill="clear"] ion-icon {
+  --color: var(--ion-text-color);
+  color: var(--ion-text-color);
+}
+
+.detail-modal ion-button ion-icon {
+  color: currentColor;
 }
 
 .loading-detail {

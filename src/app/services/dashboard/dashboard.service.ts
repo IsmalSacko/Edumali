@@ -72,21 +72,24 @@ function mapAlert(d: any): Alert {
     description: d.description ?? '',
     active: Boolean(d.active),
     created_at: d.created_at,
+    is_read: Boolean(d.is_read),
+    read_at: d.read_at ?? null,
+    is_global: Boolean(d.is_global),
   };
 }
 
 function mapSchoolProfile(d: any): SchoolProfile {
   if (!d) return { name: '', directeur: '' } as SchoolProfile;
-  
+
   // Construire l'URL complète du logo si elle est relative
   let logoUrl = d.logo ?? undefined;
   if (logoUrl && !logoUrl.startsWith('http')) {
     logoUrl = `${environment.apiUrl}${logoUrl}`;
   }
-  
+
   // Récupérer le nom du directeur depuis directeur_name retourné par l'API
   const directeurName = d.directeur_name || '';
-  
+
   return {
     id: d.id,
     name: d.name ?? '',
@@ -102,8 +105,8 @@ function mapActionLog(d: any): ActionLog {
     id: d.id,
     user: d.user ?? null,
     user_info: d.user_info ?? null,
-    action: d.action ?? '',
-    timestamp: d.timestamp ?? '',
+    action: d.action ?? d.name ?? '',  // Accepte 'action' OU 'name' (pour les alerts)
+    timestamp: d.timestamp ?? d.created_at ?? '',  // Accepte 'timestamp' OU 'created_at'
     description: d.description ?? '',
   };
 }
@@ -115,26 +118,49 @@ export class DashboardService {
   private api = inject(ApiService);
   private readonly base = environment.apiUrl;
   private readonly statsUrl = `${this.base}/dashboard/stats/`;
-    // Méthode pour obtenir les statistiques du tableau de bord
-    async getStats(): Promise<DashboardStats> {
-      const r = await this.api.get<DashboardStats>(this.statsUrl);
-      return mapStats(r.data);
-    }
-    // Méthode pour obtenir les alertes du tableau de bord
-    async getAlerts(): Promise<Alert[]> {
-      const response = await this.api.get<Alert[]>(`${this.base}/dashboard/alerts/`);
+  private readonly alertsUrl = `${this.base}/dashboard/alerts/`;
+  // Méthode pour obtenir les statistiques du tableau de bord
+  async getStats(): Promise<DashboardStats> {
+    const r = await this.api.get<DashboardStats>(this.statsUrl);
+    return mapStats(r.data);
+  }
+  // Méthode pour obtenir les alertes du tableau de bord
+  async getAlerts(): Promise<Alert[]> {
+    const response = await this.api.get<Alert[]>(this.alertsUrl);
+    return (response.data ?? []).map(mapAlert);
+  }
+  // Méthode pour obtenir le profil de l'école
+  async getSchoolProfile(): Promise<SchoolProfile> {
+    const response = await this.api.get<any>(`${this.base}/dashboard/school-profiles/`);
+    // L'API retourne un tableau, prendre le premier élément
+    const data = Array.isArray(response.data) ? response.data[0] : response.data;
+    return mapSchoolProfile(data);
+  }
+  // Méthode pour obtenir les journaux d'actions récentes
+  async getActionLogs(limit: number = 10): Promise<ActionLog[]> {
+    const response = await this.api.get<any[]>(`${this.base}/dashboard/action-logs/?limit=${limit}`);
+    return (response.data ?? []).map(mapActionLog);
+  }
+
+  // Méthode pour obtenir les alertes personnalisées de l'utilisateur
+  async getMyAlerts(): Promise<Alert[]> {
+    try {
+      const response = await this.api.get<Alert[]>(`${this.alertsUrl}me/`);
       return (response.data ?? []).map(mapAlert);
+    } catch (err) {
+      console.error('Error fetching user alerts:', err);
+      return [];
     }
-    // Méthode pour obtenir le profil de l'école
-    async getSchoolProfile(): Promise<SchoolProfile> {
-      const response = await this.api.get<any>(`${this.base}/dashboard/school-profiles/`);
-      // L'API retourne un tableau, prendre le premier élément
-      const data = Array.isArray(response.data) ? response.data[0] : response.data;
-      return mapSchoolProfile(data);
+  }
+
+  // Méthode pour marquer une alerte comme lue
+  async markAlertAsRead(alertId: number): Promise<boolean> {
+    try {
+      await this.api.post(`${this.alertsUrl}${alertId}/read/`, {});
+      return true;
+    } catch (err) {
+      console.error(`Error marking alert ${alertId} as read:`, err);
+      return false;
     }
-    // Méthode pour obtenir les journaux d'actions récentes
-    async getActionLogs(limit: number = 10): Promise<ActionLog[]> {
-      const response = await this.api.get<any[]>(`${this.base}/dashboard/action-logs/?limit=${limit}`);
-      return (response.data ?? []).map(mapActionLog);
-    }
+  }
 }

@@ -27,6 +27,7 @@
 ion-card-title.info-texte {
 	color: var(--ion-text-color);
 }
+
 .glass {
 	--background: var(--ion-card-background);
 	background: var(--ion-card-background);
@@ -191,6 +192,13 @@ ion-label h3 {
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 12px;
+
+	/* Assurer la lisibilité des boutons (Fermer / X) dans l'en-tête du modal */
+	ion-button[fill="clear"],
+	ion-button[fill="clear"] ion-icon {
+		--color: var(--ion-text-color);
+		color: var(--ion-text-color);
+	}
 }
 
 .modal-form {
@@ -232,41 +240,61 @@ ion-label h3 {
 	margin-top: 12px;
 }
 
+/* Lisibilité des boutons dans le contenu du modal (profil) */
+.modal-wrapper ion-button {
+	--color: var(--ion-text-color);
+}
+
+.modal-wrapper ion-button[fill="outline"] {
+	--background: transparent;
+	--border-color: var(--ion-color-primary);
+	--color: var(--ion-color-primary);
+}
+
+.modal-wrapper ion-button[fill="clear"] {
+	--color: var(--ion-text-color);
+	color: var(--ion-text-color);
+}
+
+.modal-wrapper ion-button ion-icon {
+	color: currentColor;
+}
+
 .action-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-  flex-wrap: wrap;
+	display: flex;
+	gap: 12px;
+	margin-top: 20px;
+	flex-wrap: wrap;
 }
 
 .action-buttons ion-button {
-  --color: var(--ion-text-color);
-  --border-color: var(--ion-color-primary);
-  --background: transparent;
-  flex: 1;
-  min-width: 160px;
+	--color: var(--ion-text-color);
+	--border-color: var(--ion-color-primary);
+	--background: transparent;
+	flex: 1;
+	min-width: 160px;
 }
 
 .action-buttons ion-button:hover {
-  --background: color-mix(in srgb, var(--ion-color-primary) 12%, transparent);
+	--background: color-mix(in srgb, var(--ion-color-primary) 12%, transparent);
 }
 
 @media (max-width: 767px) {
-  .glass {
-    border-radius: 16px;
-  }
+	.glass {
+		border-radius: 16px;
+	}
 
-  .avatar {
-    width: 104px;
-    height: 104px;
-  }
+	.avatar {
+		width: 104px;
+		height: 104px;
+	}
 
-  .action-buttons {
-    flex-direction: column;
-  }
+	.action-buttons {
+		flex-direction: column;
+	}
 
-  .action-buttons ion-button {
-    flex: 1 1 auto;
-    min-width: unset;
-  }
+	.action-buttons ion-button {
+		flex: 1 1 auto;
+		min-width: unset;
+	}
 }

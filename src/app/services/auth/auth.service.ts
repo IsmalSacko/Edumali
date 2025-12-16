@@ -1,7 +1,7 @@
 // auth.service.ts
 import { inject, Injectable, signal, effect } from '@angular/core';
 import axios from 'axios';
-import { environment } from '../../../environments/environment'; 
+import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
@@ -19,7 +19,7 @@ export class AuthService {
   constructor() {
     // restore access if page reloaded
     this._access = sessionStorage.getItem('access_token');
-    
+
     // Charger l'utilisateur au démarrage si connecté
     if (this._access && !this._initialized) {
       this._initialized = true;
@@ -43,12 +43,12 @@ export class AuthService {
 
   // refresh token en localStorage (simple)
   private refreshKey = 'refresh_token';
-  setRefresh(token: string) { 
-    localStorage.setItem(this.refreshKey, token); 
+  setRefresh(token: string) {
+    localStorage.setItem(this.refreshKey, token);
   }
   getRefresh(): string | null {
-     return localStorage.getItem(this.refreshKey);
-     }
+    return localStorage.getItem(this.refreshKey);
+  }
   removeRefresh() { localStorage.removeItem(this.refreshKey); }
 
   // Charger l'utilisateur courant et mettre à jour le signal
@@ -68,7 +68,7 @@ export class AuthService {
     const data = response.data;
     if (data?.access) this.access = data.access;
     if (data?.refresh) this.setRefresh(data.refresh);
-    console.log('Logged in, access token set.' + (this.access ? '✅'+this.access : '❌'));
+    console.log('Logged in, access token set.' + (this.access ? '✅' + this.access : '❌'));
     // Charger les infos utilisateur et mettre à jour le signal global
     await this.loadCurrentUser();
     return data;
@@ -87,48 +87,48 @@ export class AuthService {
     const r = await axios.get(url, {
       headers: {
         'Authorization': `Bearer ${this.access}`
-        
+
       }
     });
     const role = r.data.role;
     if (role !== 'admin') {
-      this.route.navigate(['/dashboard']);
+      this.route.navigate(['/home']);
     }
     console.log('Current User Role:', role);
     // redirect au dashboard if no role
-   
+
     return r.data.role ? r.data : null;
   }
-  
 
-   async currentUser() {
+
+  async currentUser() {
     const url = `${this.base}/users/me/`;
     const r = await axios.get(url, {
       headers: {
         'Authorization': `Bearer ${this.access}`
-        
+
       }
     });
-    
+
     return r.data;
   }
-  
-    // Retourne le rôle, ou null
-    async getUserRole(): Promise<string | null> {
-      try {
-        const user = await this.currentUser();
-        return user?.role ?? null;
-      } catch (err) {
-        console.warn('getUserRole error', err);
-        return null;
-      }
-    }
 
-    // Indique si l'utilisateur est admin
-    async isAdmin(): Promise<boolean> {
-      const role = await this.getUserRole();
-      return role === 'admin' || role === 'ADMIN' || role === 'Admin';
+  // Retourne le rôle, ou null
+  async getUserRole(): Promise<string | null> {
+    try {
+      const user = await this.currentUser();
+      return user?.role ?? null;
+    } catch (err) {
+      console.warn('getUserRole error', err);
+      return null;
     }
-  
+  }
+
+  // Indique si l'utilisateur est admin
+  async isAdmin(): Promise<boolean> {
+    const role = await this.getUserRole();
+    return role === 'admin' || role === 'ADMIN' || role === 'Admin';
+  }
+
 
 }

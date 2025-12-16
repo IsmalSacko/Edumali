@@ -17,15 +17,18 @@ ion-app {
 
 ion-router-outlet {
 	flex: 1 0 auto;
-	padding-bottom: 48px; /* espace pour le footer */
-	padding-top: 56px; /* espace pour ne pas coller à la barre de navigation */
+	padding-bottom: 48px;
+	/* espace pour le footer */
+	padding-top: 56px;
+	/* espace pour ne pas coller à la barre de navigation */
 }
 
 ion-content {
 	--padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
 	padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
 	--padding-top: 72px;
-	padding-top: 72px; /* espace pour dégager sous le header/nav */
+	padding-top: 72px;
+	/* espace pour dégager sous le header/nav */
 }
 
 /* Force aussi le padding dans la zone scroll d'ion-content (Shadow DOM) */
@@ -48,13 +51,18 @@ ion-content {
 }
 
 /* Harmonise les containers Ionic avec le thème actif */
-ion-card, ion-item, ion-list, ion-toolbar, ion-header {
+ion-card,
+ion-item,
+ion-list,
+ion-toolbar,
+ion-header {
 	--background: var(--ion-background-color);
 	background: var(--ion-background-color);
 	color: var(--ion-text-color);
 }
 
-ion-card, ion-item {
+ion-card,
+ion-item {
 	--color: var(--ion-text-color);
 	border-color: var(--ion-border-color);
 }
@@ -162,6 +170,41 @@ ion-toolbar.navbar {
 	--ion-color-secondary-rgb: 52, 211, 153;
 	--ion-toolbar-background: #0c2818;
 	--ion-item-background: #065f46;
+
+	/*
+  Alert (ion-alert) readability overrides without using !important.
+  Use CSS variables and shadow parts to ensure proper contrast across themes.
+*/
+	ion-alert {
+		--background: var(--ion-card-background, var(--ion-background-color));
+		--color: var(--ion-text-color);
+		--header-color: var(--ion-text-color);
+		--message-color: color-mix(in srgb, var(--ion-text-color) 80%, transparent);
+		--button-color: var(--ion-color-primary);
+		--backdrop-opacity: 0.4;
+	}
+
+	ion-alert::part(header) {
+		color: var(--ion-text-color);
+	}
+
+	ion-alert::part(title) {
+		color: var(--ion-text-color);
+		font-weight: 700;
+	}
+
+	ion-alert::part(message) {
+		color: color-mix(in srgb, var(--ion-text-color) 80%, transparent);
+	}
+
+	ion-alert::part(button) {
+		color: var(--ion-color-primary);
+	}
+
+	ion-alert::part(button):hover {
+		opacity: 0.9;
+	}
+
 	--ion-card-background: #047857;
 }
 

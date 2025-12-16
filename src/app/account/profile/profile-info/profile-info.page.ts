@@ -27,11 +27,13 @@ import {
   IonModal,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline } from 'ionicons/icons';
+import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline } from 'ionicons/icons';
 import { ProfileService } from '../../../services/account/profile-service';
 import { ProfileInfo } from '../../../models/profile/profile';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth/auth.service';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { ActionLog } from '../../../models/altert/alert';
 
 @Component({
   selector: 'app-profile-inf',
@@ -70,8 +72,10 @@ export class ProfileInfPage {
   private profileService = inject(ProfileService);
   private auth = inject(AuthService);
   private router = inject(Router);
+  private dashboardService = inject(DashboardService);
 
   profile = signal<ProfileInfo | null>(null);
+  recentActions = signal<ActionLog[]>([]);
   loading = signal<boolean>(true);
   editOpen = signal<boolean>(false);
   passwordOpen = signal<boolean>(false);
@@ -90,7 +94,7 @@ export class ProfileInfPage {
   });
 
   constructor() {
-    addIcons({ pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline });
+    addIcons({ pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline });
     this.loadProfile();
   }
 
@@ -106,9 +110,46 @@ export class ProfileInfPage {
         email: data.email || '',
         phone_number: data.phone_number || '',
       });
+      await this.loadRecentActivity();
     } finally {
       this.loading.set(false);
     }
+  }
+
+  async loadRecentActivity() {
+    try {
+      const allLogs = await this.dashboardService.getActionLogs(20);
+      if (allLogs && allLogs.length > 0) {
+        // L'endpoint /dashboard/alerts/me/ retourne déjà les alertes filtrées
+        // Pas besoin de filtrer à nouveau, on peut juste les utiliser directement
+        this.recentActions.set(allLogs.slice(0, 5));
+      }
+    } catch (err) {
+      console.error('Error loading recent activities:', err);
+    }
+  }
+
+  personalActionLogs(): ActionLog[] {
+    // Les données viennent déjà filtrées de /dashboard/alerts/me/
+    // On retourne tout simplement les recentActions
+    return this.recentActions() ?? [];
+  }
+
+  private readonly ACTION_LABELS: Record<string, string> = {
+    ATTENDANCE: 'Absences reportées',
+    LOW_GRADE: 'Mauvaises notes',
+    GRADE: 'Nouvelle note ajoutée',
+    SCHOOL_EVENT: 'Nouvel événement scolaire',
+    EXAM_SCHEDULE: 'Calendrier des examens publié',
+    GREVE: 'Annonce de grève',
+    TEACHER_MISSING: "Absence d'enseignant",
+    PAYMENT: 'Paiement effectué',
+    GENERAL: 'Alerte générale',
+  };
+
+  actionLabel(code: string | null | undefined): string {
+    if (!code) return '';
+    return this.ACTION_LABELS[code] ?? code;
   }
 
   getImageUrl(photo?: string | null): string | null {

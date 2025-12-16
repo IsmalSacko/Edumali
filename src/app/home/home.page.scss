@@ -11,6 +11,10 @@
   justify-content: center;
 }
 
+.alerts-icon-wrap.clickable {
+  cursor: pointer;
+}
+
 .alerts-icon-wrap ion-icon {
   font-size: 22px;
 }
@@ -27,6 +31,7 @@
   line-height: 18px;
   border-radius: 9px;
 }
+
 .home-page {
   --ion-background-color: var(--ion-background-color);
   color: var(--ion-text-color);
@@ -42,9 +47,9 @@
   gap: 12px;
   padding: 24px 20px 12px;
   background: linear-gradient(135deg, rgba(var(--ion-background-color-rgb), 0.12), rgba(var(--ion-background-color-rgb), 0.32)),
-              radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--ion-color-secondary) 24%, transparent), transparent 38%),
-              radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--ion-color-primary) 18%, transparent), transparent 42%),
-              linear-gradient(135deg, rgba(var(--ion-background-color-rgb), 0.94), rgba(var(--ion-background-color-rgb), 0.98));
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--ion-color-secondary) 24%, transparent), transparent 38%),
+    radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--ion-color-primary) 18%, transparent), transparent 42%),
+    linear-gradient(135deg, rgba(var(--ion-background-color-rgb), 0.94), rgba(var(--ion-background-color-rgb), 0.98));
   border-bottom: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
 }
 
@@ -60,18 +65,20 @@
   border-radius: 8px;
   object-fit: cover;
   object-position: center;
-  box-shadow:  0 4px 12px color-mix(in srgb, var(--ion-text-color) 10%, transparent);
-  border-radius: 50% ;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ion-text-color) 10%, transparent);
+  border-radius: 50%;
   border: 2px solid var(--ion-color-primary);
   margin-bottom: 4px;
-  
+
 }
+
 .school-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
+
 .hero__title ion-icon {
   font-size: 32px;
   color: var(--ion-color-primary);
@@ -194,12 +201,52 @@ ion-progress-bar {
 
 
 
-.accent-1 { border-color: rgba(34, 211, 238, 0.35); }
-.accent-2 { border-color: rgba(94, 234, 212, 0.35); }
-.accent-3 { border-color: rgba(129, 140, 248, 0.35); }
-.accent-4 { border-color: rgba(248, 180, 0, 0.35); }
-.accent-5 { border-color: rgba(16, 185, 129, 0.35); }
-.accent-6 { border-color: rgba(236, 72, 153, 0.35); }
+.accent-1 {
+  border-color: rgba(34, 211, 238, 0.35);
+}
+
+.accent-2 {
+  border-color: rgba(94, 234, 212, 0.35);
+}
+
+.accent-3 {
+  border-color: rgba(129, 140, 248, 0.35);
+}
+
+.accent-4 {
+  border-color: rgba(248, 180, 0, 0.35);
+}
+
+.accent-5 {
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.accent-6 {
+  border-color: rgba(236, 72, 153, 0.35);
+}
+
+// Styles pour les alertes lues vs non-lues vs globales
+.alert-item {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --min-height: 56px;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+
+  &:not(.alert-item-read):not(.alert-item-global) {
+    --background: color-mix(in srgb, var(--ion-color-primary) 8%, transparent);
+    border-left: 4px solid var(--ion-color-primary);
+  }
+
+  &.alert-item-global {
+    --background: color-mix(in srgb, var(--ion-color-warning) 6%, transparent);
+    border-left: 4px solid var(--ion-color-warning);
+  }
+
+  &.alert-item-read {
+    opacity: 0.7;
+    --background: transparent;
+  }
+}
 
 .error-card {
   margin: 12px 16px;
@@ -221,7 +268,7 @@ ion-progress-bar {
     justify-content: space-between;
   }
 
-  
+
 }
 
 /* cahcer la schol logo si en mobile */

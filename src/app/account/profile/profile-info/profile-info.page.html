@@ -25,7 +25,8 @@
             <ion-card-content>
               <div class="avatar-wrap">
                 <ion-avatar class="avatar">
-                  <img [src]="getImageUrl(profile()?.profile_photo) || 'assets/icon/icon.png'" alt="Avatar" />
+                  <img [src]="getImageUrl(profile()?.profile_photo) || 'assets/school_avatar/default.png'"
+                    alt="Avatar" />
                 </ion-avatar>
                 <div class="badges">
                   <ion-badge color="success" *ngIf="profile()?.is_active">
@@ -68,7 +69,7 @@
         <ion-col size="12" sizeMd="8">
           <ion-card class="info-card glass">
             <ion-card-header>
-              <ion-card-title  class="info-texte">Informations personnelles</ion-card-title>
+              <ion-card-title class="info-texte">Informations personnelles</ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <ion-grid class="info-grid">
@@ -121,6 +122,54 @@
                   Changer le mot de passe
                 </ion-button>
               </div>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card class="activity-card glass">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="time-outline"></ion-icon>
+                Activité récente
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-icon slot="start" name="refresh-outline" color="primary"></ion-icon>
+                  <ion-label>
+                    <p>Dernière modification</p>
+                    <h3>{{ profile()?.date_joined | date:'medium' }}</h3>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-icon slot="start" name="checkmark-circle-outline" color="success"></ion-icon>
+                  <ion-label>
+                    <p>Dernière connexion</p>
+                    <h3>{{ profile()?.date_joined | date:'medium' }}</h3>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+
+
+
+              @if (personalActionLogs().length > 0) {
+              <div class="recent-actions">
+                <h4>Actions récentes</h4>
+                @for (action of personalActionLogs(); track action.id) {
+                <div class="action-item">
+                  <div class="action-header">
+                    <strong>{{ actionLabel(action.action) }}</strong>
+                    <span class="action-time">{{ action.timestamp | date:'short' }}</span>
+                  </div>
+                  @if (action.description) {
+                  <p class="action-desc">{{ action.description }}</p>
+                  }
+                </div>
+                }
+              </div>
+              } @else {
+              <p class="no-activity">Aucune activité enregistrée</p>
+              }
             </ion-card-content>
           </ion-card>
         </ion-col>
