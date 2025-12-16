@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -130,7 +130,8 @@ export class ClassePage implements OnInit {
   }
 
   async ngOnInit() {
-    
+    // Injecter les styles personnalisés pour les modals de select
+    this.injectSelectModalStyles();
     await this.loadClasses();
   }
 
@@ -205,6 +206,58 @@ export class ClassePage implements OnInit {
         return /^(2nd|1|term)/.test(lower) || lower.includes('lycée');
       default:
         return true;
+    }
+  }
+
+  private injectSelectModalStyles() {
+    // Créer une balise style globale pour le modal de select
+    const styleId = 'select-modal-theme-styles';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        /* Styles globaux pour les modals select */
+        .select-popover,
+        .select-action-sheet,
+        .alert-wrapper,
+        .sc-ion-popover-md,
+        .sc-ion-select-md {
+          --background: var(--ion-background-color) !important;
+          --color: var(--ion-text-color) !important;
+          background-color: var(--ion-background-color) !important;
+          color: var(--ion-text-color) !important;
+        }
+        
+        .select-popover *,
+        .select-action-sheet *,
+        .alert-wrapper *,
+        .sc-ion-popover-md *,
+        .themed-select-modal * {
+          color: var(--ion-text-color) !important;
+          background-color: var(--ion-background-color) !important;
+        }
+        
+        .select-popover .option,
+        .select-action-sheet .option,
+        .alert-wrapper .option {
+          color: var(--ion-text-color) !important;
+          background-color: var(--ion-background-color) !important;
+        }
+        
+        .select-popover .option.selected,
+        .select-action-sheet .option.selected,
+        .alert-wrapper .option.selected {
+          background-color: color-mix(in srgb, var(--ion-color-primary) 25%, var(--ion-background-color)) !important;
+          color: var(--ion-text-color) !important;
+        }
+        
+        .select-popover .option:hover,
+        .select-action-sheet .option:hover,
+        .alert-wrapper .option:hover {
+          background-color: color-mix(in srgb, var(--ion-color-primary) 20%, var(--ion-background-color)) !important;
+        }
+      `;
+      document.head.appendChild(style);
     }
   }
 }

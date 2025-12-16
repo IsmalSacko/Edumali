@@ -14,13 +14,24 @@
         <p class="subtitle">Statistiques, cycles et présence, optimisées pour mobile et desktop.</p>
       </div>
     </div>
-      <div class="hero__actions">
-        <ion-button fill="clear" size="small" (click)="loadStats()" [disabled]="loading()" class="refresh-btn">
-          <ion-icon slot="start" name="reload-outline"></ion-icon>
-          Rafraîchir
-        </ion-button>
-      </div>
+  
+        @if (schoolProfile()) {
+        <div class="school-header">
+          @if (schoolProfile()!.logo) {
+          <img [src]="schoolProfile()!.logo" alt="Logo établissement" class="school-logo" />
+          }
+          <div class="school-meta">
+            <p class="eyebrow">Etablissement</p>
+            <h2>{{ schoolProfile()?.name }}</h2>
+            @if (schoolProfile()!.directeur) {
+              <p class="subtitle">Directeur : {{ schoolProfile()!.directeur }}</p>
+            }
+          </div>
+        </div>
+        }
   </section>
+
+
 
   @if (error()) {
     <div class="error-card">
@@ -164,5 +175,68 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+    
+    @if (alerts().length) {
+      <ion-card class="stat-card alerts-card">
+        <ion-card-header>
+          <ion-card-title class="alerts-title">
+            <span class="alerts-icon-wrap">
+              <ion-icon name="notifications-outline"></ion-icon>
+              <ion-badge color="danger" class="alerts-count-badge">{{ alerts().length }}</ion-badge>
+            </span>
+            <span>Alertes actives</span>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          @for (section of groupedAlerts(); track section.key) {
+            <div class="alerts-section">
+              <div class="section-header">
+                <ion-icon [name]="section.icon" [color]="section.color"></ion-icon>
+                <h3>{{ section.title }}</h3>
+              </div>
+              @for (item of section.items; track item.title) {
+                <ion-item lines="none" class="alert-item">
+                  <ion-label>
+                    <strong>{{ item.title }}</strong>
+                    <p class="muted">{{ item.desc }}</p>
+                    @if (item.date) { <p class="date">{{ item.date | date:'shortDate' }}</p> }
+                  </ion-label>
+                </ion-item>
+              }
+            </div>
+          }
+          <div class="alerts-actions">
+            <ion-button fill="clear" size="small" (click)="toggleAlerts()">
+              @if (showAllAlerts()) { Masquer } @else { Voir toutes }
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @if (actionLogs().length) {
+      <ion-card class="stat-card actions-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="document-text-outline"></ion-icon>
+            Activités récentes
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          @for (log of actionLogs(); track log.id) {
+            <div class="log-item">
+              <div class="log-title">
+                <p class="log-action">{{ actionLabel(log.action) }}</p>
+                <p class="log-time">{{ log.timestamp | date:'short' }}</p>
+              </div>
+              <p class="muted">{{ log.description }}</p>
+              @if (log.user_info) {
+                <p class="log-user">Par {{ log.user_info.first_name }} {{ log.user_info.last_name }}</p>
+              }
+            </div>
+          }
+        </ion-card-content>
+      </ion-card>
+    }
   }
 </ion-content>

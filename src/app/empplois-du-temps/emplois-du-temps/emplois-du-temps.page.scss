@@ -6,32 +6,6 @@ ion-content {
   --padding-bottom: 90px;
 }
 
-/* Popover du select (interface='popover'): lisibilité selon thème */
-:host ::ng-deep .edt-select-popover {
-  --background: var(--ion-card-background);
-  --color: var(--ion-text-color);
-  --border-color: var(--ion-border-color);
-}
-
-:host ::ng-deep .edt-select-popover::part(content) {
-  background: var(--ion-card-background);
-  color: var(--ion-text-color);
-}
-
-:host ::ng-deep .edt-select-popover ion-item {
-  --background: var(--ion-card-background);
-  --color: var(--ion-text-color) !important;
-  color: var(--ion-text-color) !important;
-}
-
-:host ::ng-deep .edt-select-popover ion-label {
-  color: var(--ion-text-color) !important;
-}
-
-:host ::ng-deep .edt-select-popover ion-radio {
-  --color: var(--ion-color-primary);
-}
-
 .hero-section {
   background: linear-gradient(135deg,
       rgba(var(--ion-background-color-rgb), 0.12),

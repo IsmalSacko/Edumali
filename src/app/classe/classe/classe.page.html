@@ -34,6 +34,7 @@
           placeholder="Toutes les années"
           [value]="yearFilter()"
           (ionChange)="onYearFilterChange($event)"
+          interfaceOptions="{cssClass: 'themed-select-modal'}"
         >
           <ion-select-option [value]="null">Toutes les années</ion-select-option>
           @for (year of availableYears(); track year) {
@@ -48,6 +49,7 @@
           placeholder="Tous les cycles"
           [value]="cycleFilter()"
           (ionChange)="onCycleFilterChange($event)"
+          interfaceOptions="{cssClass: 'themed-select-modal'}"
         >
           <ion-select-option [value]="null">Tous les cycles</ion-select-option>
           <ion-select-option value="primaire">Primaire</ion-select-option>

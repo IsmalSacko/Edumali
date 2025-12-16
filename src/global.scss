@@ -1,5 +1,12 @@
-/* Expose les utilitaires/règles globales du styleModel partout */
-@use './app/styleModel' as *;
+// /* Applique le fond et le texte selon le thème sur toute la page */
+// html,
+// body,
+// ion-app,
+// ion-router-outlet {
+// 	background-color: var(--ion-background-color);
+// 	color: var(--ion-text-color);
+// }
+
 
 /* Layout global pour coller le footer en bas */
 ion-app {
@@ -32,11 +39,7 @@ app-footer {
 	width: 100%;
 }
 
-/* Applique le fond et le texte selon le thème sur toute la page */
-html, body, ion-app, ion-router-outlet {
-	background-color: var(--ion-background-color);
-	color: var(--ion-text-color);
-}
+
 
 ion-content {
 	--background: var(--ion-background-color);
@@ -70,16 +73,10 @@ ion-toolbar.navbar {
 .nav-shell .user-actions ion-button {
 	--color: var(--ion-text-color);
 }
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
+
+
+
+
 
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";

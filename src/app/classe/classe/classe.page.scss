@@ -134,9 +134,24 @@ ion-searchbar {
     --border-radius: 12px;
     --padding-start: 12px;
     --padding-end: 12px;
+    --text-color: var(--ion-text-color);
+    --color: var(--ion-text-color);
+    --placeholder-color: color-mix(in srgb, var(--ion-text-color) 50%, transparent);
+    --highlight-background: color-mix(in srgb, var(--ion-color-primary) 15%, transparent);
     border: 1px solid color-mix(in srgb, var(--ion-border-color) 50%, transparent);
     border-radius: 12px;
     color: var(--ion-text-color);
+    z-index: 1000;
+  }
+
+  ion-select::part(text) {
+    color: var(--ion-text-color);
+  }
+
+  ion-select-option {
+    --background: var(--ion-background-color);
+    --background-activated: color-mix(in srgb, var(--ion-color-primary) 20%, transparent);
+    --color: var(--ion-text-color);
   }
 }
 

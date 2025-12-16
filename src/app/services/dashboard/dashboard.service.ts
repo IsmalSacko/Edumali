@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { inject } from '@angular/core/primitives/di';
 import { environment } from '../../../environments/environment';
+import { ActionLog, Alert, SchoolProfile } from 'src/app/models/altert/alert';
 
 
 export interface StudentsByCycle {
@@ -18,10 +19,11 @@ export interface DashboardStats {
   totalMatieres: number;
   averageGlobal: number;
   studentsByCycle: StudentsByCycle;
+  evaluationsByTrimester?: Record<string, number>;
 }
 
 export interface EmploisDuTempsStats {
-  classe : string;
+  classe: string;
 }
 
 export interface EmploiDuTempsItem {
@@ -57,25 +59,82 @@ function mapStats(d: any): DashboardStats {
       primaire: d.students_by_cycle?.primaire ?? 0,
       secondaire: d.students_by_cycle?.secondaire ?? 0,
       lycee: d.students_by_cycle?.lycee ?? 0,
-    }
+    },
+    evaluationsByTrimester: d.evaluations_by_trimester ?? undefined,
+  };
+
+}
+
+function mapAlert(d: any): Alert {
+  return {
+    id: d.id,
+    name: d.name ?? '',
+    description: d.description ?? '',
+    active: Boolean(d.active),
+    created_at: d.created_at,
   };
 }
 
+function mapSchoolProfile(d: any): SchoolProfile {
+  if (!d) return { name: '', directeur: '' } as SchoolProfile;
+  
+  // Construire l'URL complète du logo si elle est relative
+  let logoUrl = d.logo ?? undefined;
+  if (logoUrl && !logoUrl.startsWith('http')) {
+    logoUrl = `${environment.apiUrl}${logoUrl}`;
+  }
+  
+  // Récupérer le nom du directeur depuis directeur_name retourné par l'API
+  const directeurName = d.directeur_name || '';
+  
+  return {
+    id: d.id,
+    name: d.name ?? '',
+    logo: logoUrl,
+    cachet: d.cachet ?? undefined,
+    directeur: directeurName,
+    signature_directeur: d.signature_directeur ?? undefined,
+  };
+}
 
+function mapActionLog(d: any): ActionLog {
+  return {
+    id: d.id,
+    user: d.user ?? null,
+    user_info: d.user_info ?? null,
+    action: d.action ?? '',
+    timestamp: d.timestamp ?? '',
+    description: d.description ?? '',
+  };
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
-   private api = inject(ApiService);
-   private readonly base = environment.apiUrl
-   private readonly statsUrl = `${this.base}/dashboard/stats/`;
-
-  async getStats(): Promise<DashboardStats> {
-    const r =  await this.api.get<DashboardStats>(this.statsUrl);
-    return mapStats(r.data);
-  }
-
-  
-
+  private api = inject(ApiService);
+  private readonly base = environment.apiUrl;
+  private readonly statsUrl = `${this.base}/dashboard/stats/`;
+    // Méthode pour obtenir les statistiques du tableau de bord
+    async getStats(): Promise<DashboardStats> {
+      const r = await this.api.get<DashboardStats>(this.statsUrl);
+      return mapStats(r.data);
+    }
+    // Méthode pour obtenir les alertes du tableau de bord
+    async getAlerts(): Promise<Alert[]> {
+      const response = await this.api.get<Alert[]>(`${this.base}/dashboard/alerts/`);
+      return (response.data ?? []).map(mapAlert);
+    }
+    // Méthode pour obtenir le profil de l'école
+    async getSchoolProfile(): Promise<SchoolProfile> {
+      const response = await this.api.get<any>(`${this.base}/dashboard/school-profiles/`);
+      // L'API retourne un tableau, prendre le premier élément
+      const data = Array.isArray(response.data) ? response.data[0] : response.data;
+      return mapSchoolProfile(data);
+    }
+    // Méthode pour obtenir les journaux d'actions récentes
+    async getActionLogs(limit: number = 10): Promise<ActionLog[]> {
+      const response = await this.api.get<any[]>(`${this.base}/dashboard/action-logs/?limit=${limit}`);
+      return (response.data ?? []).map(mapActionLog);
+    }
 }
