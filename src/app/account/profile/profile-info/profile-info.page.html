@@ -137,7 +137,7 @@
                 <ion-item>
                   <ion-icon slot="start" name="refresh-outline" color="primary"></ion-icon>
                   <ion-label>
-                    <p>Dernière modification</p>
+                    <p>Date d'inscription</p>
                     <h3>{{ profile()?.date_joined | date:'medium' }}</h3>
                   </ion-label>
                 </ion-item>
@@ -145,7 +145,10 @@
                   <ion-icon slot="start" name="checkmark-circle-outline" color="success"></ion-icon>
                   <ion-label>
                     <p>Dernière connexion</p>
-                    <h3>{{ profile()?.date_joined | date:'medium' }}</h3>
+                    <h3>
+                      {{ profile()?.last_login ? (profile()?.last_login | date:'medium') : (profile()?.date_joined |
+                      date:'medium') }}
+                    </h3>
                   </ion-label>
                 </ion-item>
               </ion-list>
@@ -155,14 +158,15 @@
               @if (personalActionLogs().length > 0) {
               <div class="recent-actions">
                 <h4>Actions récentes</h4>
-                @for (action of personalActionLogs(); track action.id) {
+                @for (action of personalActionLogs().slice(0,2); track action.id) {
                 <div class="action-item">
                   <div class="action-header">
                     <strong>{{ actionLabel(action.action) }}</strong>
-                    <span class="action-time">{{ action.timestamp | date:'short' }}</span>
+                    <span class="action-time"> {{ action.timestamp | date:'short' }}</span>
                   </div>
                   @if (action.description) {
-                  <p class="action-desc">{{ action.description }}</p>
+                  <p class="action-desc">{{ action.description }} par : {{ action.user_info?.first_name }} {{
+                    action.user_info?.last_name }}</p>
                   }
                 </div>
                 }

@@ -8,6 +8,7 @@ export interface ProfileInfo {
   date_joined?: string; // ISO date string
   is_active?: boolean;
   is_staff?: boolean;
+  last_login?: string; // ISO date string
   phone_number?: string | null;
   profile_photo?: string | null; // URL to profile photo
   current_password?: string;
