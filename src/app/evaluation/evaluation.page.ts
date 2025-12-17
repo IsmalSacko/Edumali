@@ -1,37 +1,3 @@
-    /**
-     * Construit l'URL d'image et nettoie les doubles slash
-     */
-    getImageUrl(photo?: string | null): string | null {
-      if (!photo) return null;
-      if (photo.startsWith('http')) return photo;
-      const base = (environment.imageUrl || environment.apiUrl || '').replace(/\/+$/, '');
-      const cleanPath = photo.startsWith('/') ? photo.substring(1) : photo;
-      return `${base}/${cleanPath}`;
-    }
-
-    /**
-     * Fallback si le chargement d'image échoue
-     */
-    onImageError(event: any) {
-      event.target.src = 'assets/school_avatar/default.png';
-    }
-  /**
-   * Construit l'URL d'image et nettoie les doubles slash
-   */
-  getImageUrl(photo?: string | null): string | null {
-    if (!photo) return null;
-    if (photo.startsWith('http')) return photo;
-    const base = (environment.imageUrl || environment.apiUrl || '').replace(/\/+$/, '');
-    const cleanPath = photo.startsWith('/') ? photo.substring(1) : photo;
-    return `${base}/${cleanPath}`;
-  }
-
-  /**
-   * Fallback si le chargement d'image échoue
-   */
-  onImageError(event: any) {
-    event.target.src = 'assets/school_avatar/default.png';
-  }
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -77,8 +43,6 @@ import {
 import { EvaluationService } from '../services/evaluation/evaluation.service';
 import { AuthService } from '../services/auth/auth.service';
 import { Evaluation, Bulletin } from '../models/student-info/model';
-import { environment } from '../../environments/environment';
-import { environment } from '../../environments/environment';
 
 type ViewMode = 'list' | 'bulletin' | 'stats';
 
@@ -134,6 +98,25 @@ export class EvaluationPage implements OnInit {
   serviceError = computed(() => this.evaluationService.error());
   bulletin = signal<Bulletin | null>(null);
 
+  constructor() {
+    addIcons({
+      statsChartOutline,
+      list,
+      documentTextOutline,
+      trendingUpOutline,
+      filterOutline,
+      closeOutline,
+      close,
+      refreshOutline,
+      personOutline,
+      bookOutline,
+      peopleOutline
+    });
+  }
+
+  ngOnInit() {
+    this.loadEvaluations();
+  }
   // Filtrées par recherche
   filteredEvaluations = computed(() => {
     const all = this.evaluations();
@@ -186,9 +169,11 @@ export class EvaluationPage implements OnInit {
     return Array.from(grouped.entries()).map(([studentId, items]) => {
       const firstItem = items[0];
       let studentName = 'Inconnu';
+      let studentPhoto: string | undefined = undefined;
 
       if (firstItem.student_info) {
         studentName = `${firstItem.student_info.prenom || ''} ${firstItem.student_info.nom || ''}`.trim();
+        studentPhoto = firstItem.student_info.student_photo || undefined;
       } else if (typeof firstItem.student !== 'number' && firstItem.student) {
         studentName = `${firstItem.student.first_name || ''} ${firstItem.student.last_name || ''}`.trim();
       }
@@ -200,6 +185,7 @@ export class EvaluationPage implements OnInit {
       return {
         studentId,
         studentName,
+        studentPhoto: firstItem.student_info?.student_photo || undefined,
         evaluations: items,
         average: average.toFixed(2),
       };
@@ -244,25 +230,7 @@ export class EvaluationPage implements OnInit {
     });
   });
 
-  constructor() {
-    addIcons({
-      statsChartOutline,
-      list,
-      documentTextOutline,
-      trendingUpOutline,
-      filterOutline,
-      closeOutline,
-      close,
-      refreshOutline,
-      personOutline,
-      bookOutline,
-      peopleOutline
-    });
-  }
 
-  ngOnInit(): void {
-    this.loadEvaluations();
-  }
 
   /**
    * Charge toutes les évaluations
@@ -316,7 +284,11 @@ export class EvaluationPage implements OnInit {
    */
   async changeTrimester(trimester: number): Promise<void> {
     this.selectedTrimester.set(trimester);
-    await this.loadEvaluations();
+    if (this.viewMode() === 'bulletin' && this.selectedStudentId()) {
+      await this.loadBulletin(this.selectedStudentId()!);
+    } else {
+      await this.loadEvaluations();
+    }
   }
 
   /**
@@ -439,42 +411,5 @@ export class EvaluationPage implements OnInit {
     return 'Inconnu';
   }
 
-  /**
-   * Construit l'URL d'image et nettoie les doubles slash
-   */
-  getImageUrl(photo?: string | null): string | null {
-    if (!photo) return null;
-    if (photo.startsWith('http')) return photo;
-    const base = (environment.imageUrl || environment.apiUrl || '').replace(/\/+$/, '');
-    const cleanPath = photo.startsWith('/') ? photo.substring(1) : photo;
-    return `${base}/${cleanPath}`;
-  }
 
-  /**
-   * Fallback si le chargement d'image échoue
-   */
-  onImageError(event: any) {
-    event.target.src = 'assets/school_avatar/default.png';
-  }
-
-  /**
-   * Construit l'URL de l'image avec fallback
-   */
-  getImageUrl(photo?: string | null): string | null {
-    if (!photo) return null;
-    if (photo.startsWith('http')) return photo;
-    const base = (environment.imageUrl || environment.apiUrl || '').replace(/\/+$/, '');
-    // Supprimer le leading slash du chemin et le rajouter correctement
-    const cleanPath = photo.startsWith('/') ? photo.substring(1) : photo;
-    const result = `${base}/${cleanPath}`;
-    console.log(`🖼️ Construit URL image: base="${base}", photo="${photo}", cleanPath="${cleanPath}" => ${result}`);
-    return result;
-  }
-
-  /**
-   * Gère les erreurs de chargement d'image
-   */
-  onImageError(event: any) {
-    event.target.src = 'assets/school_avatar/default.png';
-  }
 }

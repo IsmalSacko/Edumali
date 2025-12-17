@@ -177,17 +177,17 @@ export class EvaluationService {
       // Backend renvoie { student_id, trimester, details: [], total_coeffs, moyenne_generale }
       const grades = Array.isArray(data.details)
         ? data.details.map((d: any) => {
-            const hasNumericNote = typeof d.note === 'number' && !Number.isNaN(d.note);
-            const avg = hasNumericNote ? Number(d.note) : 0;
-            return {
-              matiere_id: d.matiere_id,
-              matiere_name: d.matiere_nom,
-              average: avg,
-              count: hasNumericNote ? 1 : 0,
-              coefficient: d.coefficient ?? 1,
-              noteLabel: hasNumericNote ? `${avg.toFixed(1)}/20` : (d.note || 'Pas d’évaluation'),
-            };
-          })
+          const hasNumericNote = typeof d.note === 'number' && !Number.isNaN(d.note);
+          const avg = hasNumericNote ? Number(d.note) : 0;
+          return {
+            matiere_id: d.matiere_id,
+            matiere_name: d.matiere_nom,
+            average: avg,
+            count: hasNumericNote ? 1 : 0,
+            coefficient: d.coefficient ?? 1,
+            noteLabel: hasNumericNote ? `${avg.toFixed(1)}/20` : (d.note || 'Pas d’évaluation'),
+          };
+        })
         : [];
 
       const bulletin: Bulletin = {
@@ -197,23 +197,11 @@ export class EvaluationService {
         average: data.moyenne_generale ?? data.average ?? 0,
         total_coeffs: data.total_coeffs ?? data.totalCoeffs ?? undefined,
         comments: data.commentaires ?? data.comments ?? null,
-        student_photo: data.student_photo ?? data.profile_photo ?? undefined,
-        profile_photo: data.profile_photo ?? data.student_photo ?? undefined,
+        student_photo: data.student_photo ?? data.student_photo ?? undefined,
         grades,
       };
 
-      // Si la photo n'est pas fournie par l'endpoint bulletin, aller la chercher sur /auth/users/{id}/
-      if (!bulletin.student_photo && !bulletin.profile_photo) {
-        try {
-          const photoUrl = await this.getStudentPhoto(studentId);
-          if (photoUrl) {
-            bulletin.student_photo = photoUrl;
-            bulletin.profile_photo = photoUrl;
-          }
-        } catch (err) {
-          console.warn('Photo non récupérée pour l’étudiant', studentId, err);
-        }
-      }
+
 
       console.log(`✅ Bulletin reçu pour élève ${studentId} - Trimestre ${trimester}:`, bulletin);
       return bulletin;
@@ -249,14 +237,7 @@ export class EvaluationService {
 
   /**
    * Récupère la photo de profil d'un utilisateur/étudiant par son ID
-   */
-  async getStudentPhoto(userId: number): Promise<string | null> {
-    const url = `${this.base}/auth/users/${userId}/`;
-    const r = await this.api.get<any>(url);
-    const userData = r.data ?? null;
-    if (!userData) return null;
-    return userData.profile_photo || userData.photo || null;
-  }
+
 
   /**
    * Affiche un toast de succès

@@ -1,6 +1,6 @@
 <ion-header [translucent]="false" class="evaluation-header">
   <ion-toolbar>
-    <ion-title  class="evaluation-header">
+    <ion-title class="evaluation-header">
       <ion-icon name="stats-chart-outline"></ion-icon>
       Évaluations et Notes
     </ion-title>
@@ -28,13 +28,13 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="changeTrimester(1)" [color]="selectedTrimester() === 1 ? 'primary' : 'medium'">
-        T1
+        1ᵉʳ Trimestre
       </ion-button>
       <ion-button (click)="changeTrimester(2)" [color]="selectedTrimester() === 2 ? 'primary' : 'medium'">
-        T2
+        2ᵉ Trimestre
       </ion-button>
       <ion-button (click)="changeTrimester(3)" [color]="selectedTrimester() === 3 ? 'primary' : 'medium'">
-        T3
+        3ᵉ Trimestre
       </ion-button>
     </ion-buttons>
 
@@ -58,11 +58,8 @@
   @if (showFilters()) {
   <ion-card class="filter-card">
     <ion-card-content>
-      <ion-searchbar
-        [value]="searchText()"
-        (ionInput)="searchText.set($event.detail.value ?? '')"
-        placeholder="Chercher par élève ou matière..."
-        clearIcon="close"></ion-searchbar>
+      <ion-searchbar [value]="searchText()" (ionInput)="searchText.set($event.detail.value ?? '')"
+        placeholder="Chercher par élève ou matière..." clearIcon="close"></ion-searchbar>
 
       <div class="filter-actions">
         <ion-button fill="outline" size="small" (click)="resetFilters()">
@@ -96,7 +93,11 @@
     <ion-card-header (click)="loadBulletin(group.studentId)">
       <div class="group-header">
         <div class="group-info">
-          <ion-icon name="person-outline" color="primary"></ion-icon>
+          <div class="eval-photo">
+            <img [src]="group.studentPhoto || 'assets/avatar/studying.png'" alt="Photo de {{ group.studentName }}"
+              class="eval-photo-img" />
+          </div>
+
           <div>
             <h3>{{ group.studentName }}</h3>
             <p class="muted">{{ group.evaluations.length }} évaluations</p>
@@ -170,12 +171,13 @@
       <div class="bulletin-info">
         <div class="bulletin-header">
           <div class="bulletin-photo">
-            <img
-              [src]="getImageUrl(bulletin()!.student_photo || bulletin()!.profile_photo) || 'assets/school_avatar/default.png'"
-              alt="Photo de {{ bulletin()!.student_name }}"
-              (error)="onImageError($event)"
-              loading="lazy"
-            />
+            @if (bulletin()?.student_photo) {
+            <img [src]="bulletin()!.student_photo" alt="Photo de {{ bulletin()!.student_name }}"
+              class="bulletin-photo-img" />
+            } @else {
+            <img src="assets/avatar/studying.png" alt="Photo par défaut" class="bulletin-default-photo-img" />
+            }
+
           </div>
           <div>
             <p class="eyebrow">Bulletin</p>
@@ -200,7 +202,8 @@
           <span class="matiere-name">{{ grade.matiere_name }}</span>
           <span class="grade-count">Coef {{ grade.coefficient }}</span>
         </div>
-        <ion-badge [color]="grade.count === 0 ? 'medium' : grade.average >= 12 ? 'success' : grade.average >= 10 ? 'warning' : 'danger'">
+        <ion-badge
+          [color]="grade.count === 0 ? 'medium' : grade.average >= 12 ? 'success' : grade.average >= 10 ? 'warning' : 'danger'">
           {{ grade.count === 0 ? grade.noteLabel : grade.average.toFixed(1) }}
         </ion-badge>
       </div>
@@ -281,8 +284,7 @@
                   <ion-badge color="warning" size="small">Coef {{ matiere.coefficient }}</ion-badge>
                   }
                 </span>
-                <ion-badge
-                  [color]="
+                <ion-badge [color]="
                     +matiere.average >= 16
                       ? 'success'
                       : +matiere.average >= 12

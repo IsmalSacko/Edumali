@@ -1,3 +1,27 @@
+// Boutons de trimestre (T1, T2, T3)
+ion-toolbar ion-button {
+  color: var(--ion-text-color, #222) !important;
+  font-weight: 600;
+}
+
+ion-toolbar ion-button.ion-color-primary {
+  color: var(--ion-color-primary-contrast, #fff) !important;
+}
+
+// Placeholder et texte de la barre de recherche
+.filter-card ion-searchbar {
+  --color: var(--ion-text-color, #222);
+}
+
+.filter-card ion-searchbar .searchbar-input::placeholder {
+  color: var(--ion-color-medium, #888) !important;
+  opacity: 1;
+}
+
+.filter-card ion-searchbar .searchbar-input {
+  color: var(--ion-text-color, #222) !important;
+}
+
 // Header
 .evaluation-header {
   margin-top: 50px;
@@ -172,6 +196,15 @@ ion-card {
   color: var(--ion-color-medium);
 }
 
+.bulletin-default-photo-img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--ion-color-primary);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
 // Bulletin
 .bulletin-header {
   display: flex;
@@ -181,11 +214,20 @@ ion-card {
   margin-bottom: 2rem;
 }
 
-.bulletin-photo img {
+.bulletin-photo-img {
   width: 96px;
   height: 96px;
   object-fit: cover;
   border-radius: 12px;
+  border: 1px solid var(--ion-color-primary);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.eval-photo-img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 50%;
   border: 3px solid var(--ion-color-primary);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }

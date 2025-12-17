@@ -3,6 +3,7 @@ export interface PersonInfo {
 	prenom?: string | null;
 	nom?: string | null;
 	username?: string | null;
+	student_photo: string | null;
 }
 
 export interface StudentBrief {
@@ -77,10 +78,10 @@ export interface Bulletin {
 	average: number;
 	comments?: string;
 	total_coeffs?: number;
-	student_photo?: string;
-	profile_photo?: string;
+	student_photo?: string | null;
 	grades: BulletinGrade[];
 }
+
 
 export class EvaluationModel implements Evaluation {
 	id: number;
@@ -166,6 +167,14 @@ export class EvaluationModel implements Evaluation {
 		}
 		return 1;
 	}
+
+	getStudentPhoto(): string {
+		return (
+			this.student_info?.student_photo ||
+			'assets/avatar-default.png'
+		);
+	}
+
 }
 
 export default EvaluationModel;
