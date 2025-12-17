@@ -1,0 +1,307 @@
+<ion-header [translucent]="false" class="evaluation-header">
+  <ion-toolbar>
+    <ion-title  class="evaluation-header">
+      <ion-icon name="stats-chart-outline"></ion-icon>
+      Évaluations et Notes
+    </ion-title>
+  </ion-toolbar>
+
+  <!-- Segment pour changer de vue -->
+  <ion-toolbar>
+    <ion-segment [value]="viewMode()" (ionChange)="changeViewMode($event.detail.value)">
+      <ion-segment-button [value]="'list'">
+        <ion-label>Liste</ion-label>
+        <ion-icon name="list"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button [value]="'bulletin'">
+        <ion-label>Bulletin</ion-label>
+        <ion-icon name="document-text-outline"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button [value]="'stats'">
+        <ion-label>Statistiques</ion-label>
+        <ion-icon name="trending-up-outline"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+
+  <!-- Sélection du trimestre -->
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="changeTrimester(1)" [color]="selectedTrimester() === 1 ? 'primary' : 'medium'">
+        T1
+      </ion-button>
+      <ion-button (click)="changeTrimester(2)" [color]="selectedTrimester() === 2 ? 'primary' : 'medium'">
+        T2
+      </ion-button>
+      <ion-button (click)="changeTrimester(3)" [color]="selectedTrimester() === 3 ? 'primary' : 'medium'">
+        T3
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="showFilters.set(!showFilters())">
+        <ion-icon name="filter-outline"></ion-icon>
+        @if (showFilters()) {
+        <ion-icon name="close-outline"></ion-icon>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="false" class="evaluation-page">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Filtres -->
+  @if (showFilters()) {
+  <ion-card class="filter-card">
+    <ion-card-content>
+      <ion-searchbar
+        [value]="searchText()"
+        (ionInput)="searchText.set($event.detail.value ?? '')"
+        placeholder="Chercher par élève ou matière..."
+        clearIcon="close"></ion-searchbar>
+
+      <div class="filter-actions">
+        <ion-button fill="outline" size="small" (click)="resetFilters()">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          Réinitialiser
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+  }
+
+  <!-- Affichage en cas d'erreur -->
+  @if (serviceError()) {
+  <ion-card color="danger">
+    <ion-card-content>
+      <p><strong>Erreur:</strong> {{ serviceError() }}</p>
+      <ion-button size="small" (click)="loadEvaluations()">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+        Réessayer
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  }
+
+  <!-- MODE: LISTE DES ÉVALUATIONS -->
+  @if (viewMode() === 'list') {
+  <!-- Affichage par élève -->
+  @if (evaluationsByStudent().length > 0) {
+  @for (group of evaluationsByStudent(); track group.studentId) {
+  <ion-card class="evaluation-group-card">
+    <ion-card-header (click)="loadBulletin(group.studentId)">
+      <div class="group-header">
+        <div class="group-info">
+          <ion-icon name="person-outline" color="primary"></ion-icon>
+          <div>
+            <h3>{{ group.studentName }}</h3>
+            <p class="muted">{{ group.evaluations.length }} évaluations</p>
+          </div>
+        </div>
+        <div class="group-average">
+          <span class="avg-value">{{ group.average }}/20</span>
+          <ion-progress-bar [value]="(+group.average) / 20"></ion-progress-bar>
+        </div>
+      </div>
+    </ion-card-header>
+
+    <ion-card-content>
+      @for (eval of group.evaluations; track eval.id) {
+      <div class="evaluation-item">
+        <div class="eval-left">
+          <div class="eval-matiere">
+            <ion-icon name="book-outline"></ion-icon>
+            <span>{{ getMatiereName(eval) }}</span>
+          </div>
+          <span class="eval-type">{{ getEvalTypeLabel(eval) }}</span>
+        </div>
+
+        <div class="eval-right">
+          <ion-badge [color]="getScoreColor(eval)">
+            {{ getScore20(eval).toFixed(1) }}/20
+          </ion-badge>
+          <span class="score-details">({{ eval.score }}/{{ eval.max_score }})</span>
+        </div>
+      </div>
+
+      @if (eval.comment) {
+      <p class="eval-comment">💬 {{ eval.comment }}</p>
+      }
+
+      @if (eval.date) {
+      <p class="eval-date">📅 {{ eval.date | date: 'shortDate' }}</p>
+      }
+      }
+    </ion-card-content>
+  </ion-card>
+  }
+  } @else if (serviceLoading()) {
+  <div class="loading-container">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Chargement des évaluations...</p>
+  </div>
+  } @else {
+  <ion-card color="medium">
+    <ion-card-content>
+      <p>Aucune évaluation trouvée pour ce trimestre.</p>
+    </ion-card-content>
+  </ion-card>
+  }
+  }
+
+  <!-- MODE: BULLETIN -->
+  @if (viewMode() === 'bulletin') {
+  <ion-card class="bulletin-card">
+    <ion-card-header>
+      <ion-card-title>Bulletin du Trimestre {{ selectedTrimester() }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      @if (loading()) {
+      <div class="loading-container">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <p>Chargement du bulletin...</p>
+      </div>
+      } @else if (bulletin()) {
+      <div class="bulletin-info">
+        <div class="bulletin-header">
+          <div class="bulletin-photo">
+            <img
+              [src]="getImageUrl(bulletin()!.student_photo || bulletin()!.profile_photo) || 'assets/school_avatar/default.png'"
+              alt="Photo de {{ bulletin()!.student_name }}"
+              (error)="onImageError($event)"
+              loading="lazy"
+            />
+          </div>
+          <div>
+            <p class="eyebrow">Bulletin</p>
+            <h3>{{ bulletin()!.student_name || 'Élève' }}</h3>
+            <p class="muted">Trimestre {{ bulletin()!.trimester }}</p>
+          </div>
+          <div class="bulletin-meta">
+            <span class="stat-label">Moyenne générale</span>
+            <span class="stat-value">{{ bulletin()!.average.toFixed(2) }}/20</span>
+            <ion-progress-bar [value]="bulletin()!.average / 20"></ion-progress-bar>
+            @if (bulletin()!.total_coeffs !== undefined) {
+            <p class="muted">Total coefficients : {{ bulletin()!.total_coeffs }}</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <h3>Notes par matière</h3>
+      @for (grade of bulletin()!.grades; track grade.matiere_id) {
+      <div class="bulletin-grade-item">
+        <div class="grade-matiere">
+          <span class="matiere-name">{{ grade.matiere_name }}</span>
+          <span class="grade-count">Coef {{ grade.coefficient }}</span>
+        </div>
+        <ion-badge [color]="grade.count === 0 ? 'medium' : grade.average >= 12 ? 'success' : grade.average >= 10 ? 'warning' : 'danger'">
+          {{ grade.count === 0 ? grade.noteLabel : grade.average.toFixed(1) }}
+        </ion-badge>
+      </div>
+      }
+
+      @if (bulletin()!.comments) {
+      <div class="bulletin-comments">
+        <h4>Commentaires</h4>
+        <p>{{ bulletin()!.comments }}</p>
+      </div>
+      }
+      } @else {
+      <ion-card color="medium">
+        <ion-card-content>
+          <p>Sélectionnez un élève dans l'onglet Liste pour voir son bulletin.</p>
+        </ion-card-content>
+      </ion-card>
+      }
+    </ion-card-content>
+  </ion-card>
+  }
+
+  <!-- MODE: STATISTIQUES -->
+  @if (viewMode() === 'stats') {
+  <ion-grid>
+    <!-- Statistiques globales -->
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-card class="stat-card accent-1">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="stats-chart-outline"></ion-icon>
+              Moyenne générale
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="stat-value">{{ averageScore() }}/20</p>
+            <ion-progress-bar [value]="(+averageScore()) / 20"></ion-progress-bar>
+            <p class="muted">Pour {{ filteredEvaluations().length }} évaluations</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-card class="stat-card accent-2">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="people-outline"></ion-icon>
+              Élèves évalués
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="stat-value">{{ evaluationsByStudent().length }}</p>
+            <p class="muted">Dans ce trimestre</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Statistiques par matière -->
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="stats-matiere-card">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="book-outline"></ion-icon>
+              Performances par matière
+            </ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            @for (matiere of evaluationsByMatiere(); track matiere.matiereId) {
+            <div class="matiere-stat">
+              <div class="matiere-header">
+                <span class="matiere-name">
+                  {{ matiere.matiereName }}
+                  @if (matiere.coefficient > 1) {
+                  <ion-badge color="warning" size="small">Coef {{ matiere.coefficient }}</ion-badge>
+                  }
+                </span>
+                <ion-badge
+                  [color]="
+                    +matiere.average >= 16
+                      ? 'success'
+                      : +matiere.average >= 12
+                        ? 'warning'
+                        : +matiere.average >= 10
+                          ? 'medium'
+                          : 'danger'
+                  ">
+                  {{ matiere.average }}/20
+                </ion-badge>
+              </div>
+              <ion-progress-bar [value]="(+matiere.average) / 20"></ion-progress-bar>
+              <p class="muted">{{ matiere.evaluations.length }} notes</p>
+            </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  }
+</ion-content>

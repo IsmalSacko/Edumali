@@ -46,7 +46,13 @@
       @if (currentUser()) {
         <ion-button class="profile-trigger" fill="clear" (click)="openProfileMenu($event)">
           <ion-label class="username">{{ currentUser()?.username }}</ion-label>
-          <img [src]="avatar" alt="Profil" class="profile-img" />
+          <img 
+            [src]="avatar" 
+            alt="Profil" 
+            class="profile-img" 
+            (error)="onImageError($event)"
+            loading="lazy"
+          />
         </ion-button>
       }
       @else {

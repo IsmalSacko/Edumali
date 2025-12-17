@@ -45,7 +45,6 @@ import { environment } from '../../../environments/environment';
     IonHeader,
     IonToolbar,
     IonButtons,
-    //IonAvatar,
     IonButton,
     IonIcon,
     IonLabel,
@@ -75,8 +74,29 @@ export class NavPage implements OnInit {
   }
 
   get avatar() {
-    const photo = this.currentUser()?.profile_photo;
-    return photo?.startsWith('http') ? photo : photo ? 'assets/logo-edumali.png' : 'assets/logo-edumali.png';
+    const user = this.currentUser();
+    if (!user) return 'assets/logo-edumali.png';
+    
+    const photo = user.profile_photo;
+    
+    // Si pas de photo, retourner le logo par défaut
+    if (!photo) {
+      console.log('Pas de photo de profil');
+      return 'assets/logo-edumali.png';
+    }
+    
+    // Si URL complète, retourner directement
+    if (photo.startsWith('http')) {
+      return photo;
+    }
+    
+    // Si chemin relatif, ajouter l'URL de base API
+    if (photo.startsWith('/')) {
+      return `${environment.imageUrl}${photo.substring(1)}`;
+    }
+    
+    // Sinon, combiner avec imageUrl
+    return `${environment.imageUrl}${photo}`;
   }
 
   goToHome() {
@@ -109,6 +129,11 @@ export class NavPage implements OnInit {
   logout() {
     this.auth.logout();
     this.router.navigateByUrl('/login');
+  }
+
+  onImageError(event: any) {
+    // Fallback au logo en cas d'erreur de chargement
+    event.target.src = 'assets/logo-edumali.png';
   }
 
 }

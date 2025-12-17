@@ -3,7 +3,6 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   IonHeader,
   IonToolbar,
-  IonTitle,
   IonContent,
   IonGrid,
   IonRow,
@@ -57,9 +56,10 @@ import { AuthService } from '../services/auth/auth.service';
   ],
 })
 export class HomePage {
+
   private dashboardService = inject(DashboardService);
   private auth = inject(AuthService);
-
+  isAdmin = signal<boolean>(false);
   stats = signal<DashboardStats | null>(null);
   alerts = signal<Alert[]>([]);
   unreadCount = signal<number>(0);
@@ -77,7 +77,12 @@ export class HomePage {
   constructor() {
     addIcons({ statsChartOutline, reloadOutline, peopleOutline, schoolOutline, peopleCircleOutline, bookOutline, refreshOutline, alertCircleOutline, documentTextOutline, notificationsOutline, calendarOutline, closeCircleOutline, checkmarkCircleOutline, megaphoneOutline });
     this.loadStats();
+    //this.isAdmin.set(this.currentUser()?.role?.toString().toLowerCase() === 'admin');
+    // Ici on utilise une méthode asynchrone pour gérer les rôles qui pourraient nécessiter un appel API
+    this.getUserRole();
+    
   }
+
 
   private readonly ACTION_LABELS: Record<string, string> = {
     ATTENDANCE: 'Absences reportées',
@@ -204,13 +209,12 @@ export class HomePage {
       });
   }
 
-  private isAdmin(): boolean {
-    const role = this.currentUser()?.role;
-    if (!role) return false;
-    const r = String(role).toLowerCase();
-    return r === 'admin';
+ 
+  // Méthode pour vérifier et définir le rôle d'administrateur
+  async getUserRole() {
+    const adminRole = await this.auth.isAdmin();
+    this.isAdmin.set(adminRole);
   }
-
   // Mettre à jour le compteur d'alertes non-lues (uniquement personnelles)
   private updateUnreadCount(): void {
     const unread = this.personalAlerts().filter(a => !a.is_read).length;

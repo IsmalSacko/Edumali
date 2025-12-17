@@ -11,7 +11,7 @@ export class ApiService {
   private refreshPromise: Promise<string | null> | null = null;
 
   constructor(private auth: AuthService) {
-    this.axios = axios.create({ baseURL: environment.apiUrl });
+    this.axios = axios.create({ baseURL: environment.apiUrl }); 
 
     // Add access token to headers
     this.axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
@@ -86,7 +86,11 @@ export class ApiService {
 
   // wrappers
   get<T = any>(url: string, cfg?: AxiosRequestConfig) { return this.axios.get<T>(url, cfg); }
-  post<T = any>(url: string, data?: any, cfg?: AxiosRequestConfig) { return this.axios.post<T>(url, data, cfg); }
+
+  post<T = any>(url: string, data?: any, cfg?: AxiosRequestConfig) 
+  { 
+    return this.axios.post<T>(url, data, cfg); 
+  }
   put<T = any>(url: string, data?: any, cfg?: AxiosRequestConfig) { return this.axios.put<T>(url, data, cfg); }
   patch<T = any>(url: string, data?: any, cfg?: AxiosRequestConfig) { return this.axios.patch<T>(url, data, cfg); }
   delete<T = any>(url: string, cfg?: AxiosRequestConfig) { return this.axios.delete<T>(url, cfg); }

@@ -1,0 +1,362 @@
+// Header
+.evaluation-header {
+  margin-top: 50px;
+}
+
+.evaluation-header ion-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+
+}
+
+.evaluation-header ion-icon {
+  font-size: 1.4rem;
+}
+
+// Content
+.evaluation-page {
+  --padding-start: 0;
+  --padding-end: 0;
+  background: var(--ion-background-color);
+}
+
+// Cards génériques
+ion-card {
+  margin: 1rem;
+  border-radius: 12px;
+}
+
+// Filtres
+.filter-card ion-searchbar {
+  padding: 0.5rem;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+}
+
+// Loading
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+}
+
+// Groupe d'évaluations par élève
+.evaluation-group-card ion-card-header {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.evaluation-group-card ion-card-header:hover {
+  background: var(--ion-color-step-50);
+}
+
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.group-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.group-info ion-icon {
+  font-size: 2rem;
+}
+
+.group-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.group-average {
+  text-align: right;
+  min-width: 80px;
+}
+
+.avg-value {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.group-average ion-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+}
+
+// Items d'évaluation
+.evaluation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--ion-border-color);
+  gap: 1rem;
+}
+
+.evaluation-item:last-child {
+  border-bottom: none;
+}
+
+.eval-left {
+  flex: 1;
+}
+
+.eval-matiere {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.eval-matiere ion-icon {
+  color: var(--ion-color-primary);
+}
+
+.eval-type {
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+}
+
+.eval-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-direction: column;
+}
+
+.eval-right ion-badge {
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+.score-details {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+}
+
+.eval-comment {
+  margin: 0.5rem 0.75rem 0;
+  padding: 0.5rem;
+  background: var(--ion-color-step-50);
+  border-left: 3px solid var(--ion-color-warning);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--ion-text-color);
+}
+
+.eval-date {
+  margin: 0.25rem 0.75rem 0;
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+}
+
+// Bulletin
+.bulletin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.bulletin-photo img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 3px solid var(--ion-color-primary);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.bulletin-meta {
+  min-width: 200px;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: var(--ion-color-medium);
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin: 0.5rem 0;
+}
+
+.bulletin-meta ion-progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.bulletin-card h3 {
+  margin: 1.5rem 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+.bulletin-grade-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--ion-border-color);
+}
+
+.bulletin-grade-item:last-child {
+  border-bottom: none;
+}
+
+.grade-matiere {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.matiere-name {
+  font-weight: 500;
+  color: var(--ion-text-color);
+}
+
+.grade-count {
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+}
+
+.bulletin-grade-item ion-badge {
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+}
+
+.bulletin-comments {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--ion-color-step-50);
+  border-left: 4px solid var(--ion-color-info);
+  border-radius: 8px;
+}
+
+.bulletin-comments h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+.bulletin-comments p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ion-text-color);
+  line-height: 1.4;
+}
+
+// Statistiques
+.stat-card {
+  margin: 1rem 0;
+}
+
+.stat-card ion-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.stat-card ion-card-title ion-icon {
+  font-size: 1.2rem;
+}
+
+.stat-card .stat-value {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+}
+
+.stat-card ion-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  margin: 0.75rem 0;
+}
+
+.stat-card.accent-1 {
+  --ion-background-color: rgba(99, 180, 255, 0.1);
+}
+
+.stat-card.accent-2 {
+  --ion-background-color: rgba(102, 230, 178, 0.1);
+}
+
+.matiere-stat {
+  padding: 1rem;
+  border-bottom: 1px solid var(--ion-border-color);
+}
+
+.matiere-stat:last-child {
+  border-bottom: none;
+}
+
+.matiere-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.matiere-name {
+  font-weight: 500;
+  color: var(--ion-text-color);
+}
+
+.matiere-name ion-badge {
+  margin-left: 0.5rem;
+}
+
+.matiere-header ion-badge {
+  font-weight: 600;
+  padding: 0.4rem 0.6rem;
+}
+
+.matiere-stat ion-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+}
+
+// Utilitaires
+.muted {
+  margin: 0.25rem 0 0;
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ion-color-medium);
+  margin: 0 0 0.25rem;
+}

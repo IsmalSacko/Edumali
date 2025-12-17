@@ -35,7 +35,7 @@ import {
   searchOutline,
   alertCircleOutline,
 } from 'ionicons/icons';
-import { EmploisService } from '../../serivices/emplois-du-temps/emplois-service';
+import { EmploisService } from '../../services/emplois-du-temps/emplois-service';
 import { EmploiDuTemps, EmploiDuTempsItem, JOUR_SEMAINE_LABELS } from '../../models/emplois/emplois';
 import { ClasseService } from '../../services/classes/classe-service';
 import { ClasseListe } from '../../models/classe/classes';

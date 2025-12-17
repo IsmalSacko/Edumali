@@ -27,7 +27,7 @@ import {
   IonModal,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline } from 'ionicons/icons';
+import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline, refreshOutline } from 'ionicons/icons';
 import { ProfileService } from '../../../services/account/profile-service';
 import { ProfileInfo } from '../../../models/profile/profile';
 import { environment } from '../../../../environments/environment';
@@ -94,7 +94,7 @@ export class ProfileInfPage {
   });
 
   constructor() {
-    addIcons({ pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline });
+    addIcons({ pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline, refreshOutline });
     this.loadProfile();
   }
 
