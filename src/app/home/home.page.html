@@ -103,7 +103,7 @@
           </ion-card-header>
           <ion-card-content>
             <p class="stat-value">{{ stats()!.totalParents }}</p>
-            <p class="muted">Comptes connectés</p>
+            <p class="muted">Comptes enregistrés</p>
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -209,7 +209,7 @@
           <ion-icon [name]="section.icon" [color]="section.color"></ion-icon>
           <h3>{{ section.title }}</h3>
         </div>
-        @for (item of section.items; track item.id) {
+        @for (item of (showAllAlerts() ? section.items : section.items.slice(0,2)); track item.id) {
         <ion-item [lines]="'none'" [class.alert-item-read]="item.is_read" [class.alert-item-global]="item.is_global"
           class="alert-item">
           <ion-label>
@@ -254,7 +254,7 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      @for (alert of globalAlerts(); track alert.id) {
+      @for (alert of globalAlerts().slice(0,2); track alert.id) {
       <ion-item lines="none" class="alert-item alert-item-global">
         <ion-label>
           <strong>{{ alertLabel(alert.name) }}</strong>
