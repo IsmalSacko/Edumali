@@ -181,7 +181,8 @@
     </ion-row>
   </ion-grid>
 
-  @if (personalAlerts().length) {
+
+  @if (visibleAlerts.length) {
   <ion-card class="stat-card alerts-card">
     <ion-card-header>
       <ion-card-title class="alerts-title">
@@ -196,77 +197,47 @@
           <ion-badge color="danger" class="alerts-count-badge">{{ unreadCount() }}</ion-badge>
           }
         </span>
-        <span>Alertes personnalisées</span>
+        <span>Alertes</span>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      @if (personalAlerts().length === 0) {
-      <p class="muted">Aucune alerte personnelle pour le moment</p>
-      } @else {
-      @for (section of groupedAlerts(); track section.key) {
-      <div class="alerts-section">
-        <div class="section-header">
-          <ion-icon [name]="section.icon" [color]="section.color"></ion-icon>
-          <h3>{{ section.title }}</h3>
-        </div>
-        @for (item of (showAllAlerts() ? section.items : section.items.slice(0,2)); track item.id) {
-        <ion-item [lines]="'none'" [class.alert-item-read]="item.is_read" [class.alert-item-global]="item.is_global"
-          class="alert-item">
-          <ion-label>
-            <strong [style.opacity]="item.is_read ? '0.6' : '1'">{{ item.title }}</strong>
-            <p class="muted" [style.opacity]="item.is_read ? '0.5' : '0.8'">{{ item.desc }}</p>
-            @if (item.date) { <p class="date">{{ item.date | date:'shortDate' }}</p> }
-          </ion-label>
-          @if (item.is_global) {
-          <ion-badge color="warning" slot="end" size="small">Globale</ion-badge>
-          } @else if (!item.is_read) {
-          <ion-button slot="end" fill="clear" size="small" color="primary" (click)="markAsRead(item.id)"
-            [disabled]="markingAlertId() === item.id">
-            @if (markingAlertId() === item.id) {
-            <ion-spinner name="crescent" slot="icon-only"></ion-spinner>
-            } @else {
-            <ion-icon name="checkmark-circle-outline"></ion-icon>
-            }
-          </ion-button>
+      @for (alert of visibleAlerts; track alert.id) {
+      <ion-item [lines]="'none'" [class.alert-item-read]="alert.is_read" [class.alert-item-global]="alert.is_global"
+        class="alert-item">
+        <ion-label>
+          <strong [style.opacity]="alert.is_read ? '0.6' : '1'">{{ alertLabel(alert.name) }}</strong>
+          <p class="muted" [style.opacity]="alert.is_read ? '0.5' : '0.8'">{{ alert.description }}</p>
+          @if (alert.created_at) { <p class="date">{{ alert.created_at | date:'shortDate' }}</p> }
+        </ion-label>
+        @if (alert.is_global) {
+        <ion-badge color="warning" slot="end" size="small">Globale</ion-badge>
+        } @else if (!alert.is_read) {
+        <ion-button slot="end" fill="clear" size="small" color="primary" (click)="markAsRead(alert.id)"
+          [disabled]="markingAlertId() === alert.id">
+          @if (markingAlertId() === alert.id) {
+          <ion-spinner name="crescent" slot="icon-only"></ion-spinner>
           } @else {
-          <ion-badge color="success" slot="end" size="small">Lue</ion-badge>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
           }
-        </ion-item>
+        </ion-button>
+        } @else {
+        <ion-badge color="success" slot="end" size="small">Lue à {{ alert.read_at | date:'HH:mm' }} le {{ alert.read_at
+          | date:'dd/MM/yyyy' }}</ion-badge>
+
         }
-      </div>
+      </ion-item>
       }
       <div class="alerts-actions">
         <ion-button fill="clear" size="small" (click)="toggleAlerts()">
           @if (showAllAlerts()) { Masquer } @else { Voir toutes }
         </ion-button>
       </div>
-      }
     </ion-card-content>
   </ion-card>
   }
 
-  @if (globalAlerts().length) {
-  <ion-card class="stat-card actions-card">
-    <ion-card-header>
-      <ion-card-title>
-        <ion-icon name="megaphone-outline"></ion-icon>
-        Alertes globales
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      @for (alert of globalAlerts().slice(0,2); track alert.id) {
-      <ion-item lines="none" class="alert-item alert-item-global">
-        <ion-label>
-          <strong>{{ alertLabel(alert.name) }}</strong>
-          <p class="muted">{{ alert.description }}</p>
-          @if (alert.created_at) { <p class="date">{{ alert.created_at | date:'short' }}</p> }
-        </ion-label>
-        <ion-badge color="warning" slot="end" size="small">Globale</ion-badge>
-      </ion-item>
-      }
-    </ion-card-content>
-  </ion-card>
-  }
+
+  <!-- Section Alertes globales séparée supprimée : tout est fusionné dans visibleAlerts -->
 
   @if (personalActionLogs().length) {
   <ion-card class="stat-card actions-card">
@@ -286,6 +257,11 @@
         <p class="muted">{{ log.description }}</p>
       </div>
       }
+      <div class="alerts-actions">
+        <ion-button fill="clear" size="small" (click)="toggleActionLogs()">
+          @if (showAllActionLogs()) { Masquer } @else { Voir toutes }
+        </ion-button>
+      </div>
     </ion-card-content>
   </ion-card>
   }

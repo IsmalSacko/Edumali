@@ -239,3 +239,37 @@ ion-toolbar.navbar {
 	--ion-item-background: #b45309;
 	--ion-card-background: #d97706;
 }
+
+/* Overlays: ensure alerts/selects/popovers follow the active theme (minimal, global) */
+.alert-wrapper,
+ion-overlay-wrapper,
+.sc-ion-alert-ios,
+.select-popover,
+.sc-ion-popover-md,
+.sc-ion-select-md,
+.select-action-sheet,
+.action-sheet-wrapper {
+	--background: var(--ion-background-color) !important;
+	--color: var(--ion-text-color) !important;
+	background: var(--ion-background-color) !important;
+	color: var(--ion-text-color) !important;
+}
+
+/* Target inner cards/content so backdrop can remain semi-opaque */
+.alert-wrapper .alert-card,
+.sc-ion-alert-ios .alert-card,
+.select-popover .popover-content,
+.sc-ion-popover-md .popover-content,
+.sc-ion-select-md .select-content,
+.action-sheet-wrapper .action-sheet {
+	background: var(--ion-background-color) !important;
+	color: var(--ion-text-color) !important;
+	box-shadow: 0 12px 30px rgba(2, 6, 23, 0.12) !important;
+}
+
+/* Improve contrast for buttons/options inside overlays */
+.alert-wrapper .alert-button,
+.select-popover .option,
+.action-sheet-wrapper .action-sheet-button {
+	color: var(--ion-text-color) !important;
+}

@@ -64,7 +64,7 @@ export class EmploisService {
    */
   private buildParams(filters: FilterParams): string {
     const params = new URLSearchParams();
-    
+
     if (filters.classe) params.append('classe', filters.classe.toString());
     if (filters.matiere) params.append('matiere', filters.matiere.toString());
     if (filters.enseignant) params.append('enseignant', filters.enseignant.toString());
@@ -96,7 +96,7 @@ export class EmploisService {
    * Récupère l'emploi du temps d'une classe donnée
    */
   async getByClasse(classeId: number, filters?: Omit<FilterParams, 'classe'>): Promise<EmploiDuTemps> {
-    const url = this.emploisURL + this.buildParams({ 
+    const url = this.emploisURL + this.buildParams({
       classe: classeId,
       ordering: 'jour_semaine,heure_debut',
       ...(filters ?? {})
@@ -135,5 +135,9 @@ export class EmploisService {
 
   sortByStartTime(items: EmploiDuTemps) {
     return sortDayItems(items ?? []);
+  }
+
+  countEmplois(items: EmploiDuTemps): number {
+    return (items || []).length;
   }
 }

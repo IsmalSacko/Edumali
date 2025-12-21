@@ -1,0 +1,115 @@
+<ion-content class="student-list-container">
+
+  <!-- Hero section similaire à Classes & Matières -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <ion-icon name="people-outline" class="hero-icon"></ion-icon>
+      <div class="hero-text">
+        <p class="hero-eyebrow">Gestion pédagogique</p>
+        <h1>Liste des élèves</h1>
+        <p class="hero-description">Parcourez et gérez la liste des élèves de votre établissement</p>
+      </div>
+      <div class="hero__actions">
+        <ion-button fill="clear" size="small" (click)="reload()" class="refresh-btn">
+          <ion-icon slot="start" name="reload-outline"></ion-icon>
+          Rafraîchir
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Search intégré dans le hero -->
+    <div class="search-section">
+      <div class="search-bar">
+        <ion-searchbar animated placeholder="Rechercher un élève..." [value]="search()"
+          (ionInput)="onSearchChange($event)" inputmode="search"></ion-searchbar>
+      </div>
+
+      <div class="filter-item">
+        <label>Statut</label>
+        <ion-select placeholder="Tous" [value]="statusFilter()" (ionChange)="onStatusChange($event)"
+          interfaceOptions="{cssClass: 'themed-select-modal'}">
+          <ion-select-option [value]="null">Tous</ion-select-option>
+          <ion-select-option value="actif">Actif</ion-select-option>
+          <ion-select-option value="exclu">Exclu</ion-select-option>
+        </ion-select>
+      </div>
+
+      <div class="filter-item">
+        <label>Genre</label>
+        <ion-select placeholder="Tous" [value]="genderFilter()" (ionChange)="onGenderChange($event)"
+          interfaceOptions="{cssClass: 'themed-select-modal'}">
+          <ion-select-option [value]="null">Tous</ion-select-option>
+          <ion-select-option value="M">Masculin</ion-select-option>
+          <ion-select-option value="F">Féminin</ion-select-option>
+        </ion-select>
+      </div>
+
+      <div class="filter-item">
+        <label>Classe</label>
+        <ion-select placeholder="Toutes les classes" [value]="classeFilter()" (ionChange)="onClasseChange($event)"
+          interfaceOptions="{cssClass: 'themed-select-modal'}">
+          <ion-select-option [value]="null">Toutes les classes</ion-select-option>
+          @for (c of classes(); track c.id) {
+          <ion-select-option [value]="c.id">{{ c.nom }}</ion-select-option>
+          }
+        </ion-select>
+      </div>
+
+      <div class="filter-item">
+        <label>Matricule</label>
+        <ion-input placeholder="Matricule" [value]="matriculeFilter()"
+          (ionInput)="onMatriculeChange($event)"></ion-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="student-list-grid">
+    @for (row of studentRows(); track row[0]?.id) {
+    <div class="student-row">
+      @for (eleve of row; track eleve.id) {
+      <div class="student-card">
+
+        <ion-avatar class="student-avatar">
+          <img [src]="eleve.user.profile_photo ? (apiBase + eleve.user.profile_photo) : 'assets/avatar/default.png'"
+            alt="Avatar" />
+        </ion-avatar>
+
+        <div class="student-info">
+          <div class="student-name">
+            {{ eleve.user.first_name }} {{ eleve.user.last_name }}
+          </div>
+
+          <div class="student-matricule">
+            Matricule : <b>{{ eleve.matricule }}</b>
+          </div>
+
+          <div class="student-details">
+            <span>
+              <ion-icon name="person-outline"></ion-icon>
+              {{ eleve.gender === 'M' ? 'Masculin' : 'Féminin' }}
+            </span>
+
+            <span>
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{ eleve.date_of_birth | date:'dd/MM/yyyy' }}
+            </span>
+
+            <span *ngIf="eleve.classe">
+              <ion-icon name="school-outline"></ion-icon>
+              {{ eleve.classe.nom }}
+              ({{ eleve.classe.annee_display || eleve.classe.annee }})
+            </span>
+          </div>
+        </div>
+
+        <ion-badge class="status-badge" [ngClass]="eleve.status">
+          {{ eleve.status }}
+        </ion-badge>
+
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+</ion-content>

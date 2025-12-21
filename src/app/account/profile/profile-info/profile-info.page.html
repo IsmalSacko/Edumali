@@ -155,25 +155,22 @@
 
 
 
-              @if (personalActionLogs().length > 0) {
               <div class="recent-actions">
-                <h4>Actions récentes</h4>
-                @for (action of personalActionLogs().slice(0,2); track action.id) {
-                <div class="action-item">
-                  <div class="action-header">
-                    <strong>{{ actionLabel(action.action) }}</strong>
-                    <span class="action-time"> {{ action.timestamp | date:'short' }}</span>
-                  </div>
-                  @if (action.description) {
-                  <p class="action-desc">{{ action.description }} par : {{ action.user_info?.first_name }} {{
-                    action.user_info?.last_name }}</p>
+                <h4>Alertes récentes</h4>
+                <ion-list lines="none">
+                  @for (alert of getAlerts().slice(0,2); track alert.id) {
+                  <ion-item>
+                    <ion-icon slot="start" name="alert-circle-outline" color="warning"></ion-icon>
+                    <ion-label>
+                      <h3>{{ alert.description }}</h3>
+                      @if (alert.name) {
+                      <p>Type: {{ alert.name }}</p>
+                      }
+                    </ion-label>
+                  </ion-item>
                   }
-                </div>
-                }
+                </ion-list>
               </div>
-              } @else {
-              <p class="no-activity">Aucune activité enregistrée</p>
-              }
             </ion-card-content>
           </ion-card>
         </ion-col>

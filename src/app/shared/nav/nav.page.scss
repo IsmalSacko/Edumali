@@ -12,6 +12,8 @@
 	border-bottom: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
 }
 
+
+
 .brand {
 	gap: 10px;
 	align-items: center;
@@ -23,6 +25,7 @@
 	font-size: 20px;
 	font-weight: 700;
 }
+
 .brand-text {
 	display: flex;
 	flex-direction: column;
@@ -66,14 +69,37 @@
 	color: var(--ion-color-primary);
 }
 
-.nav-icon.home { color: var(--ion-color-primary); }
-.nav-icon.students { color: var(--ion-color-secondary); }
-.nav-icon.teachers { color: var(--ion-color-primary); }
-.nav-icon.classes { color: var(--ion-color-secondary); }
-.nav-icon.timetable { color: var(--ion-color-primary); }
-.nav-icon.evaluations { color: var(--ion-color-secondary); }
-.nav-icon.stats { color: var(--ion-color-primary); }
-.nav-icon.settings { color: var(--ion-color-secondary); }
+.nav-icon.home {
+	color: var(--ion-color-primary);
+}
+
+.nav-icon.students {
+	color: var(--ion-color-secondary);
+}
+
+.nav-icon.teachers {
+	color: var(--ion-color-primary);
+}
+
+.nav-icon.classes {
+	color: var(--ion-color-secondary);
+}
+
+.nav-icon.timetable {
+	color: var(--ion-color-primary);
+}
+
+.nav-icon.evaluations {
+	color: var(--ion-color-secondary);
+}
+
+.nav-icon.stats {
+	color: var(--ion-color-primary);
+}
+
+.nav-icon.settings {
+	color: var(--ion-color-secondary);
+}
 
 .nav-links ion-button.active .nav-icon {
 	color: inherit;
@@ -84,7 +110,7 @@
 	height: 18px;
 	border-radius: 4px;
 	object-fit: cover;
-    margin-right: 12px;
+	margin-right: 12px;
 }
 
 .user-actions {
@@ -106,18 +132,19 @@
 	border-radius: 50%;
 	object-fit: cover;
 	border: 1px solid color-mix(in srgb, var(--ion-text-color) 20%, transparent);
-    margin-left: 4px;
+	margin-left: 4px;
 
 }
 
 .username {
 	font-weight: 600;
-    color: var(--ion-text-color);
+	color: var(--ion-text-color);
 }
 
 .mobile-menu {
 	display: inline-flex;
 	--color: var(--ion-text-color);
+
 	ion-icon {
 		color: var(--ion-text-color);
 	}
@@ -135,27 +162,33 @@
 
 /* Variantes de couleur selon le thème */
 .theme-light .theme-icon {
-	color: #fbbf24 !important; /* Jaune pour light */
+	color: #fbbf24 !important;
+	/* Jaune pour light */
 }
 
 .theme-dark .theme-icon {
-	color: #22d3ee !important; /* Cyan pour dark */
+	color: #22d3ee !important;
+	/* Cyan pour dark */
 }
 
 .theme-blue .theme-icon {
-	color: #3b82f6 !important; /* Bleu pour blue */
+	color: #3b82f6 !important;
+	/* Bleu pour blue */
 }
 
 .theme-green .theme-icon {
-	color: #10b981 !important; /* Vert pour green */
+	color: #10b981 !important;
+	/* Vert pour green */
 }
 
 .theme-purple .theme-icon {
-	color: #a855f7 !important; /* Violet pour purple */
+	color: #a855f7 !important;
+	/* Violet pour purple */
 }
 
 .theme-orange .theme-icon {
-	color: #f97316 !important; /* Orange pour orange */
+	color: #f97316 !important;
+	/* Orange pour orange */
 }
 
 .nav-links {
@@ -166,6 +199,7 @@
 	.nav-links {
 		display: inline-flex;
 	}
+
 	.mobile-menu {
 		display: none;
 	}

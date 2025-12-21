@@ -1,19 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import {
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonAvatar,
-  IonButton,
-  IonIcon,
-  IonLabel,
-  IonPopover,
-  IonList,
-  IonItem,
-  IonContent,
-} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonButtons, IonAvatar, IonButton, IonIcon, IonLabel, IonPopover, IonList, IonItem, IonContent, IonTabButton, IonBadge } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   menuOutline,
@@ -33,6 +21,7 @@ import {
 import { AuthService } from '../../services/auth/auth.service';
 import { ThemeService } from '../../services/theme.service';
 import { environment } from '../../../environments/environment';
+import { EmploisService } from 'src/app/services/emplois-du-temps/emplois-service';
 
 @Component({
   selector: 'app-nav',
@@ -52,16 +41,20 @@ import { environment } from '../../../environments/environment';
     IonList,
     IonItem,
     IonContent,
+    IonBadge
   ]
 })
 export class NavPage implements OnInit {
+
   private auth = inject(AuthService);
+  private EmploiService = inject(EmploisService);
   private router = inject(Router);
   themeService = inject(ThemeService);
 
   currentUser = this.auth.user;
   profileMenuOpen = signal<boolean>(false);
   themeMenuOpen = signal<boolean>(false);
+  EmploisCount = signal<number>(0);
   profilePopoverEvent: Event | null = null;
   themePopoverEvent: Event | null = null;
 
@@ -70,31 +63,31 @@ export class NavPage implements OnInit {
   }
 
   async ngOnInit() {
-    // Rien à faire : le signal est déjà géré globalement par AuthService
+    this.loadEmploisCount();
   }
 
   get avatar() {
     const user = this.currentUser();
     if (!user) return 'assets/logo-edumali.png';
-    
+
     const photo = user.profile_photo;
-    
+
     // Si pas de photo, retourner le logo par défaut
     if (!photo) {
       console.log('Pas de photo de profil');
       return 'assets/logo-edumali.png';
     }
-    
+
     // Si URL complète, retourner directement
     if (photo.startsWith('http')) {
       return photo;
     }
-    
+
     // Si chemin relatif, ajouter l'URL de base API
     if (photo.startsWith('/')) {
       return `${environment.imageUrl}${photo.substring(1)}`;
     }
-    
+
     // Sinon, combiner avec imageUrl
     return `${environment.imageUrl}${photo}`;
   }
@@ -134,6 +127,15 @@ export class NavPage implements OnInit {
   onImageError(event: any) {
     // Fallback au logo en cas d'erreur de chargement
     event.target.src = 'assets/logo-edumali.png';
+  }
+
+  navigate(path: string) {
+    this.router.navigateByUrl(path);
+  }
+
+  async loadEmploisCount() {
+    const emplois = await this.EmploiService.getAll();
+    this.EmploisCount.set(this.EmploiService.countEmplois(emplois));
   }
 
 }

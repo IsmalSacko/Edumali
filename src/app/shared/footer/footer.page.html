@@ -1,54 +1,52 @@
 <footer class="footer-bar">
-  <nav class="footer-nav-bar">
-    <button class="footer-btn" (click)="navigate('/home')">
+  <nav class="footer-nav-bar compact">
+    <button class="footer-btn" (click)="navigate('/home')" aria-label="Accueil">
       <ion-icon name="home-outline"></ion-icon>
-      <span>Accueil</span>
+      <span class="sr-only">Accueil</span>
     </button>
-    <button class="footer-btn" (click)="navigate('/students')">
+
+    <button class="footer-btn" (click)="navigate('/students')" aria-label="Élèves">
       <ion-icon name="people-outline"></ion-icon>
-      <span>Élèves</span>
+      <span class="sr-only">Élèves</span>
     </button>
-    <button class="footer-btn" (click)="navigate('/classes')">
+
+    <button class="footer-btn" (click)="navigate('/classes')" aria-label="Cours">
       <ion-icon name="school-outline"></ion-icon>
-      <span>Cours</span>
+      <span class="sr-only">Cours</span>
     </button>
-    <button class="footer-btn" (click)="navigate('/emplois-du-temps')">
-      <ion-icon name="calendar-outline"></ion-icon>
-      <span>Emploi</span>
+
+    <button class="footer-btn center" (click)="navigate('/emplois-du-temps')" aria-label="Emploi">
+      <div class="icon-wrap">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <ion-badge class="footer-badge" color="danger">{{ EmploisCount() }}</ion-badge>
+      </div>
+      <span class="sr-only">Emploi</span>
     </button>
-    <button class="footer-btn" (click)="navigate('/evaluations')">
+
+    <button class="footer-btn" (click)="navigate('/evaluations')" aria-label="Évaluations">
       <ion-icon name="clipboard-outline"></ion-icon>
-      <span>Évals</span>
+      <span class="sr-only">Évals</span>
     </button>
-    <button id="footer-theme-trigger" class="footer-btn theme-btn" [class]="'theme-' + themeService.currentTheme()" (click)="openThemeMenu($event)" title="Changer le thème">
-      <ion-icon name="moon-outline" class="theme-icon"></ion-icon>
-      <span>Thème</span>
-    </button>
-    <button class="footer-btn" (click)="navigate('/settings')">
+
+    <button class="footer-btn" (click)="navigate('/settings')" aria-label="Paramètres">
       <ion-icon name="settings-outline"></ion-icon>
-      <span>Param</span>
+      <span class="sr-only">Param</span>
     </button>
   </nav>
 </footer>
 
 <!-- Popover thème (footer) -->
-<ion-popover
-  trigger="footer-theme-trigger"
-  triggerAction="click"
-  side="top"
-  alignment="center"
-  dismissOnSelect="true"
->
+<ion-popover trigger="footer-theme-trigger" triggerAction="click" side="top" alignment="center" dismissOnSelect="true">
   <ng-template>
     <ion-content>
       <ion-list lines="none">
         @for (theme of themeService.availableThemes; track theme.name) {
-          <ion-item button (click)="selectTheme(theme.name)" [class.active]="themeService.currentTheme() === theme.name">
-            <ion-label>{{ theme.label }}</ion-label>
-            @if (themeService.currentTheme() === theme.name) {
-              <ion-icon slot="end" name="checkmark-outline"></ion-icon>
-            }
-          </ion-item>
+        <ion-item button (click)="selectTheme(theme.name)" [class.active]="themeService.currentTheme() === theme.name">
+          <ion-label>{{ theme.label }}</ion-label>
+          @if (themeService.currentTheme() === theme.name) {
+          <ion-icon slot="end" name="checkmark-outline"></ion-icon>
+          }
+        </ion-item>
         }
       </ion-list>
     </ion-content>

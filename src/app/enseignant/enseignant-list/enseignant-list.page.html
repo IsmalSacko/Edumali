@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Liste des enseignants</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>Rafraîchir</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Liste des enseignants</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <p class="hero-eyebrow">GESTION PÉDAGOGIQUE</p>
+        <h1>Liste des enseignants</h1>
+        <p class="hero-description">Parcourez et gérez les enseignants enregistrés.</p>
+      </div>
+    </div>
+
+    <ion-list>
+      @for (item of enseignants(); track item.id) {
+      <ion-card class="teacher-card animate-in">
+        <ion-item lines="none">
+          <ion-avatar class="enseignant-avatar" slot="start">
+
+            @if(item.user.profile_photo){
+            <img [src]="apiBase + (item.user.profile_photo )" alt="Avatar" />
+            }
+            @else {
+            <img src="assets/avatar/default.png" alt="Avatar par défaut" />
+            }
+          </ion-avatar>
+          <ion-label>
+            <h2 class="teacher-name">{{ item.user.first_name }} {{ item.user.last_name }}</h2>
+            <div class="muted">{{ item.specialty || '—' }}</div>
+
+            <div class="summary-row">
+              <div class="classes-count">Classes : <strong>{{ (item.classes || []).length }}</strong></div>
+              <div class="eleves-count">Élèves total : <strong>{{ totalStudents(item) }}</strong></div>
+            </div>
+
+            <div class="classes-list">
+              @for (c of (item.classes || []); track c.id) {
+              <details class="class-card">
+                <summary>
+                  <div class="class-summary">
+                    <div class="class-name">{{ c.nom }} <span class="anno">{{ c.annee_display || ('Année ' + c.annee)
+                        }}</span></div>
+                    <div class="class-meta">
+                      <span class="badge">{{ c.nombre_eleves || (c.eleves.length || 0) }} élèves</span>
+                      <span class="badge">{{ c.nombre_matieres || (c.matieres.length || 0) }} Matières</span>
+                    </div>
+                  </div>
+                </summary>
+
+                <div class="class-body">
+                  <div class="class-section">
+                    <h4>Matières</h4>
+                    <div class="chips">
+                      @for (m of (c.matieres || []); track m.id) {
+                      <ion-chip color="light"><ion-label>{{ m.nom }}</ion-label></ion-chip>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="class-section">
+                    <h4>Élèves ({{ c.nombre_eleves || (c.eleves?.length || 0) }})</h4>
+                    <ul>
+                      @for (e of (c.eleves || []); track e.id) {
+                      <li>{{ e.full_name || '—' }} — {{ e.matricule || '—' }}</li>
+                      }
+                    </ul>
+                  </div>
+
+                  <div class="class-section">
+                    <h4>Emplois du temps</h4>
+                    <ul>
+                      @for (t of (c.emplois_du_temps || []); track t.id) {
+                      <li>{{ t.jour_semaine_display }} : {{ t.matiere.nom }} ({{ t.heure_debut.slice(0,5) }} - {{
+                        t.heure_fin.slice(0,5) }})</li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              </details>
+              }
+            </div>
+          </ion-label>
+
+          <div slot="end" class="teacher-contact">
+            <div class="contact-line"><ion-icon name="call-outline"></ion-icon> {{ item.user.phone_number || '—' }}
+            </div>
+            <div class="contact-line"><ion-icon name="mail-outline"></ion-icon> {{ item.user.email || '—' }}</div>
+          </div>
+        </ion-item>
+      </ion-card>
+      }
+    </ion-list>
+
+  </div>
+</ion-content>

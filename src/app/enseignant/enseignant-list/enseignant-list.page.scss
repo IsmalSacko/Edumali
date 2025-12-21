@@ -1,0 +1,168 @@
+/* Styles modernes et animations pour la liste des enseignants */
+.hero-section {
+    padding: 18px 16px;
+    background: linear-gradient(180deg, rgba(var(--ion-background-color-rgb), 0.02), transparent 60%);
+    border-bottom: 1px solid color-mix(in srgb, var(--ion-border-color) 8%, transparent);
+}
+
+
+
+.teacher-card {
+    margin: 12px 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 240ms cubic-bezier(.2, .9, .2, 1), box-shadow 240ms;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+    background: linear-gradient(180deg, var(--ion-card-background), color-mix(in srgb, var(--ion-card-background) 96%, transparent));
+}
+
+.teacher-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(2, 6, 23, 0.12);
+}
+
+.animate-in {
+    animation: slideUpFade .42s both;
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.enseignant-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.teacher-name {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+}
+
+.muted {
+    color: color-mix(in srgb, var(--ion-text-color) 65%, transparent);
+    font-size: 0.9rem;
+}
+
+.summary-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    align-items: center;
+}
+
+.summary-row .badge,
+.badge {
+    background: color-mix(in srgb, var(--ion-color-primary) 8%, var(--ion-background-color));
+    color: var(--ion-color-primary);
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.classes-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.class-card {
+    border-radius: 10px;
+    padding: 8px 10px;
+    background: color-mix(in srgb, var(--ion-background-color) 98%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
+}
+
+.class-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.class-name {
+    font-weight: 700;
+}
+
+.anno {
+    font-weight: 600;
+    color: color-mix(in srgb, var(--ion-text-color) 60%, transparent);
+    margin-left: 8px;
+    font-size: 0.9rem;
+}
+
+.class-body {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed color-mix(in srgb, var(--ion-border-color) 30%, transparent);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.class-section h4 {
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+}
+
+.chips ion-chip {
+    margin: 4px 6px 4px 0;
+}
+
+.class-body ul {
+    margin: 0;
+    padding-left: 18px;
+    color: color-mix(in srgb, var(--ion-text-color) 70%, transparent);
+}
+
+.teacher-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+    min-width: 140px;
+}
+
+.contact-line {
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--ion-text-color) 72%, transparent);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* details/summary small animation */
+.class-card summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.class-card[open] {
+    background: color-mix(in srgb, var(--ion-card-background) 98%, transparent);
+}
+
+.class-card summary::-webkit-details-marker {
+    display: none;
+}
+
+@media (max-width:900px) {
+    .class-body {
+        grid-template-columns: 1fr;
+    }
+
+    .teacher-contact {
+        align-items: flex-start;
+    }
+}

@@ -1,3 +1,5 @@
+// (supprimé, doit être dans la classe)
+// ...existing code...
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -27,13 +29,13 @@ import {
   IonModal,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline, refreshOutline } from 'ionicons/icons';
+import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline, refreshOutline, alertCircleOutline } from 'ionicons/icons';
 import { ProfileService } from '../../../services/account/profile-service';
 import { ProfileInfo } from '../../../models/profile/profile';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth/auth.service';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
-import { ActionLog } from '../../../models/altert/alert';
+import { ActionLog, Alert } from '../../../models/altert/alert';
 
 @Component({
   selector: 'app-profile-inf',
@@ -68,6 +70,9 @@ import { ActionLog } from '../../../models/altert/alert';
   ]
 })
 export class ProfileInfPage {
+  trackByAlertId(index: number, alert: Alert): number | undefined {
+    return alert.id;
+  }
   private fb = inject(FormBuilder);
   private profileService = inject(ProfileService);
   private auth = inject(AuthService);
@@ -79,6 +84,9 @@ export class ProfileInfPage {
   loading = signal<boolean>(true);
   editOpen = signal<boolean>(false);
   passwordOpen = signal<boolean>(false);
+
+  // Ajout d'un signal pour stocker les alertes dynamiques
+  alerts = signal<Alert[]>([]);
 
   profileForm = this.fb.nonNullable.group({
     first_name: ['', Validators.required],
@@ -94,8 +102,33 @@ export class ProfileInfPage {
   });
 
   constructor() {
-    addIcons({ pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline, refreshOutline });
+    addIcons({
+      pencilOutline,
+      lockClosedOutline,
+      callOutline,
+      mailOutline,
+      personOutline,
+      calendarOutline,
+      checkmarkCircleOutline,
+      timeOutline,
+      refreshOutline, alertCircleOutline
+    });
     this.loadProfile();
+    this.loadAlerts();
+  }
+
+  async loadAlerts() {
+    try {
+      const alerts = await this.dashboardService.getAlerts();
+      this.alerts.set(alerts);
+    } catch (err) {
+      console.error('Erreur lors du chargement des alertes :', err);
+      this.alerts.set([]);
+    }
+  }
+
+  getAlerts(): Alert[] {
+    return this.alerts() ?? [];
   }
 
 
@@ -130,27 +163,11 @@ export class ProfileInfPage {
   }
 
   personalActionLogs(): ActionLog[] {
-    // Les données viennent déjà filtrées de /dashboard/alerts/me/
-    // On retourne tout simplement les recentActions
-    return this.recentActions() ?? [];
+    return this.recentActions() || [];
   }
 
-  private readonly ACTION_LABELS: Record<string, string> = {
-    ATTENDANCE: 'Absences reportées',
-    LOW_GRADE: 'Mauvaises notes',
-    GRADE: 'Nouvelle note ajoutée',
-    SCHOOL_EVENT: 'Nouvel événement scolaire',
-    EXAM_SCHEDULE: 'Calendrier des examens publié',
-    GREVE: 'Annonce de grève',
-    TEACHER_MISSING: "Absence d'enseignant",
-    PAYMENT: 'Paiement effectué',
-    GENERAL: 'Alerte générale',
-  };
 
-  actionLabel(code: string | null | undefined): string {
-    if (!code) return '';
-    return this.ACTION_LABELS[code] ?? code;
-  }
+  // Plus besoin de méthode actionLabel, la description vient de l'API
 
   getImageUrl(photo?: string | null): string | null {
     if (!photo) return null;
