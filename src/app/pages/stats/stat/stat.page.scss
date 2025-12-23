@@ -1,0 +1,248 @@
+/* ===============================
+   PAGE GLOBALE
+================================ */
+.stat-page {
+    --background: #f5f6fa;
+    background: #f5f6fa;
+}
+
+.container {
+    padding: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ===============================
+   TOP ROW
+================================ */
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.title h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.date-btn {
+    --border-radius: 8px;
+}
+
+/* ===============================
+   KPI GRID
+================================ */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    padding: 16px;
+    border-radius: 14px;
+}
+
+.kpi-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kpi-icon {
+    font-size: 28px;
+    color: var(--ion-color-primary);
+}
+
+.kpi-value {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.kpi-label {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.kpi-right {
+    margin-top: 8px;
+}
+
+.kpi-trend {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.kpi-trend.positive {
+    color: #16a34a;
+}
+
+.kpi-trend.negative {
+    color: #dc2626;
+}
+
+.kpi-trend.neutral {
+    color: #9ca3af;
+}
+
+/* ===============================
+   CHARTS GRID
+================================ */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 992px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===============================
+   CHART CARDS
+================================ */
+.chart-card {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.chart-large {
+    min-height: 360px;
+}
+
+.compact {
+    min-height: 360px;
+}
+
+ion-card-header {
+    padding-bottom: 0;
+}
+
+ion-card-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* ===============================
+   CANVAS (ÉVALUATIONS)
+================================ */
+.canvas-content {
+    height: 100%;
+}
+
+.canvas-frame {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+.canvasjs-evals {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ===============================
+   DONUT CHART (RÉPARTITION)
+================================ */
+.donut-content {
+    padding: 12px;
+}
+
+.donut-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.donut-svg {
+    width: 100%;
+    max-width: 260px;
+    margin-bottom: 12px;
+}
+
+.circular-chart {
+    width: 100%;
+    height: auto;
+}
+
+/* ===============================
+   DONUT LEGEND
+================================ */
+.donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    width: 100%;
+}
+
+.donut-legend .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.donut-legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* ===============================
+   LIST SECTION
+================================ */
+.list-section ion-card {
+    border-radius: 14px;
+}
+
+.event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.event-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.event-list li:last-child {
+    border-bottom: none;
+}
+
+.event-title {
+    font-weight: 500;
+}
+
+.event-date {
+    font-size: 13px;
+    color: #6b7280;
+}

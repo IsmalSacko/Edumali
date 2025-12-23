@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
   IonSearchbar,
   IonSelect,
   IonSelectOption,
@@ -13,7 +10,6 @@ import {
   IonIcon,
   IonCard,
   IonCardHeader,
-  IonCardTitle,
   IonCardContent,
   IonBadge,
   IonSpinner,
@@ -35,10 +31,10 @@ import {
   searchOutline,
   alertCircleOutline,
 } from 'ionicons/icons';
-import { EmploisService } from '../../services/emplois-du-temps/emplois-service';
-import { EmploiDuTemps, EmploiDuTempsItem, JOUR_SEMAINE_LABELS } from '../../models/emplois/emplois';
-import { ClasseService } from '../../services/classes/classe-service';
-import { ClasseListe } from '../../models/classe/classes';
+import { EmploisService } from '../../../services/emplois-du-temps/emplois-service';
+import { EmploiDuTemps, EmploiDuTempsItem, JOUR_SEMAINE_LABELS } from '../../../models/emplois/emplois';
+import { ClasseService } from '../../../services/classes/classe-service';
+import { ClasseListe } from '../../../models/classe/classes';
 
 @Component({
   selector: 'app-emplois-du-temps',
@@ -140,17 +136,17 @@ export class EmploisDuTempsPage implements OnInit {
       const classeId = this.selectedClasse();
       const jour = this.selectedDay();
       const searchTerm = this.search();
-      
+
       // Construire les filtres pour l'API
       const filters: any = {};
       if (jour) filters.jour_semaine = jour;
       if (searchTerm) filters.search = searchTerm;
-      
+
       // Appeler l'API avec filtrage côté backend
       const data = classeId
         ? await this.emploisService.getByClasse(classeId, filters)
         : await this.emploisService.getAll(filters);
-      
+
       this.emplois.set(data);
     } catch (err: any) {
       this.error.set(err?.message || 'Erreur lors du chargement de l\'emploi du temps');

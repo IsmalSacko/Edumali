@@ -40,9 +40,9 @@ import {
   documentTextOutline,
   peopleOutline
 } from 'ionicons/icons';
-import { EvaluationService } from '../services/evaluation/evaluation.service';
-import { AuthService } from '../services/auth/auth.service';
-import { Evaluation, Bulletin } from '../models/student-info/model';
+import { EvaluationService } from '../../services/evaluation/evaluation.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { Evaluation, Bulletin } from '../../models/student-info/model';
 
 type ViewMode = 'list' | 'bulletin' | 'stats';
 

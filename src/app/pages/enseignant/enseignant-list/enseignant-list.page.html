@@ -70,7 +70,7 @@
                   </div>
 
                   <div class="class-section">
-                    <h4>Élèves ({{ c.nombre_eleves || (c.eleves?.length || 0) }})</h4>
+                    <h4>Élèves ({{ c.nombre_eleves || (c.eleves.length || 0) }})</h4>
                     <ul>
                       @for (e of (c.eleves || []); track e.id) {
                       <li>{{ e.full_name || '—' }} — {{ e.matricule || '—' }}</li>

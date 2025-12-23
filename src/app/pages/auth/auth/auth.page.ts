@@ -4,8 +4,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import {
   IonContent,
-  IonHeader,
-  IonToolbar,
   IonButtons,
   IonButton,
   IonCard,
@@ -21,7 +19,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { eyeOutline, eyeOffOutline, logInOutline, shieldCheckmarkOutline } from 'ionicons/icons';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -33,8 +31,8 @@ import { AuthService } from '../../services/auth/auth.service';
     RouterModule,
     ReactiveFormsModule,
     IonContent,
-   // IonHeader,
-   // IonToolbar,
+    // IonHeader,
+    // IonToolbar,
     IonButtons,
     IonButton,
     IonCard,
@@ -72,7 +70,7 @@ export class AuthPage implements OnInit {
     // Attendre que l'utilisateur soit chargé si un token existe
     // Attendre un peu pour que le signal soit mis à jour
     await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     // Si l'utilisateur est déjà connecté, rediriger vers l'URL de retour ou l'accueil
     if (this.auth.user()) {
       const raw = this.route.snapshot.queryParamMap.get('returnUrl') || '/home';

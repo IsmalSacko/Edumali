@@ -27,10 +27,10 @@ import {
   statsChartOutline, refreshOutline, reloadOutline, alertCircleOutline, documentTextOutline, notificationsOutline,
   calendarOutline, closeCircleOutline, checkmarkCircleOutline, megaphoneOutline
 } from 'ionicons/icons';
-import { DashboardService } from '../services/dashboard/dashboard.service';
-import { ActionLog, Alert, SchoolProfile } from '../models/altert/alert';
-import { AuthService } from '../services/auth/auth.service';
-import { DashboardStats } from '../models/dashboard/dashboard';
+import { DashboardService } from '../../services/dashboard/dashboard.service';
+import { ActionLog, Alert, SchoolProfile } from '../../models/altert/alert';
+import { AuthService } from '../../services/auth/auth.service';
+import { DashboardStats } from '../../models/dashboard/dashboard';
 
 @Component({
   selector: 'app-home',

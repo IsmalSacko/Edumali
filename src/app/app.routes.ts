@@ -1,14 +1,15 @@
 import { Routes } from '@angular/router';
-import { HomePage } from './home/home.page';
+import { HomePage } from './pages/home/home.page';
 import { NavPage } from './shared/nav/nav.page';
-import { AuthPage } from './auth/auth/auth.page';
+import { AuthPage } from './pages/auth/auth/auth.page';
 import { authGuard } from './guard/auth.guard';
-import { ProfileInfPage } from './account/profile/profile-info/profile-info.page';
-import { ClassePage } from './classe/classe/classe.page';
-import { EmploisDuTempsPage } from './empplois-du-temps/emplois-du-temps/emplois-du-temps.page';
-import { EvaluationPage } from './evaluation/evaluation.page';
-import { StudentListPage } from './student/student-list/student-list.page';
-import { EnseignantListPage } from './enseignant/enseignant-list/enseignant-list.page';
+import { ProfileInfPage } from './pages/account/profile/profile-info/profile-info.page';
+import { ClassePage } from './pages/classe/classe/classe.page';
+import { EmploisDuTempsPage } from './pages/empplois-du-temps/emplois-du-temps/emplois-du-temps.page';
+import { EvaluationPage } from './pages/evaluation/evaluation.page';
+import { StudentListPage } from './pages/student/student-list/student-list.page';
+import { EnseignantListPage } from './pages/enseignant/enseignant-list/enseignant-list.page';
+import { StatPage } from './pages/stats/stat/stat.page';
 
 export const routes: Routes = [
   { path: 'home', component: HomePage },
@@ -20,7 +21,11 @@ export const routes: Routes = [
   { path: 'emplois-du-temps', component: EmploisDuTempsPage, canActivate: [] },
   { path: 'evaluations', component: EvaluationPage, canActivate: [] },
   { path: 'students', component: StudentListPage },
-  { path: 'teachers', component: EnseignantListPage }
+  { path: 'teachers', component: EnseignantListPage },
+  {
+    path: 'stats', component: StatPage, canActivate: []
+  }
+
 
 
 

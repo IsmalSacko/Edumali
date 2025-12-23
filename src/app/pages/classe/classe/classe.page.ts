@@ -31,8 +31,8 @@ import {
   homeOutline,
   checkmarkCircleOutline,
 } from 'ionicons/icons';
-import { ClasseService } from '../../services/classes/classe-service';
-import { Classe, ClasseListe, Cycle } from '../../models/classe/classes';
+import { ClasseService } from '../../../services/classes/classe-service';
+import { Classe, ClasseListe, Cycle } from '../../../models/classe/classes';
 
 @Component({
   selector: 'app-classe',
@@ -126,7 +126,7 @@ export class ClassePage implements OnInit {
       homeOutline,
       checkmarkCircleOutline,
     });
-    
+
   }
 
   async ngOnInit() {

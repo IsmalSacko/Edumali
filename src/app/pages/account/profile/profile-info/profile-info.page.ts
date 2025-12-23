@@ -30,12 +30,12 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline, refreshOutline, alertCircleOutline } from 'ionicons/icons';
-import { ProfileService } from '../../../services/account/profile-service';
-import { ProfileInfo } from '../../../models/profile/profile';
-import { environment } from '../../../../environments/environment';
-import { AuthService } from '../../../services/auth/auth.service';
-import { DashboardService } from '../../../services/dashboard/dashboard.service';
-import { ActionLog, Alert } from '../../../models/altert/alert';
+import { ProfileService } from '../../../../services/account/profile-service';
+import { ProfileInfo } from '../../../../models/profile/profile';
+import { environment } from '../../../../../environments/environment';
+import { AuthService } from '../../../../services/auth/auth.service';
+import { DashboardService } from '../../../../services/dashboard/dashboard.service';
+import { ActionLog, Alert } from '../../../../models/altert/alert';
 
 @Component({
   selector: 'app-profile-inf',

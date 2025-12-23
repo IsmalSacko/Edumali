@@ -1,0 +1,168 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Tableau de bord</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" aria-label="search">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="stat-page">
+  <div class="container">
+
+    <section class="top-row">
+      <div class="title">
+        <h1>Statistiques</h1>
+        <p class="subtitle">Vue d'ensemble — données factices</p>
+      </div>
+      <div class="controls">
+        <ion-segment value="month">
+          <ion-segment-button value="month">Mois</ion-segment-button>
+          <ion-segment-button value="quarter">Trimestre</ion-segment-button>
+          <ion-segment-button value="year">Année</ion-segment-button>
+        </ion-segment>
+        <ion-button id="date-picker-trigger" size="small" fill="outline" class="date-btn">
+          <ion-icon slot="start" name="calendar"></ion-icon>
+          Choisir
+        </ion-button>
+      </div>
+    </section>
+
+    <section class="kpi-grid">
+      <ion-card class="kpi-card">
+        <div class="kpi-left">
+          <ion-icon name="people" class="kpi-icon"></ion-icon>
+          <div>
+            <div class="kpi-value">{{ stats?.totalStudents ?? 0 }}</div>
+            <div class="kpi-label">Élèves</div>
+          </div>
+        </div>
+        <div class="kpi-right">
+          <div class="kpi-trend positive">{{ stats ? '+4.2%' : '—' }}</div>
+        </div>
+      </ion-card>
+
+      <ion-card class="kpi-card">
+        <div class="kpi-left">
+          <ion-icon name="school" class="kpi-icon"></ion-icon>
+          <div>
+            <div class="kpi-value">{{ stats?.totalClasses ?? 0 }}</div>
+            <div class="kpi-label">Classes</div>
+          </div>
+        </div>
+        <div class="kpi-right">
+          <div class="kpi-trend neutral">—</div>
+        </div>
+      </ion-card>
+
+      <ion-card class="kpi-card">
+        <div class="kpi-left">
+          <ion-icon name="people" class="kpi-icon"></ion-icon>
+          <div>
+            <div class="kpi-value">{{ stats?.totalTeachers ?? 0 }}</div>
+            <div class="kpi-label">Enseignants</div>
+          </div>
+        </div>
+        <div class="kpi-right">
+          <div class="kpi-trend negative">{{ stats ? '-1.1%' : '—' }}</div>
+        </div>
+      </ion-card>
+
+      <ion-card class="kpi-card">
+        <div class="kpi-left">
+          <ion-icon name="clipboard" class="kpi-icon"></ion-icon>
+          <div>
+            <div class="kpi-value">{{ ((evalEntries && evalEntries.length > 0 ? evalEntries[0].value : 0) + (evalEntries
+              && evalEntries.length > 1 ? evalEntries[1].value : 0) + (evalEntries && evalEntries.length > 2 ?
+              evalEntries[2].value : 0)) }}</div>
+            <div class="kpi-label">Évaluations</div>
+          </div>
+        </div>
+        <div class="kpi-right">
+          <div class="kpi-trend positive">{{ stats ? '+8.6%' : '—' }}</div>
+        </div>
+      </ion-card>
+    </section>
+
+    <section class="charts-grid">
+
+      <!-- ÉVALUATIONS -->
+      <ion-card class="chart-card chart-large">
+        <ion-card-header>
+          <ion-card-title>Évaluations (trimestres)</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content class="canvas-content">
+          <div class="canvas-frame">
+            <canvasjs-chart [options]="evals" class="canvasjs-evals">
+            </canvasjs-chart>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- RÉPARTITION ÉLÈVES -->
+      <ion-card class="chart-card compact">
+        <ion-card-header>
+          <ion-card-title>Répartition élèves</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content class="donut-content">
+          <div class="donut-wrap">
+
+            <div class="donut-svg">
+              <svg viewBox="0 0 240 160" class="circular-chart">
+                <g *ngIf="pieSegments?.length">
+                  <ng-container *ngFor="let seg of pieSegments">
+                    <path [attr.d]="seg.d" [attr.fill]="seg.color"></path>
+                  </ng-container>
+                </g>
+
+                <g *ngIf="!pieSegments?.length">
+                  <circle cx="120" cy="80" r="64" fill="#eee"></circle>
+                </g>
+              </svg>
+            </div>
+
+            <div class="donut-legend">
+              <div class="item" *ngFor="let seg of pieSegments">
+                <span class="dot" [ngStyle]="{ background: seg.color }"></span>
+                {{ seg.label }}
+                <strong>{{ seg.percent | number:'1.0-0' }}%</strong>
+              </div>
+            </div>
+
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+    </section>
+
+
+    <section class="list-section">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Prochains rendez-vous</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ul class="event-list">
+            <li><span class="event-title">Réunion parents</span><span class="event-date">15 janv.</span></li>
+            <li><span class="event-title">Examen final</span><span class="event-date">02 févr.</span></li>
+            <li><span class="event-title">Formation enseignants</span><span class="event-date">20 févr.</span></li>
+          </ul>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+  </div>
+  <!-- Popover-based date picker (no TypeScript required). The popover uses the button id above as trigger. -->
+  <ion-popover trigger="date-picker-trigger" side="bottom" alignment="center">
+    <ion-content>
+      <ion-datetime presentation="date" show-default-buttons="true"></ion-datetime>
+    </ion-content>
+  </ion-popover>
+</ion-content>
