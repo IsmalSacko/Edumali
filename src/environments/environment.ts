@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:8000/api',
-  imageUrl:'http://localhost:8000/'
-}; 
-
+  imageUrl: 'http://localhost:8000/',
+  adminUrl: 'http://localhost:8000/admin'
+};
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

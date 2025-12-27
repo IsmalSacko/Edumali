@@ -3,6 +3,10 @@
 	box-shadow: 0 12px 40px color-mix(in srgb, var(--ion-text-color) 10%, transparent);
 }
 
+:root {
+	--my-background-color-rgb: #d3d3d3;
+}
+
 .navbar {
 	--background: var(--ion-background-color);
 	--color: var(--ion-text-color);
@@ -12,7 +16,17 @@
 	border-bottom: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
 }
 
+.nav-logout-btn {
+	--background: transparent;
+	--color: var(--ion-text-color);
+	cursor: pointer;
+}
 
+.nav-logout-btn:hover {
+	background: linear-gradient(90deg,
+			color-mix(in srgb, #d3d3d3 20%, black 0%),
+			color-mix(in srgb, #d3d3d3 20%, black 0%));
+}
 
 .brand {
 	gap: 10px;

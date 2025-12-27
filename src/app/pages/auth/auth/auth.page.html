@@ -21,12 +21,13 @@
             <ion-input type="text" autocomplete="username" formControlName="username"></ion-input>
           </ion-item>
           @if (form.controls.username.touched && form.controls.username.invalid) {
-            <ion-note color="danger">Le nom d'utilisateur est requis.</ion-note>
+          <ion-note color="danger">Le nom d'utilisateur est requis.</ion-note>
           }
 
           <ion-item fill="outline" class="field">
             <ion-label position="floating">Mot de passe</ion-label>
-            <ion-input [type]="hidePassword() ? 'password' : 'text'" autocomplete="current-password" formControlName="password"></ion-input>
+            <ion-input [type]="hidePassword() ? 'password' : 'text'" autocomplete="current-password"
+              formControlName="password"></ion-input>
             <ion-buttons slot="end">
               <ion-button type="button" fill="clear" (click)="togglePasswordVisibility()">
                 <ion-icon [name]="hidePassword() ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
@@ -34,24 +35,28 @@
             </ion-buttons>
           </ion-item>
           @if (form.controls.password.touched && form.controls.password.invalid) {
-            <ion-note color="danger">Mot de passe requis (min 4 caractères).</ion-note>
+          <ion-note color="danger">Mot de passe requis (min 4 caractères).</ion-note>
           }
 
           @if (errorMsg()) {
-            <div class="error">{{ errorMsg() }}</div>
+          <div class="error">{{ errorMsg() }}</div>
           }
 
           <ion-button expand="block" type="submit" [disabled]="loading()" class="submit-btn">
             @if (loading()) {
-              <ion-spinner name="crescent"></ion-spinner>
+            <ion-spinner name="crescent"></ion-spinner>
             } @else {
-              <ion-icon slot="start" name="log-in-outline"></ion-icon>
-              Se connecter
+            <ion-icon slot="start" name="log-in-outline"></ion-icon>
+            Se connecter
             }
           </ion-button>
+          <!-- additional links (e.g., forgot password et inscription) here -->
+          <ion-button expand="block" fill="clear" routerLink="/forgot-password">Mot de passe oublié ?</ion-button>
+          <span style="display: flex; align-items: center; gap: 8px;">Pas encore de compte ?
+            <ion-button fill="clear" routerLink="/register">Inscrivez-vous</ion-button>
+          </span>
         </form>
       </ion-card-content>
     </ion-card>
   </div>
 </ion-content>
-

@@ -19,6 +19,14 @@ export class DashboardService {
   // Méthode pour obtenir les statistiques du tableau de bord
   async getStats(): Promise<DashboardStats> {
     const r = await this.api.get<DashboardStats>(this.statsUrl);
+    console.log('Dashboard stats response:', r.data);
+    return mapStats(r.data);
+  }
+
+  // Allow passing query params (start/end/date filters) to backend
+  async getStatsWithParams(params?: Record<string, any>): Promise<DashboardStats> {
+    const cfg = params ? { params } : undefined;
+    const r = await this.api.get<DashboardStats>(this.statsUrl, cfg);
     return mapStats(r.data);
   }
   // Méthode pour obtenir toutes les alertes du tableau de bord

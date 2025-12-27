@@ -1,0 +1,20 @@
+<ion-header>
+    <ion-toolbar class="modal-toolbar">
+        <ion-title color="danger">Accès réservé</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content" fullscreen>
+    <div class="card-wrap">
+        <ion-card class="notice-card">
+            <div class="icon-wrap">
+                <ion-icon [icon]="closeCircleOutline" class="danger-icon"></ion-icon>
+            </div>
+            <h2>Accès refusé</h2>
+            <p>Cette page est réservée aux administrateurs. Si vous pensez qu'il s'agit d'une erreur, contactez
+                l'administrateur.</p>
+            <ion-button (click)="close('/home')" expand="block" color="primary" id="modal-close">Retour à
+                l'accueil</ion-button>
+        </ion-card>
+    </div>
+</ion-content>

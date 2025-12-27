@@ -1,0 +1,95 @@
+ion-content {
+    --padding-top: 16px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-bottom: 24px;
+    background: var(--ion-background-color);
+}
+
+ion-card {
+    max-width: 900px;
+    margin: 18px auto;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(18, 38, 63, 0.08);
+    overflow: hidden;
+}
+
+ion-card-content {
+    padding: 18px 20px;
+}
+
+form {
+    display: block;
+}
+
+ion-item {
+    --inner-padding-end: 0;
+    --inner-padding-start: 0;
+    margin-bottom: 12px;
+    --background: transparent;
+}
+
+ion-label[position="stacked"] {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+    margin-bottom: 6px;
+}
+
+ion-select,
+ion-datetime,
+ion-segment,
+ion-input {
+    width: 100%;
+}
+
+ion-segment {
+    --background: transparent;
+    --indicator-color: var(--ion-color-primary-contrast);
+    --indicator-height: 34px;
+    border-radius: 8px;
+    height: 40px;
+    align-items: center;
+}
+
+ion-segment-button {
+    font-weight: 600;
+    color: var(--ion-color-primary);
+}
+
+ion-button[expand="block"] {
+    --border-radius: 8px;
+    --box-shadow: none;
+    height: 44px;
+}
+
+/* Small screens: card full width with softer padding */
+@media (max-width: 480px) {
+    ion-card {
+        margin: 12px;
+        border-radius: 10px;
+    }
+
+    ion-card-content {
+        padding: 14px;
+    }
+}
+
+/* Helpful status badge styles (if used) */
+.status-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.78rem;
+}
+
+.status-badge.actif {
+    background: #e6fbef;
+    color: #117a4b
+}
+
+.status-badge.inactif {
+    background: #fff4e6;
+    color: #a35a00
+}

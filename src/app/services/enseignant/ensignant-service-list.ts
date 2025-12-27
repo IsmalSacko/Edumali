@@ -18,4 +18,10 @@ export class EnseignantServiceList {
     return e.data ? e.data : [];
   }
 
+  async getTeacher(id: number): Promise<Enseignant | null> {
+    const e = await this.apiService.get<Enseignant>(this.apiUrl + id + '/');
+    console.log('enseignant fetched:', e);
+    return e.data ? e.data : null;
+  }
+
 }

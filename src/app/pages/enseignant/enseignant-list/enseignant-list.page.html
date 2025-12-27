@@ -1,18 +1,5 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Liste des enseignants</ion-title>
-    <ion-buttons slot="end">
-      <ion-button>Rafraîchir</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Liste des enseignants</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
 
   <div class="hero-section">
     <div class="hero-content">
@@ -28,9 +15,8 @@
       <ion-card class="teacher-card animate-in">
         <ion-item lines="none">
           <ion-avatar class="enseignant-avatar" slot="start">
-
             @if(item.user.profile_photo){
-            <img [src]="apiBase + (item.user.profile_photo )" alt="Avatar" />
+            <img [src]="getImageUrl(item.user.profile_photo )" alt="Avatar" />
             }
             @else {
             <img src="assets/avatar/default.png" alt="Avatar par défaut" />
@@ -96,7 +82,14 @@
           <div slot="end" class="teacher-contact">
             <div class="contact-line"><ion-icon name="call-outline"></ion-icon> {{ item.user.phone_number || '—' }}
             </div>
-            <div class="contact-line"><ion-icon name="mail-outline"></ion-icon> {{ item.user.email || '—' }}</div>
+            <div class="contact-line"><ion-icon [icon]="mailIcon"></ion-icon> {{ item.user.email || '—' }}</div>
+            <div class="contact-actions">
+              <a class="detail-btn" href="/enseignant-detail/{{item.id}}" title="Voir le détail de l'enseignant">
+                <ion-button fill="clear" aria-label="Détails enseignant">
+                  <ion-icon slot="icon-only" [icon]="eyeIcon"></ion-icon>
+                </ion-button>
+              </a>
+            </div>
           </div>
         </ion-item>
       </ion-card>

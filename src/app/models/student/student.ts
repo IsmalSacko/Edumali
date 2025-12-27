@@ -13,4 +13,5 @@ export interface Student {
     status?: Status;
     user: ProfileInfo;
     classe?: Classe;
+    evaluations?: any[];
 }

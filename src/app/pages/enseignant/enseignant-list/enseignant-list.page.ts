@@ -5,6 +5,8 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonIcon, IonList, IonCard,
 import { Enseignant } from 'src/app/models/enseignant/enseignant';
 import { EnseignantServiceList } from 'src/app/services/enseignant/ensignant-service-list';
 import { environment } from 'src/environments/environment';
+import { eye, eyeOutline, mailOutline } from 'ionicons/icons';
+import { UtilsService } from 'src/app/services/utils/image-url-service';
 
 @Component({
   selector: 'app-enseignant-list',
@@ -14,10 +16,11 @@ import { environment } from 'src/environments/environment';
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonIcon, IonList, IonCard, IonItem, IonAvatar, IonLabel, IonChip, IonButtons, IonButton]
 })
 export class EnseignantListPage implements OnInit {
-
+  mailIcon = mailOutline;
+  eyeIcon = eyeOutline;
   enseignantServiceList = inject(EnseignantServiceList);
   enseignants = signal<Enseignant[]>([]);
-  public apiBase = environment.imageUrl || environment.apiUrl;
+  private utils = inject(UtilsService);
   constructor() { }
 
   ngOnInit() {
@@ -32,6 +35,10 @@ export class EnseignantListPage implements OnInit {
   totalStudents(item: Enseignant): number {
     const classes = item.classes || [];
     return classes.reduce((acc, c: any) => acc + (c.nombre_eleves ?? (c.eleves?.length ?? 0)), 0);
+  }
+
+  getImageUrl(photo?: string | null): string | null {
+    return this.utils.getImageUrl(photo);
   }
 
 }

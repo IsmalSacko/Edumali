@@ -1,35 +1,20 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Tableau de bord</ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="clear" aria-label="search">
-        <ion-icon slot="icon-only" name="search"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="stat-page">
-  <div class="container">
+  <div class="container" *ngIf="dataReady">
 
     <section class="top-row">
       <div class="title">
         <h1>Statistiques</h1>
         <p class="subtitle">Vue d'ensemble — données factices</p>
+        <div class="period-indicator">Période active : <strong>{{ periodLabel }}</strong></div>
       </div>
       <div class="controls">
-        <ion-segment value="month">
+        <ion-segment [value]="period" (ionChange)="onPeriodChange($event)">
+          <ion-segment-button value="all">Tous</ion-segment-button>
           <ion-segment-button value="month">Mois</ion-segment-button>
           <ion-segment-button value="quarter">Trimestre</ion-segment-button>
           <ion-segment-button value="year">Année</ion-segment-button>
         </ion-segment>
-        <ion-button id="date-picker-trigger" size="small" fill="outline" class="date-btn">
-          <ion-icon slot="start" name="calendar"></ion-icon>
-          Choisir
-        </ion-button>
+
       </div>
     </section>
 
@@ -39,7 +24,7 @@
           <ion-icon name="people" class="kpi-icon"></ion-icon>
           <div>
             <div class="kpi-value">{{ stats?.totalStudents ?? 0 }}</div>
-            <div class="kpi-label">Élèves</div>
+            <div class="kpi-label">Élèves <span class="kpi-note">(total global)</span></div>
           </div>
         </div>
         <div class="kpi-right">
@@ -52,7 +37,7 @@
           <ion-icon name="school" class="kpi-icon"></ion-icon>
           <div>
             <div class="kpi-value">{{ stats?.totalClasses ?? 0 }}</div>
-            <div class="kpi-label">Classes</div>
+            <div class="kpi-label">Classes <span class="kpi-note">(total global)</span></div>
           </div>
         </div>
         <div class="kpi-right">
@@ -65,7 +50,7 @@
           <ion-icon name="people" class="kpi-icon"></ion-icon>
           <div>
             <div class="kpi-value">{{ stats?.totalTeachers ?? 0 }}</div>
-            <div class="kpi-label">Enseignants</div>
+            <div class="kpi-label">Enseignants <span class="kpi-note">(total global)</span></div>
           </div>
         </div>
         <div class="kpi-right">
@@ -77,9 +62,19 @@
         <div class="kpi-left">
           <ion-icon name="clipboard" class="kpi-icon"></ion-icon>
           <div>
-            <div class="kpi-value">{{ ((evalEntries && evalEntries.length > 0 ? evalEntries[0].value : 0) + (evalEntries
-              && evalEntries.length > 1 ? evalEntries[1].value : 0) + (evalEntries && evalEntries.length > 2 ?
-              evalEntries[2].value : 0)) }}</div>
+            <div class="kpi-value">{{ evalsTotal }}</div>
+            <div class="kpi-label">Évaluations</div>
+          </div>
+        </div>
+        <div class="kpi-right">
+          <div class="kpi-trend positive">{{ stats ? '+8.6%' : '—' }}</div>
+        </div>
+      </ion-card>
+      <ion-card class="kpi-card">
+        <div class="kpi-left">
+          <ion-icon slot="start" [icon]="starOutline" class="kpi-icon"></ion-icon>
+          <div>
+            <div class="kpi-value">{{ mystat.moyenne_generale }}</div>
             <div class="kpi-label">Évaluations</div>
           </div>
         </div>
@@ -99,7 +94,7 @@
 
         <ion-card-content class="canvas-content">
           <div class="canvas-frame">
-            <canvasjs-chart [options]="evals" class="canvasjs-evals">
+            <canvasjs-chart *ngIf="chartVisible" [options]="evals" class="canvasjs-evals">
             </canvasjs-chart>
           </div>
         </ion-card-content>
@@ -116,13 +111,13 @@
 
             <div class="donut-svg">
               <svg viewBox="0 0 240 160" class="circular-chart">
-                <g *ngIf="pieSegments?.length">
+                <g *ngIf="pieSegments.length">
                   <ng-container *ngFor="let seg of pieSegments">
                     <path [attr.d]="seg.d" [attr.fill]="seg.color"></path>
                   </ng-container>
                 </g>
 
-                <g *ngIf="!pieSegments?.length">
+                <g *ngIf="!pieSegments.length">
                   <circle cx="120" cy="80" r="64" fill="#eee"></circle>
                 </g>
               </svg>
@@ -159,10 +154,5 @@
     </section>
 
   </div>
-  <!-- Popover-based date picker (no TypeScript required). The popover uses the button id above as trigger. -->
-  <ion-popover trigger="date-picker-trigger" side="bottom" alignment="center">
-    <ion-content>
-      <ion-datetime presentation="date" show-default-buttons="true"></ion-datetime>
-    </ion-content>
-  </ion-popover>
+
 </ion-content>

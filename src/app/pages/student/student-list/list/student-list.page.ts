@@ -5,8 +5,11 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel
 import { Student } from 'src/app/models/student/student';
 import { StudentServiceList } from 'src/app/services/student/student-service-list';
 import { ClasseService } from 'src/app/services/classes/classe-service';
-import { list } from 'ionicons/icons';
+import { list, personOutline, reloadOutline, peopleOutline, calendarOutline, schoolOutline, informationCircleOutline, eyeOutline } from 'ionicons/icons';
 import { environment } from 'src/environments/environment';
+import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { UtilsService } from 'src/app/services/utils/image-url-service';
 
 @Component({
   selector: 'app-student-list',
@@ -28,8 +31,24 @@ export class StudentListPage implements OnInit {
   classeFilter = signal<number | null>(null);
   matriculeFilter = signal<string | null>(null);
   private classeService = inject(ClasseService);
+  private utils = inject(UtilsService);
   public apiBase = environment.imageUrl || environment.apiUrl;
-  constructor() { }
+
+  constructor() {
+    personOutline; reloadOutline; list; informationCircleOutline; peopleOutline; calendarOutline; schoolOutline;
+  }
+
+  // expose icons to the template so SVG data is provided directly
+  public personOutline = personOutline;
+  public reloadOutline = reloadOutline;
+  public list = list;
+  public peopleOutline = peopleOutline;
+  public calendarOutline = calendarOutline;
+  public schoolOutline = schoolOutline;
+  public informationCircleOutline = informationCircleOutline;
+  public eyeOutline = eyeOutline;
+  private router = inject(Router);
+
 
   ngOnInit() {
     this.loadStudents();
@@ -106,15 +125,14 @@ export class StudentListPage implements OnInit {
     return rows;
   }
 
+  goToDetail(student: Student) {
+    this.router.navigate(['/student-detail', student.id]);
+  }
 
 
 
   getImageUrl(photo?: string | null): string | null {
-    if (!photo) return null;
-    if (photo.startsWith('http')) return photo;
-    const base = (environment.imageUrl || environment.apiUrl || '').replace(/\/+$/, '');
-    const path = photo.startsWith('/') ? photo : `/${photo}`;
-    return `${base}${path}`;
+    return this.utils.getImageUrl(photo);
   }
 
 }

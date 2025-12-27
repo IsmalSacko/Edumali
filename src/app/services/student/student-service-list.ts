@@ -18,4 +18,16 @@ export class StudentServiceList {
     return s.data ? s.data : [];
   }
 
+  async getStudent(id: number): Promise<Student | null> {
+    const s = await this.apiService.get<Student>(this.apiUrl + id + '/');
+    console.log(s.data);
+    return s.data
+  }
+
+  async updateStudent(id: number, student: Partial<Student>): Promise<Student> {
+    const s = await this.apiService.patch<Student>(this.apiUrl + id + '/', student);
+    console.log('✅ Student updated:', s.data);
+    return s.data;
+  }
+
 }

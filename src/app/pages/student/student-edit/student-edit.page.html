@@ -1,0 +1,74 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Modifier un élève</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-content>
+
+      <!-- Sélection de l'étudiant -->
+      <ion-item>
+        @if(fullname && fullname.length > 0) {
+
+        <ion-label position="stacked">Élève: {{ fullname }}</ion-label>
+        }
+        <ion-select placeholder="Choisir un élève" (ionChange)="selectStudent($event.detail.value)">
+          <ion-select-option *ngFor="let s of students" [value]="s.id">
+            {{ s.matricule || ('Élève #' + s.id) }} - {{ s.user_detail?.first_name || '' }} {{ s.user_detail?.last_name
+            || '' }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Formulaire de modification -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <!-- Classe -->
+        <ion-item>
+          <ion-label position="stacked">Classe</ion-label>
+          <ion-select formControlName="classe">
+            <ion-select-option [value]="null">Aucune</ion-select-option>
+            <ion-select-option *ngFor="let c of classes" [value]="c.id">
+              {{ c.nom }} ({{ c.annee_display || c.annee }})
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Date de naissance -->
+        <ion-item>
+          <ion-label position="stacked">Date de naissance</ion-label>
+          <ion-datetime presentation="date" formControlName="date_of_birth">
+          </ion-datetime>
+        </ion-item>
+
+        <!-- Sexe -->
+        <ion-item>
+          <ion-label position="stacked">Sexe</ion-label>
+          <ion-segment formControlName="gender">
+            <ion-segment-button value="M">M</ion-segment-button>
+            <ion-segment-button value="F">F</ion-segment-button>
+          </ion-segment>
+        </ion-item>
+
+        <!-- Statut -->
+        <ion-item>
+          <ion-label position="stacked">Statut</ion-label>
+          <ion-select formControlName="status">
+            <ion-select-option value="actif">Actif</ion-select-option>
+            <ion-select-option value="inactif">Inactif</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" [disabled]="form.invalid" style="margin-top:16px">
+          Enregistrer
+        </ion-button>
+
+      </form>
+
+
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>

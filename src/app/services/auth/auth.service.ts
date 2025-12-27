@@ -3,6 +3,8 @@ import { inject, Injectable, signal, effect } from '@angular/core';
 import axios from 'axios';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,9 +13,12 @@ export class AuthService {
   private readonly base = environment.apiUrl;
   private readonly loginUrl = `${this.base}/auth/jwt/create/`;
   private route = inject(Router);
+  private alertCtrl = inject(AlertController);
 
   // Signal global pour l'utilisateur courant - accessible par tous les composants
   public user = signal<any | null>(null);
+  // Signal pour demander l'affichage du modal d'accès restreint
+  public showAdminModal = signal(false);
   private _initialized = false;
 
   constructor() {
@@ -91,12 +96,23 @@ export class AuthService {
       }
     });
     const role = r.data.role;
-    if (role !== 'admin') {
-      this.route.navigate(['/home']);
-    }
     console.log('Current User Role:', role);
-    // redirect au dashboard if no role
 
+    if (role !== 'admin') {
+      // Haptic feedback (best-effort)
+      try {
+        await Haptics.impact({ style: ImpactStyle.Medium });
+      } catch (e) {
+        // ignore on platforms without Capacitor Haptics
+      }
+
+      // Request UI to show the admin-restricted modal (presented by a component)
+      this.showAdminModal.set(true);
+      // The component presenting the modal will handle redirect after dismiss
+      return null;
+    }
+
+    // If admin, return the user data
     return r.data.role ? r.data : null;
   }
 

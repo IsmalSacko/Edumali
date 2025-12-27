@@ -11,7 +11,9 @@ export interface DashboardStats {
     totalClasses: number;
     totalMatieres: number;
     averageGlobal: number;
+    moyenne_generale?: number;
     studentsByCycle: StudentsByCycle;
+    students_by_cycle?: StudentsByCycle;
     evaluationsByTrimester?: Record<string, number>;
 }
 

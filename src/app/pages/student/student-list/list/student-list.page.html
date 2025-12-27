@@ -3,7 +3,7 @@
   <!-- Hero section similaire à Classes & Matières -->
   <div class="hero-section">
     <div class="hero-content">
-      <ion-icon name="people-outline" class="hero-icon"></ion-icon>
+      <ion-icon [icon]="peopleOutline" class="hero-icon"></ion-icon>
       <div class="hero-text">
         <p class="hero-eyebrow">Gestion pédagogique</p>
         <h1>Liste des élèves</h1>
@@ -11,7 +11,7 @@
       </div>
       <div class="hero__actions">
         <ion-button fill="clear" size="small" (click)="reload()" class="refresh-btn">
-          <ion-icon slot="start" name="reload-outline"></ion-icon>
+          <ion-icon slot="start" [icon]="reloadOutline"></ion-icon>
           Rafraîchir
         </ion-button>
       </div>
@@ -53,6 +53,7 @@
           <ion-select-option [value]="c.id">{{ c.nom }}</ion-select-option>
           }
         </ion-select>
+
       </div>
 
       <div class="filter-item">
@@ -70,8 +71,7 @@
       <div class="student-card">
 
         <ion-avatar class="student-avatar">
-          <img [src]="eleve.user.profile_photo ? (apiBase + eleve.user.profile_photo) : 'assets/avatar/default.png'"
-            alt="Avatar" />
+          <img [src]="getImageUrl(eleve.user.profile_photo) ?? 'assets/avatar/default.png'" alt="Avatar" />
         </ion-avatar>
 
         <div class="student-info">
@@ -85,26 +85,32 @@
 
           <div class="student-details">
             <span>
-              <ion-icon name="person-outline"></ion-icon>
+              <ion-icon [icon]="personOutline"></ion-icon>
               {{ eleve.gender === 'M' ? 'Masculin' : 'Féminin' }}
             </span>
 
             <span>
-              <ion-icon name="calendar-outline"></ion-icon>
+              <ion-icon [icon]="calendarOutline"></ion-icon>
               {{ eleve.date_of_birth | date:'dd/MM/yyyy' }}
             </span>
 
             <span *ngIf="eleve.classe">
-              <ion-icon name="school-outline"></ion-icon>
+              <ion-icon [icon]="schoolOutline"></ion-icon>
               {{ eleve.classe.nom }}
               ({{ eleve.classe.annee_display || eleve.classe.annee }})
             </span>
+            <!-- bouton voir les détails  de l'élève -->
+            <ion-button fill="clear" size="small" (click)="goToDetail(eleve)" class="details-btn">
+              <ion-icon slot="start" [icon]="eyeOutline"></ion-icon>
+              Voir les détails
+            </ion-button>
           </div>
         </div>
 
         <ion-badge class="status-badge" [ngClass]="eleve.status">
           {{ eleve.status }}
         </ion-badge>
+
 
       </div>
       }

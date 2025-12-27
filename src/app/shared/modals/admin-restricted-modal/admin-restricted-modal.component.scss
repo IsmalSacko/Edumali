@@ -1,0 +1,54 @@
+:host {
+    --background: transparent;
+}
+
+.modal-toolbar {
+    --background: transparent;
+    text-align: center;
+}
+
+
+
+.modal-content::part(scroll) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --background: rgba(0, 0, 0, 0.04);
+}
+
+.card-wrap {
+    width: 100%;
+    max-width: 420px;
+    padding: 16px;
+}
+
+.notice-card {
+    text-align: center;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.12);
+}
+
+.icon-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.danger-icon {
+    font-size: 48px;
+    color: var(--ion-color-danger);
+}
+
+h2 {
+    margin: 8px 0 4px 0;
+}
+
+p {
+    color: color-mix(in srgb, var(--ion-text-color) 60%, transparent);
+    margin-bottom: 16px;
+}
+
+#modal-close {
+    --border-radius: 10px;
+}

@@ -1,0 +1,96 @@
+<ion-content [fullscreen]="true" class="register-container">
+  <ion-content class="register-container" [fullscreen]="true">
+    <section class="hero-section">
+      <div class="hero">
+        <h1>Créer un compte Edumali</h1>
+        <p class="subtitle">Rejoignez-nous pour gérer efficacement votre établissement scolaire.</p>
+      </div>
+      <div class="edumali-logo">
+        <img src="assets/logo-edumali.png" alt="Edumali Logo" />
+      </div>
+    </section>
+    <section class="form-section">
+      <ion-card class="register-card" mode="ios">
+
+        <ion-card-content>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <ion-item fill="outline" class="field">
+              <ion-label position="floating">Nom d'utilisateur</ion-label>
+              <ion-input type="text" autocomplete="username" formControlName="username">
+                <ion-icon name="person-add-outline" slot="end"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (form.get('username')?.touched && form.get('username')?.invalid) {
+            <div class="field-error">
+              <ion-text color="danger" *ngIf="form.get('username')?.errors?.['required']">Nom d'utilisateur
+                requis</ion-text>
+            </div>
+            }
+
+            <ion-item fill="outline" class="field">
+              <ion-label position="floating">Email</ion-label>
+              <ion-input type="email" autocomplete="email" formControlName="email">
+                <ion-icon name="mail-outline" slot="end"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (form.get('email')?.touched && form.get('email')?.invalid) {
+            <div class="field-error">
+              <ion-text color="danger" *ngIf="form.get('email')?.errors?.['required']">Email requis</ion-text>
+              <ion-text color="danger" *ngIf="form.get('email')?.errors?.['email']">Email invalide
+                (exemple@domaine.com)</ion-text>
+            </div>
+            }
+
+            <ion-item fill="outline" class="field">
+              <ion-label position="floating">Mot de passe</ion-label>
+              <ion-input type="password" autocomplete="new-password" formControlName="password">
+                <ion-icon name="lock-closed-outline" slot="end"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (form.get('password')?.touched && form.get('password')?.invalid) {
+            <div class="field-error">
+              <ion-text color="danger" *ngIf="form.get('password')?.errors?.['required']">Mot de passe requis</ion-text>
+              <ion-text color="danger" *ngIf="form.get('password')?.errors?.['minlength']">Le mot de passe doit contenir
+                au moins 6 caractères</ion-text>
+            </div>
+            }
+            <ion-item fill="outline" class="field">
+              <ion-label position="floating">Confirmer le mot de passe</ion-label>
+              <ion-input type="password" autocomplete="password" formControlName="passwordConfirm">
+                <ion-icon name="lock-closed-outline" slot="end"></ion-icon>
+              </ion-input>
+            </ion-item>
+            @if (form.get('passwordConfirm')?.touched && form.get('passwordConfirm')?.invalid) {
+            <div class="field-error">
+              <ion-text color="danger" *ngIf="form.get('passwordConfirm ')?.errors?.['required']">Confirmation du mot de
+                passe requise</ion-text>
+              <ion-text color="danger" *ngIf="form.get('passwordConfirm')?.errors?.['mismatch']">Les mots de passe ne
+                correspondent pas</ion-text>
+            </div>
+            }
+            <ion-item fill="outline" class="field">
+              <ion-label>Rôle</ion-label>
+              <ion-select formControlName="role" interface="popover">
+                @for (r of roleChoices; track r.value) {
+                <ion-select-option [value]="r.value">{{ r.label }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            @if (form.get('role')?.touched && form.get('role')?.invalid) {
+            <div class="field-error">
+              <ion-text color="danger" *ngIf="form.get('role')?.errors?.['required']">Veuillez sélectionner un
+                rôle</ion-text>
+              <ion-text color="danger" *ngIf="form.get('role')?.errors?.['forbiddenRole']">La sélection du rôle
+                "Administrateur" n'est pas autorisée ici.</ion-text>
+            </div>
+            }
+            <ion-button expand="block" type="submit" class="submit-btn">
+              <ion-icon slot="end" name="person-add-outline"></ion-icon>
+              S'inscrire
+            </ion-button>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+  </ion-content>

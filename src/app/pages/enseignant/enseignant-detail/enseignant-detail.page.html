@@ -1,0 +1,183 @@
+<div class="teacher-detail-page content-wrapper">
+
+  <!-- HERO HEADER -->
+  <div class="hero-content">
+    <ion-icon [icon]="peopleOutline" class="hero-icon"></ion-icon>
+    <div class="hero-text">
+      <p class="hero-eyebrow">Gestion pédagogique</p>
+      <h1>Liste des enseignants</h1>
+      <p class="hero-description">
+        Parcourez et gérez la liste des enseignants de votre établissement
+      </p>
+    </div>
+  </div>
+
+  <!-- HERO CARD -->
+  @if (enseignant(); as e) {
+  <div class="hero">
+    <div class="hero-inner">
+
+      <!-- AVATAR -->
+      <ion-avatar class="teacher-avatar">
+        <img [src]="getImageUrl(e.user.profile_photo)" alt="Avatar" />
+      </ion-avatar>
+
+      <!-- META -->
+      <div class="teacher-meta">
+        <h2 class="name">
+          {{ e.user.first_name }} {{ e.user.last_name }}
+        </h2>
+        <p class="role">{{ e.specialty || 'Enseignant' }}</p>
+
+        <div class="chips">
+          <ion-chip color="light">
+            <ion-label>{{ (e.classes || []).length }} classes</ion-label>
+          </ion-chip>
+          <ion-chip color="light">
+            <ion-label>{{ e.user.email || '—' }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="contact-actions">
+        @if (e.user.phone_number) {
+        <a [href]="'tel:' + e.user.phone_number">
+          <ion-button fill="clear" color="light">
+            <ion-icon slot="icon-only" name="call-outline"></ion-icon>
+          </ion-button>
+        </a>
+        }
+
+        @if (e.user.email) {
+        <a [href]="'mailto:' + e.user.email">
+          <ion-button fill="clear" color="light">
+            <ion-icon slot="icon-only" [icon]="mailOutline"></ion-icon>
+          </ion-button>
+        </a>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- SUMMARY -->
+    <ion-card class="summary-card">
+      <ion-card-content>
+        <div class="summary-grid">
+          <div class="item">
+            <div class="label">Classes</div>
+            <div class="value">{{ (e.classes || []).length }}</div>
+          </div>
+
+          <div class="item">
+            <div class="label">Matières</div>
+            <div class="value">
+              @if (e.classes?.length) {
+              @for (c of e.classes; track c.id) {
+              @for (m of c.matieres; track m.id; let last = $last) {
+              {{ m.nom }}@if (!last) {, }
+              }
+              }
+              } @else {
+              0
+              }
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="label">Élèves Totaux</div>
+            <div class="value">
+
+              {{ getTotalEleves(e) }}
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- CLASSES -->
+    <ion-card class="details-card">
+      <ion-card-header>
+        <ion-card-title>Classes attribuées</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-list lines="none">
+          @for (c of (e.classes || []); track c.id) {
+          <ion-item>
+            <ion-label>
+              <h3>
+                {{ c.nom }}
+                <small class="anno">
+                  {{ c.annee_display || ('Année ' + c.annee) }}
+                </small>
+              </h3>
+
+              <p class="muted">
+                {{ c.nombre_eleves || c.eleves.length || 0 }} élèves •
+                {{ c.nombre_matieres || c.matieres.length || 0 }} matières •
+
+
+              </p>
+            </ion-label>
+
+            <ion-button slot="end" fill="clear" [routerLink]="['/classes', c.id]" title="Voir classe">
+              <ion-icon slot="icon-only" [icon]="iconChevronForward"></ion-icon>
+            </ion-button>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- TIMETABLE -->
+    <ion-card class="timetable-card">
+      <ion-card-header>
+        <ion-card-title>Emplois du temps</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        @if (e.classes?.length) {
+        <ion-list>
+          @for (c of e.classes; track c.id) {
+          <ion-item>
+            <ion-label>
+              <h4>
+                {{ c.nom }}
+                <span class="anno">
+                  {{ c.annee_display || ('Année ' + c.annee) }}
+                </span>
+              </h4>
+
+              @if (c.emplois_du_temps.length) {
+              <ul class="timetable">
+                @for (t of c.emplois_du_temps; track t.id) {
+                <li>
+                  {{ t.jour_semaine_display }}
+                  — {{ t.heure_debut.slice(0,5) }}
+                  à {{ t.heure_fin.slice(0,5) }}
+                  • {{ t.matiere.nom }}
+                </li>
+                }
+              </ul>
+              } @else {
+              <p class="muted">Aucun créneau enregistré</p>
+              }
+            </ion-label>
+          </ion-item>
+          }
+        </ion-list>
+        } @else {
+        <p class="muted">Aucun emploi du temps disponible</p>
+        }
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+  }
+
+</div>

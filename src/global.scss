@@ -112,6 +112,7 @@ ion-toolbar.navbar {
 /* Thème Light (défaut) */
 :root {
 	--ion-background-color: #ffffff;
+
 	--ion-background-color-rgb: 255, 255, 255;
 	--ion-text-color: #0f172a;
 	--ion-text-color-rgb: 15, 23, 42;
@@ -272,4 +273,42 @@ ion-overlay-wrapper,
 .select-popover .option,
 .action-sheet-wrapper .action-sheet-button {
 	color: var(--ion-text-color) !important;
+}
+
+/* Styled admin restricted alert */
+.admin-restricted-alert .alert-title {
+	font-weight: 700;
+	color: var(--ion-color-danger);
+}
+
+.admin-restricted-alert .alert-message {
+	text-align: center;
+	padding: 8px 0 0 0;
+}
+
+.admin-restricted-alert .admin-sub {
+	margin-top: 6px;
+	color: color-mix(in srgb, var(--ion-text-color) 60%, transparent);
+	font-size: 0.95rem;
+}
+
+.admin-restricted-alert .alert-button {
+	--border-radius: 10px;
+}
+
+/* small slide-in animation for alerts */
+@keyframes slideInFromTop {
+	from {
+		transform: translateY(-10px);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.admin-restricted-alert .alert-wrapper {
+	animation: slideInFromTop 260ms ease-out;
 }

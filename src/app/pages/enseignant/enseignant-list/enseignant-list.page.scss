@@ -1,40 +1,72 @@
-/* Styles modernes et animations pour la liste des enseignants */
-.hero-section {
-    padding: 18px 16px;
-    background: linear-gradient(180deg, rgba(var(--ion-background-color-rgb), 0.02), transparent 60%);
-    border-bottom: 1px solid color-mix(in srgb, var(--ion-border-color) 8%, transparent);
+/* =====================================================
+   BASE / IONIC SAFE
+===================================================== */
+ion-content {
+    --padding-bottom: 24px;
 }
 
+ion-item {
+    align-items: flex-start;
+}
 
+ion-label {
+    min-width: 0;
+    width: 100%;
+}
 
+/* =====================================================
+   HERO
+===================================================== */
+.hero-section {
+    padding: 16px;
+}
+
+.hero-text {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.hero-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--ion-color-primary);
+}
+
+.hero-text h1 {
+    font-size: 1.6rem;
+    margin: 6px 0;
+}
+
+.hero-description {
+    color: var(--ion-color-medium);
+    max-width: 520px;
+    margin: auto;
+}
+
+/* =====================================================
+   CARD
+===================================================== */
 .teacher-card {
-    margin: 12px 8px;
-    border-radius: 12px;
+    margin: 10px 6px;
+    border-radius: 14px;
     overflow: hidden;
-    transition: transform 240ms cubic-bezier(.2, .9, .2, 1), box-shadow 240ms;
-    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
-    background: linear-gradient(180deg, var(--ion-card-background), color-mix(in srgb, var(--ion-card-background) 96%, transparent));
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
+    transition: transform .25s ease, box-shadow .25s ease;
 }
 
 .teacher-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(2, 6, 23, 0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(2, 6, 23, 0.14);
 }
 
-.animate-in {
-    animation: slideUpFade .42s both;
-}
-
-@keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* =====================================================
+   AVATAR
+===================================================== */
+.enseignant-avatar {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
 }
 
 .enseignant-avatar img {
@@ -44,35 +76,35 @@
     object-fit: cover;
 }
 
+/* =====================================================
+   TEXT & SUMMARY
+===================================================== */
 .teacher-name {
     font-size: 1.05rem;
-    margin-bottom: 4px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    word-break: break-word;
 }
 
 .muted {
-    color: color-mix(in srgb, var(--ion-text-color) 65%, transparent);
     font-size: 0.9rem;
+    color: var(--ion-color-medium);
+    word-break: break-word;
 }
 
 .summary-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     margin-top: 8px;
-    align-items: center;
-}
-
-.summary-row .badge,
-.badge {
-    background: color-mix(in srgb, var(--ion-color-primary) 8%, var(--ion-background-color));
-    color: var(--ion-color-primary);
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-weight: 600;
+    flex-wrap: wrap;
     font-size: 0.85rem;
 }
 
+/* =====================================================
+   CLASSES
+===================================================== */
 .classes-list {
-    margin-top: 10px;
+    margin-top: 12px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -81,52 +113,135 @@
 .class-card {
     border-radius: 10px;
     padding: 8px 10px;
-    background: color-mix(in srgb, var(--ion-background-color) 98%, transparent);
-    border: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
+    background: var(--ion-background-color);
+    border: 1px solid var(--ion-color-step-150);
+}
+
+.class-card summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.class-card summary::-webkit-details-marker {
+    display: none;
 }
 
 .class-summary {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .class-name {
     font-weight: 700;
+    word-break: break-word;
 }
 
 .anno {
-    font-weight: 600;
-    color: color-mix(in srgb, var(--ion-text-color) 60%, transparent);
-    margin-left: 8px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+    margin-left: 6px;
 }
 
+.badge {
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    color: var(--ion-color-primary);
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* =====================================================
+   CLASS BODY
+===================================================== */
 .class-body {
     margin-top: 8px;
     padding-top: 8px;
-    border-top: 1px dashed color-mix(in srgb, var(--ion-border-color) 30%, transparent);
+    border-top: 1px dashed var(--ion-color-step-200);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
 
 .class-section h4 {
-    margin: 0 0 6px 0;
-    font-size: 0.95rem;
-}
-
-.chips ion-chip {
-    margin: 4px 6px 4px 0;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
 }
 
 .class-body ul {
     margin: 0;
-    padding-left: 18px;
-    color: color-mix(in srgb, var(--ion-text-color) 70%, transparent);
+    padding-left: 16px;
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+    word-break: break-word;
 }
 
+/* =====================================================
+   CONTACT
+===================================================== */
+.teacher-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+    min-width: 150px;
+}
+
+.contact-line {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    word-break: break-word;
+}
+
+/* =========================
+   IONIC SAFE
+========================= */
+ion-item {
+    align-items: flex-start;
+}
+
+ion-label {
+    min-width: 0;
+    width: 100%;
+}
+
+/* =========================
+   AVATAR
+========================= */
+.enseignant-avatar {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+}
+
+/* =========================
+   TEXT WRAP
+========================= */
+.teacher-name,
+.muted,
+.contact-line,
+.class-name {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* =========================
+   SUMMARY
+========================= */
+.summary-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* =========================
+   CONTACT (clé du fix)
+========================= */
 .teacher-contact {
     display: flex;
     flex-direction: column;
@@ -135,34 +250,25 @@
     min-width: 140px;
 }
 
-.contact-line {
-    font-size: 0.9rem;
-    color: color-mix(in srgb, var(--ion-text-color) 72%, transparent);
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
+/* =========================
+   MOBILE FIX (SANS CASSER IONIC)
+========================= */
+@media (max-width: 600px) {
 
-/* details/summary small animation */
-.class-card summary {
-    list-style: none;
-    cursor: pointer;
-}
-
-.class-card[open] {
-    background: color-mix(in srgb, var(--ion-card-background) 98%, transparent);
-}
-
-.class-card summary::-webkit-details-marker {
-    display: none;
-}
-
-@media (max-width:900px) {
-    .class-body {
-        grid-template-columns: 1fr;
-    }
+    /* on NE TOUCHE PAS à ion-item */
 
     .teacher-contact {
+        min-width: auto;
+        max-width: 100%;
         align-items: flex-start;
+        margin-left: 0;
+    }
+
+    .enseignant-avatar {
+        margin-top: 4px;
+    }
+
+    .class-body {
+        grid-template-columns: 1fr;
     }
 }

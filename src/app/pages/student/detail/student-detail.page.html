@@ -1,0 +1,184 @@
+<ion-content [fullscreen]="true" class="student-detail-page">
+  @if (student()) {
+  <ng-container>
+    <div class="condensed-header" aria-hidden="true">
+      <div class="condensed-toolbar">
+        <h1 class="large-title">Profil élève</h1>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-body">
+        <div class="avatar-area">
+          <ion-avatar class="avatar">
+            <img [src]="getImageUrl(student()?.user?.profile_photo ?? null)" alt="avatar" />
+          </ion-avatar>
+
+          <div class="meta">
+            <h2 class="fullname">
+              {{ student()?.user?.first_name }} {{ student()?.user?.last_name }}
+            </h2>
+            <p class="subtitle">
+              {{ student()?.classe?.nom }} • {{ student()?.matricule }}
+            </p>
+          </div>
+
+          <div class="status-area">
+            @if (student()?.status === 'actif') {
+            <ion-chip color="success">Actif</ion-chip>
+            } @else {
+            <ion-chip color="medium">{{ student()?.status }}</ion-chip>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <ion-card class="info-card">
+        <ion-card-content>
+          <div class="grid">
+            <div class="cell">
+              <div class="label">Date de naissance</div>
+              <div class="value">
+                {{ student()?.date_of_birth | date:'d MMM yyyy' }}
+              </div>
+            </div>
+
+            <div class="cell">
+              <div class="label">Né en</div>
+              <div class="value">
+                {{ student()?.date_of_birth | date:'yyyy' }}
+              </div>
+            </div>
+
+            <div class="cell">
+              <div class="label">Sexe</div>
+              <div class="value">
+                {{ student()?.gender === 'M'
+                ? 'Masculin'
+                : student()?.gender === 'F'
+                ? 'Féminin'
+                : student()?.gender }}
+              </div>
+            </div>
+
+            <div class="cell">
+              <div class="label">Classe</div>
+              <div class="value">
+                {{ student()?.classe?.nom }} •
+                {{ student()?.classe?.annee_display || ('Année ' + student()?.classe?.annee) }}
+              </div>
+            </div>
+          </div>
+
+          <ion-list lines="none" class="details-list">
+            @if (student()?.user?.username) {
+            <ng-container>
+              <ion-item>
+                <ion-label>
+                  <h3>Identifiant</h3>
+                  <p>{{ student()?.user?.username }}</p>
+                </ion-label>
+              </ion-item>
+            </ng-container>
+            }
+
+            @if (student()?.user?.email) {
+            <ng-container>
+              <ion-item>
+                <ion-label>
+                  <h3>Email</h3>
+                  <p>{{ student()?.user?.email }}</p>
+                </ion-label>
+                <ion-button slot="end" fill="clear" href="mailto:{{ student()?.user?.email }}">
+                  <ion-icon slot="icon-only" [icon]="mailIcon"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ng-container>
+            }
+
+            <ion-item>
+              <ion-label>
+                <h3>Matricule</h3>
+                <p>{{ student()?.matricule }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+
+          <div class="actions">
+            <ion-button expand="block" color="primary" (click)="editStudent()">
+              <ion-icon slot="start" [icon]="createIcon"></ion-icon>
+              Éditer le profil
+            </ion-button>
+
+            <div class="small-actions">
+              <ion-button fill="clear" color="success" href="mailto:{{ student()?.user?.email }}">
+                <ion-icon slot="icon-only" [icon]="mailIcon"></ion-icon>
+              </ion-button>
+
+              <ion-button fill="clear" color="medium" routerLink="/students">
+                <ion-icon slot="icon-only" [icon]="backIcon"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="notes-card">
+        <ion-card-header>
+          <ion-card-title>
+            Historique & notes rapides
+          </ion-card-title>
+        </ion-card-header>
+
+        @if (student()?.evaluations && student()?.evaluations?.length) {
+        <ion-card-content>
+          <ion-list lines="none">
+            @for (evaluation of student()?.evaluations; track evaluation.id) {
+            <ng-container>
+              <ion-item>
+                <ion-label>
+                  <h3>{{ evaluation.subject_name }}</h3>
+                  <p>
+                    Date:
+                    {{ evaluation.date | date:'d MMM yyyy' }}
+                    • Note:
+                    {{ evaluation.score }}/{{ evaluation.max_score }}
+                  </p>
+                </ion-label>
+              </ion-item>
+            </ng-container>
+            }
+          </ion-list>
+        </ion-card-content>
+        } @else {
+        <ion-card-content>
+          <p>Aucune évaluation disponible pour cet élève.</p>
+        </ion-card-content>
+        }
+      </ion-card>
+    </div>
+
+    <ion-footer class="ion-no-border" style="background: --ion-background-color !important;">
+      <ion-toolbar>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6" class="btn_actions">
+              <ion-button expand="block" color="primary" routerLink="/students">
+                Retour
+              </ion-button>
+            </ion-col>
+            <ion-col size="6" class="btn_actions">
+              <ion-button expand="block" color="primary" routerLink="/teachers">
+                Voir profs
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-toolbar>
+    </ion-footer>
+  </ng-container>
+  }
+</ion-content>

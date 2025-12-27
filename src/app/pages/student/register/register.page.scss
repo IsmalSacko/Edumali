@@ -1,0 +1,27 @@
+.register-container::part(scroll) {
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto;
+}
+
+.hero-section,
+.form-section {
+    padding: 24px;
+    background: var(--ion-background-color);
+    text-align: center;
+    align-items: center;
+    margin: 0 auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.12);
+    max-width: 600px;
+
+
+}
+
+.edumali-logo img {
+    height: 150px;
+    width: auto;
+    border-radius: 50%;
+    border: 4px solid var(--ion-color-primary);
+}
