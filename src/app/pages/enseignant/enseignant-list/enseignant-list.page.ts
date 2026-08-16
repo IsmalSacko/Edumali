@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonIcon, IonList, IonCard, IonItem, IonAvatar, IonLabel, IonChip, IonButtons, IonButton } from '@ionic/angular/standalone';
+import { IonContent, IonIcon, IonList, IonCard, IonItem, IonAvatar, IonLabel, IonChip, IonButton } from '@ionic/angular/standalone';
 import { Enseignant } from 'src/app/models/enseignant/enseignant';
 import { EnseignantServiceList } from 'src/app/services/enseignant/ensignant-service-list';
 import { environment } from 'src/environments/environment';
@@ -13,7 +13,7 @@ import { UtilsService } from 'src/app/services/utils/image-url-service';
   templateUrl: './enseignant-list.page.html',
   styleUrls: ['./enseignant-list.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonIcon, IonList, IonCard, IonItem, IonAvatar, IonLabel, IonChip, IonButtons, IonButton]
+  imports: [IonContent, CommonModule, FormsModule, IonIcon, IonList, IonCard, IonItem, IonAvatar, IonLabel, IonChip, IonButton]
 })
 export class EnseignantListPage implements OnInit {
   mailIcon = mailOutline;

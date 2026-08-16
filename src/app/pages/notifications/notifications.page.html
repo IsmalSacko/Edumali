@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Notifications</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="markingAll() || !unreadCount()" (click)="markAllRead()">
+        @if (markingAll()) {
+        <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+        <ion-icon slot="icon-only" name="checkmark-done-outline"></ion-icon>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="filter()" (ionChange)="setFilter($any($event.detail.value))">
+      <ion-segment-button value="all">
+        <ion-label>Toutes</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="unread">
+        <ion-label>Non lues @if (unreadCount()) { ({{ unreadCount() }}) }</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="notifications-content">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+  <div class="loading-wrap"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (visibleAlerts().length) {
+  <ion-list>
+    @for (a of pagedAlerts(); track a.id) {
+    <ion-item button [detail]="false" (click)="markAsRead(a)" [class.unread]="!a.is_read">
+      <ion-icon slot="start" [name]="a.is_global ? 'megaphone-outline' : 'person-outline'"
+        [color]="a.is_global ? 'primary' : 'medium'"></ion-icon>
+      <ion-label>
+        <h2>{{ a.name }}</h2>
+        <p>{{ a.description }}</p>
+        @if (a.created_at) {
+        <p class="date">{{ a.created_at | date: 'short' }}</p>
+        }
+      </ion-label>
+      @if (!a.is_read) {
+      @if (markingId() === a.id) {
+      <ion-spinner slot="end" name="crescent"></ion-spinner>
+      } @else {
+      <ion-badge slot="end" color="primary">Non lu</ion-badge>
+      }
+      }
+    </ion-item>
+    }
+  </ion-list>
+
+  @if (totalPages() > 1) {
+  <div class="pager">
+    <ion-button fill="clear" [disabled]="currentPage() === 1" (click)="prevPage()">
+      <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <span class="pager-label">Page {{ currentPage() }} / {{ totalPages() }}</span>
+    <ion-button fill="clear" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+      <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+  }
+  } @else {
+  <div class="empty-state">
+    <ion-icon name="notifications-outline"></ion-icon>
+    <p>Aucune notification.</p>
+  </div>
+  }
+</ion-content>

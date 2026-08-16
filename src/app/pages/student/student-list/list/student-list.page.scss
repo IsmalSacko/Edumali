@@ -175,8 +175,8 @@
 }
 
 .status-badge.exclu {
-    background: rgba(185, 28, 28, 0.08);
-    color: #b91c1c;
+    background: color-mix(in srgb, var(--ion-color-danger) 10%, transparent);
+    color: var(--ion-color-danger);
 }
 
 .status-badge.transféré {
@@ -202,91 +202,6 @@
 }
 
 
-
-/* Utility legacy styles (kept for compatibility) */
-.student-list {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    padding: 8px 0;
-}
-
-.student-card-body {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.student-details {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    font-size: 1rem;
-    color: #444;
-    align-items: center;
-}
-
-.student-details ion-icon {
-    font-size: 1.1em;
-    margin-right: 4px;
-    color: #3b82f6;
-    vertical-align: middle;
-}
-
-.student-item {
-    margin: 8px 12px;
-    border-radius: 10px;
-    background: #ffffff;
-    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
-    align-items: center;
-}
-
-.student-avatar img {
-    width: 56px;
-    height: 56px;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-.student-name {
-    margin: 0;
-    font-weight: 600;
-}
-
-.muted {
-    color: #6b7280;
-    font-size: 13px;
-    margin-top: 4px;
-}
-
-.status {
-    font-size: 12px;
-    padding: 6px 8px;
-    border-radius: 12px;
-    text-transform: capitalize;
-}
-
-.status.actif {
-    background: #e6ffed;
-    color: #027a48;
-}
-
-.status.exclu {
-    background: #fff1f2;
-    color: #b91c1c;
-}
-
-.status.transféré {
-    background: #fffbeb;
-    color: #92400e;
-}
-
-.classe {
-    margin-top: 6px;
-    font-size: 13px;
-    color: #374151;
-}
 
 /* Responsive: 4 per row desktop, 2 per row tablet, 1 per row mobile */
 @media (min-width: 1201px) {

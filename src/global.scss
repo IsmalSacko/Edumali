@@ -19,22 +19,39 @@ ion-router-outlet {
 	flex: 1 0 auto;
 	padding-bottom: 48px;
 	/* espace pour le footer */
-	padding-top: 56px;
-	/* espace pour ne pas coller à la barre de navigation */
+	/* `padding-top` ne fonctionne pas ici : Ionic pose `position: absolute`
+	   sur ion-router-outlet (nécessaire pour ses animations de transition de
+	   page), ce qui le sort entièrement du flux flex de <ion-app> — il
+	   s'affiche donc toujours à partir de y=0, sous app-nav (position:
+	   static, dans le flux normal), quelle que soit la hauteur de ce
+	   dernier. Le padding ne déplace pas la boîte elle-même, seul un margin
+	   le fait pour un élément positionné en absolute avec top/bottom déjà
+	   fixés par Ionic (inset:0 implicite) : ion-page (le contenu de chaque
+	   route) était donc caché sous la nav fixe (~85px, voir .navbar dans
+	   nav.page.scss) — pas seulement "collé", carrément recouvert. */
+	margin-top: 88px;
 }
 
 ion-content {
 	--padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
 	padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
-	--padding-top: 72px;
-	padding-top: 72px;
-	/* espace pour dégager sous le header/nav */
+	--padding-top: 40px;
+	padding-top: 40px;
+	/* Simple respiration désormais : le dégagement sous la nav fixe est géré
+	   par ion-router-outlet (margin-top, voir plus haut). Cette valeur servait
+	   auparavant à COMPENSER le fait que ion-router-outlet ne dégageait rien
+	   du tout — désormais chaque ion-header dégage déjà normalement l'espace
+	   sous la nav (flux normal de la page), donc garder 72px ici ajoutait un
+	   second dégagement en plus du premier (~106px de vide constaté avant le
+	   premier élément sur la page Évaluations). Les pages en mode
+	   fullscreen+translucent (accueil, profil...) gardent leur propre
+	   dégagement via leur CSS de page, pas ce padding global. */
 }
 
 /* Force aussi le padding dans la zone scroll d'ion-content (Shadow DOM) */
 ion-content::part(scroll) {
 	padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px) !important;
-	padding-top: 90px;
+	padding-top: 40px;
 }
 
 app-footer {
@@ -241,7 +258,39 @@ ion-toolbar.navbar {
 	--ion-card-background: #d97706;
 }
 
-/* Overlays: ensure alerts/selects/popovers follow the active theme (minimal, global) */
+/* Le navigateur peint un fond opaque gris/bleuté sur les champs auto-remplis
+   (identifiants enregistrés) par-dessus le style Ionic, quel que soit le thème
+   — d'où le champ "grisâtre" vu sur le formulaire de connexion. Ionic (cette
+   version) ne pose PAS de Shadow DOM sur ion-input : le <input> natif
+   (.native-input) est en DOM clair, donc atteignable directement (pas besoin
+   de ::part()). On neutralise le fond auto-fill avec l'astuce box-shadow
+   inset (seule méthode fiable : background-color seul est ignoré par les
+   navigateurs pour cet état, comme le confirme la règle Ionic déjà présente
+   `.native-input:-webkit-autofill{background-color:transparent}` qui ne
+   suffit pas). */
+ion-input input.native-input:-webkit-autofill,
+ion-input input.native-input:-webkit-autofill:hover,
+ion-input input.native-input:-webkit-autofill:focus {
+	-webkit-text-fill-color: var(--ion-text-color) !important;
+	caret-color: var(--ion-text-color);
+	-webkit-box-shadow: 0 0 0px 1000px var(--ion-item-background, var(--ion-background-color)) inset !important;
+	box-shadow: 0 0 0px 1000px var(--ion-item-background, var(--ion-background-color)) inset !important;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+ion-input input.native-input:autofill {
+	-webkit-text-fill-color: var(--ion-text-color) !important;
+	box-shadow: 0 0 0px 1000px var(--ion-item-background, var(--ion-background-color)) inset !important;
+}
+
+/* Overlays: ensure alerts/selects/popovers follow the active theme (minimal, global).
+   Only --background/--color (CSS custom properties) are set here: they cascade
+   through the shadow DOM into the actual content box (.popover-content etc.,
+   themed below). Setting a plain `background` directly on these selectors is a
+   trap: several of them (.select-popover, .sc-ion-popover-md...) match the
+   ion-popover/ion-alert HOST element itself, which Ionic sizes to the full
+   viewport (position: fixed) for backdrop/click-outside handling — painting it
+   opaque hides the entire page behind any select/popover/alert. */
 .alert-wrapper,
 ion-overlay-wrapper,
 .sc-ion-alert-ios,
@@ -252,8 +301,6 @@ ion-overlay-wrapper,
 .action-sheet-wrapper {
 	--background: var(--ion-background-color) !important;
 	--color: var(--ion-text-color) !important;
-	background: var(--ion-background-color) !important;
-	color: var(--ion-text-color) !important;
 }
 
 /* Target inner cards/content so backdrop can remain semi-opaque */

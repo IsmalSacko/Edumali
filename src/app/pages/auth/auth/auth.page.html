@@ -6,7 +6,7 @@
         <ion-icon name="shield-checkmark-outline"></ion-icon>
         Sécurité
       </div>
-      <h1>Bienvenue sur Edumali</h1>
+      <h1>Bienvenue sur ScolMali</h1>
       <p class="subtitle">Connectez-vous pour accéder au tableau de bord et piloter votre établissement.</p>
     </div>
 
@@ -16,6 +16,30 @@
       </ion-card-header>
       <ion-card-content>
         <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          @if (schoolsLoading()) {
+          <ion-item fill="outline" class="field">
+            <ion-label>Établissement</ion-label>
+            <ion-spinner name="dots" slot="end"></ion-spinner>
+          </ion-item>
+          } @else if (schools().length) {
+          <ion-item fill="outline" class="field">
+            <ion-label position="floating">Établissement</ion-label>
+            <ion-select interface="popover" formControlName="school">
+              @for (s of schools(); track s.code) {
+              <ion-select-option [value]="s.code">{{ s.name }}</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+          } @else {
+          <ion-item fill="outline" class="field">
+            <ion-label position="floating">Code établissement</ion-label>
+            <ion-input type="text" autocomplete="organization" formControlName="school"></ion-input>
+          </ion-item>
+          }
+          @if (form.controls.school.touched && form.controls.school.invalid) {
+          <ion-note color="danger">L'établissement est requis.</ion-note>
+          }
+
           <ion-item fill="outline" class="field">
             <ion-label position="floating">Nom d'utilisateur</ion-label>
             <ion-input type="text" autocomplete="username" formControlName="username"></ion-input>

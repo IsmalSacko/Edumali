@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -97,10 +97,10 @@ export class EmploisDuTempsPage implements OnInit {
     return this.emploisService.groupByDay(this.filteredEmplois());
   });
 
-  constructor(
-    private emploisService: EmploisService,
-    private classeService: ClasseService
-  ) {
+  private emploisService = inject(EmploisService);
+  private classeService = inject(ClasseService);
+
+  constructor() {
     addIcons({
       calendarOutline,
       timeOutline,

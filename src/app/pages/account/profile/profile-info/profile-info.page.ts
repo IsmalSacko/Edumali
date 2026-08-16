@@ -169,6 +169,15 @@ export class ProfileInfPage {
 
   // Plus besoin de méthode actionLabel, la description vient de l'API
 
+  /** Nom affiché : prénom+nom si renseignés, sinon repli sur le username
+   * (cas fréquent des comptes admin créés via createsuperuser, sans nom). */
+  displayName(): string {
+    const p = this.profile();
+    if (!p) return '';
+    const full = `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim();
+    return full || p.username || 'Utilisateur';
+  }
+
   getImageUrl(photo?: string | null): string | null {
     if (!photo) return null;
     if (photo.startsWith('http')) return photo;

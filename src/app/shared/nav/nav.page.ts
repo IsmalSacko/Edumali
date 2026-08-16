@@ -16,12 +16,18 @@ import {
   personCircleOutline,
   logOutOutline,
   moonOutline,
-  checkmarkOutline
+  checkmarkOutline,
+  checkmarkCircleOutline,
+  chatbubbleOutline,
+  notificationsOutline,
+  documentTextOutline,
+  cashOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../services/auth/auth.service';
 import { ThemeService } from '../../services/theme.service';
 import { environment } from '../../../environments/environment';
 import { EmploisService } from 'src/app/services/emplois-du-temps/emplois-service';
+import { MessagingService } from 'src/app/services/messaging/messaging.service';
 
 @Component({
   selector: 'app-nav',
@@ -48,6 +54,7 @@ export class NavPage implements OnInit {
 
   private auth = inject(AuthService);
   private EmploiService = inject(EmploisService);
+  private messagingService = inject(MessagingService);
   private router = inject(Router);
   themeService = inject(ThemeService);
 
@@ -55,27 +62,35 @@ export class NavPage implements OnInit {
   profileMenuOpen = signal<boolean>(false);
   themeMenuOpen = signal<boolean>(false);
   EmploisCount = signal<number>(0);
+  unreadMessages = this.messagingService.unreadCount;
   profilePopoverEvent: Event | null = null;
   themePopoverEvent: Event | null = null;
 
   constructor() {
-    addIcons({ peopleOutline, schoolOutline, layersOutline, calendarOutline, clipboardOutline, barChartOutline, settingsOutline, menuOutline, homeOutline, personCircleOutline, logOutOutline, checkmarkOutline, moonOutline, });
+    addIcons({
+      peopleOutline, schoolOutline, layersOutline, calendarOutline, clipboardOutline, barChartOutline,
+      settingsOutline, menuOutline, homeOutline, personCircleOutline, logOutOutline, checkmarkOutline, moonOutline,
+      checkmarkCircleOutline, chatbubbleOutline, notificationsOutline, documentTextOutline, cashOutline,
+    });
   }
 
   async ngOnInit() {
     this.loadEmploisCount();
+    if (this.auth.access) {
+      this.messagingService.refreshUnreadCount();
+    }
   }
 
   get avatar() {
     const user = this.currentUser();
-    if (!user) return 'assets/logo-edumali.png';
+    if (!user) return 'assets/logo-scolmali.png';
 
     const photo = user.profile_photo;
 
     // Si pas de photo, retourner le logo par défaut
     if (!photo) {
       console.log('Pas de photo de profil');
-      return 'assets/logo-edumali.png';
+      return 'assets/logo-scolmali.png';
     }
 
     // Si URL complète, retourner directement
@@ -126,7 +141,7 @@ export class NavPage implements OnInit {
 
   onImageError(event: any) {
     // Fallback au logo en cas d'erreur de chargement
-    event.target.src = 'assets/logo-edumali.png';
+    event.target.src = 'assets/logo-scolmali.png';
   }
 
   navigate(path: string) {

@@ -1,0 +1,132 @@
+.messaging-content {
+  --background: var(--ion-background-color);
+}
+
+.detail-card ion-item {
+  margin-bottom: 14px;
+}
+
+.detail-card ion-item:last-child {
+  margin-bottom: 0;
+}
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 16px;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+}
+
+.message-list {
+  ion-item.unread {
+    --background: color-mix(in srgb, var(--ion-color-primary) 8%, var(--ion-background-color));
+    h2 {
+      font-weight: 700;
+    }
+  }
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+
+  @media (min-width: 768px) {
+    // `align-items: center` faisait dépendre la position du modal de sa
+    // propre hauteur ET de celle de la fenêtre : avec le formulaire élargi
+    // (liste de destinataires, recherche...), sur une fenêtre pas très
+    // haute, le modal centré remontait jusqu'à toucher les onglets
+    // Reçus/Envoyés de la page en dessous. Ancré en haut avec une marge
+    // fixe à la place — position prévisible, indépendante de la hauteur du
+    // contenu ou de la fenêtre.
+    align-items: flex-start;
+    // Doit dégager la nav (~85px) + les deux barres d'outils de cette page
+    // (titre + onglets Reçus/Envoyés, jusqu'à ~214px) : mesuré précisément,
+    // 96px ne suffisait pas et le modal chevauchait encore les onglets.
+    padding-top: 232px;
+    overflow-y: auto;
+  }
+}
+
+.detail-card {
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  margin: 0;
+  border-radius: 16px 16px 0 0;
+
+  @media (min-width: 768px) {
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.detail-meta {
+  color: var(--ion-color-medium);
+  font-size: 13px;
+}
+
+.detail-content {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.recipients-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 16px 0 8px;
+}
+
+.select-all-actions ion-button {
+  --padding-start: 6px;
+  --padding-end: 6px;
+  font-size: 12px;
+}
+
+.recipient-search {
+  margin-bottom: 8px;
+}
+
+.recipients-list {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--ion-border-color);
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+.no-recipients {
+  text-align: center;
+  color: var(--ion-color-medium);
+  padding: 16px;
+  margin: 0;
+}

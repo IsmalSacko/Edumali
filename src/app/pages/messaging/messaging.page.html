@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Messagerie</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openCompose()">
+        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="box()" (ionChange)="box.set($any($event.detail.value))">
+      <ion-segment-button value="inbox">
+        <ion-icon name="mail-unread-outline"></ion-icon>
+        <ion-label>Reçus</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="sent">
+        <ion-icon name="mail-open-outline"></ion-icon>
+        <ion-label>Envoyés</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="messaging-content">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+  <div class="loading-wrap"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (visibleMessages().length) {
+  <ion-list class="message-list">
+    @for (m of visibleMessages(); track m.id) {
+    <ion-item button [detail]="true" (click)="openMessage(m)" [class.unread]="box() === 'inbox' && !m.read">
+      <ion-label>
+        <h2>{{ otherPartyLabel(m) }}</h2>
+        <h3>{{ m.subject }}</h3>
+        <p>{{ m.content }}</p>
+      </ion-label>
+      @if (box() === 'inbox' && !m.read) {
+      <ion-badge slot="end" color="primary">Nouveau</ion-badge>
+      }
+    </ion-item>
+    }
+  </ion-list>
+  } @else {
+  <div class="empty-state">
+    <ion-icon name="mail-open-outline"></ion-icon>
+    <p>Aucun message pour l'instant.</p>
+  </div>
+  }
+
+  <!-- Détail d'un message -->
+  @if (selectedMessage(); as m) {
+  <div class="overlay" (click)="closeMessage()">
+    <ion-card class="detail-card" (click)="$event.stopPropagation()">
+      <ion-card-content>
+        <div class="detail-header">
+          <h2>{{ m.subject }}</h2>
+          <ion-button fill="clear" (click)="closeMessage()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </div>
+        <p class="detail-meta">{{ otherPartyLabel(m) }} · {{ m.created_at | date: 'short' }}</p>
+        <p class="detail-content">{{ m.content }}</p>
+        <ion-button fill="clear" color="danger" (click)="deleteMessage(m.id)">
+          <ion-icon slot="start" name="trash-outline"></ion-icon>
+          Supprimer
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  }
+
+  <!-- Composition -->
+  @if (showCompose()) {
+  <div class="overlay" (click)="closeCompose()">
+    <ion-card class="detail-card" (click)="$event.stopPropagation()">
+      <ion-card-content>
+        <div class="detail-header">
+          <h2>Nouveau message</h2>
+          <ion-button fill="clear" (click)="closeCompose()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="recipients-header">
+          <ion-label>Destinataires ({{ composeReceivers().size }})</ion-label>
+          @if (canSelectAll()) {
+          <div class="select-all-actions">
+            <ion-button fill="clear" size="small" (click)="selectAllRecipients()">Tout cocher</ion-button>
+            <ion-button fill="clear" size="small" (click)="deselectAllRecipients()">Tout décocher</ion-button>
+          </div>
+          }
+        </div>
+
+        <ion-item fill="outline" class="recipient-search">
+          <ion-input placeholder="Rechercher..." [value]="recipientSearch()"
+            (ionInput)="recipientSearch.set($any($event.target).value ?? '')"></ion-input>
+        </ion-item>
+
+        <ion-list class="recipients-list" lines="none">
+          @for (r of filteredRecipients(); track r.id) {
+          <ion-item button (click)="toggleRecipient(r)">
+            <ion-checkbox slot="start" [checked]="isRecipientChecked(r.id)" (click)="$event.preventDefault()"></ion-checkbox>
+            <ion-label>{{ r.label }}</ion-label>
+          </ion-item>
+          }
+          @if (!filteredRecipients().length) {
+          <p class="no-recipients">Aucun destinataire trouvé.</p>
+          }
+        </ion-list>
+
+        <ion-item fill="outline">
+          <ion-label position="floating">Sujet</ion-label>
+          <ion-input [(ngModel)]="composeSubject"></ion-input>
+        </ion-item>
+
+        <ion-item fill="outline">
+          <ion-label position="floating">Message</ion-label>
+          <ion-textarea [(ngModel)]="composeContent" autoGrow="true" rows="4"></ion-textarea>
+        </ion-item>
+
+        <ion-button expand="block" [disabled]="sending() || !composeReceivers().size" (click)="submitCompose()">
+          @if (sending()) {
+          <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+          <ion-icon slot="start" name="send-outline"></ion-icon>
+          Envoyer {{ composeReceivers().size > 1 ? '(' + composeReceivers().size + ')' : '' }}
+          }
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  }
+</ion-content>

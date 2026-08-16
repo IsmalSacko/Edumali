@@ -31,11 +31,6 @@
     font-weight: 600;
 }
 
-// .subtitle {
-//     font-size: 14px;
-//     color: var(--ion-color-medium);
-// }
-
 .controls {
     display: flex;
     align-items: center;
@@ -77,11 +72,6 @@
     font-weight: 600;
 }
 
-// .kpi-label {
-//     font-size: 13px;
-//     color: #6b7280;
-// }
-
 .kpi-right {
     margin-top: 8px;
 }
@@ -92,15 +82,15 @@
 }
 
 .kpi-trend.positive {
-    color: #16a34a;
+    color: var(--ion-color-success);
 }
 
 .kpi-trend.negative {
-    color: #dc2626;
+    color: var(--ion-color-danger);
 }
 
 .kpi-trend.neutral {
-    color: #9ca3af;
+    color: var(--ion-color-medium);
 }
 
 /* ===============================
@@ -233,7 +223,7 @@ ion-card-title {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--ion-color-step-150);
 }
 
 .event-list li:last-child {
@@ -242,9 +232,10 @@ ion-card-title {
 
 .event-title {
     font-weight: 500;
+    color: var(--ion-text-color);
 }
 
 .event-date {
     font-size: 13px;
-    color: #6b7280;
+    color: var(--ion-color-medium);
 }

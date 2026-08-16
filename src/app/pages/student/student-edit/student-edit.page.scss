@@ -75,21 +75,3 @@ ion-button[expand="block"] {
     }
 }
 
-/* Helpful status badge styles (if used) */
-.status-badge {
-    display: inline-block;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.78rem;
-}
-
-.status-badge.actif {
-    background: #e6fbef;
-    color: #117a4b
-}
-
-.status-badge.inactif {
-    background: #fff4e6;
-    color: #a35a00
-}

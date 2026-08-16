@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -25,6 +26,11 @@ import {
   IonRefresherContent,
   IonLabel,
   IonSearchbar,
+  IonSelect,
+  IonSelectOption,
+  IonInput,
+  IonItem,
+  IonTextarea,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -42,9 +48,22 @@ import {
 } from 'ionicons/icons';
 import { EvaluationService } from '../../services/evaluation/evaluation.service';
 import { AuthService } from '../../services/auth/auth.service';
-import { Evaluation, Bulletin } from '../../models/student-info/model';
+import { ClasseService } from '../../services/classes/classe-service';
+import { MatiereService } from '../../services/classes/matiere-service';
+import { StudentServiceList } from '../../services/student/student-service-list';
+import { EnseignantServiceList } from '../../services/enseignant/ensignant-service-list';
+import { Evaluation, Bulletin, EvaluationRosterEntry } from '../../models/student-info/model';
+import { ClasseListe, Matiere } from '../../models/classe/classes';
+import { Student } from '../../models/student/student';
+import { Enseignant } from '../../models/enseignant/enseignant';
 
-type ViewMode = 'list' | 'bulletin' | 'stats';
+type ViewMode = 'list' | 'saisie' | 'bulletin' | 'stats';
+type SaisieSubMode = 'individuelle' | 'groupee';
+type EvalType = 'CC' | 'EX' | 'TP' | 'DS' | 'RA';
+
+function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 @Component({
   selector: 'app-evaluation',
@@ -77,11 +96,21 @@ type ViewMode = 'list' | 'bulletin' | 'stats';
     IonRefresherContent,
     IonLabel,
     IonSearchbar,
+    IonSelect,
+    IonSelectOption,
+    IonInput,
+    IonItem,
+    IonTextarea,
   ],
 })
 export class EvaluationPage implements OnInit {
   private evaluationService = inject(EvaluationService);
   private auth = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private classeService = inject(ClasseService);
+  private matiereService = inject(MatiereService);
+  private studentService = inject(StudentServiceList);
+  private enseignantService = inject(EnseignantServiceList);
 
   // États
   viewMode = signal<ViewMode>('list');
@@ -91,6 +120,45 @@ export class EvaluationPage implements OnInit {
   searchText = signal<string>('');
   loading = signal<boolean>(false);
   showFilters = signal<boolean>(false);
+
+  // --- Saisie de notes (roster + bulk) ---
+  classes = signal<ClasseListe[]>([]);
+  classeMatieres = signal<Matiere[]>([]);
+  saisieClasseId = signal<number | null>(null);
+  saisieMatiereId = signal<number | null>(null);
+  saisieEvalType = signal<EvalType>('CC');
+  saisieDate = signal<string>(todayIso());
+  saisieMaxScore = signal<number>(20);
+  roster = this.evaluationService.roster;
+  rosterLoading = this.evaluationService.loading;
+  saisieDraft = signal<Record<number, { score: number | null; comment: string }>>({});
+  saving = signal<boolean>(false);
+  // Élève ciblé explicitement (comme dans l'admin Django, où on choisit un
+  // élève précis) : null = toute la classe. La grille filtre sur ce choix,
+  // mais l'enregistrement passe toujours par le même mécanisme en dessous.
+  saisieStudentId = signal<number | null>(null);
+  filteredRoster = computed(() => {
+    const studentId = this.saisieStudentId();
+    const all = this.roster();
+    return studentId ? all.filter(r => r.student_id === studentId) : all;
+  });
+
+  // --- Saisie individuelle (un élève à la fois, comme le formulaire admin) ---
+  saisieSubMode = signal<SaisieSubMode>('individuelle');
+  allStudents = signal<Student[]>([]);
+  allMatieres = signal<Matiere[]>([]);
+  allTeachers = signal<Enseignant[]>([]);
+  indivStudentId = signal<number | null>(null);
+  indivMatiereId = signal<number | null>(null);
+  indivTeacherId = signal<number | null>(null);
+  indivEvalType = signal<EvalType>('CC');
+  indivScore = signal<number | null>(null);
+  indivMaxScore = signal<number>(20);
+  indivDate = signal<string>(todayIso());
+  indivTrimester = signal<number>(1);
+  indivCycle = signal<string | null>(null);
+  indivComment = signal<string>('');
+  indivSaving = signal<boolean>(false);
 
   // Données du service
   evaluations = computed(() => this.evaluationService.evaluations());
@@ -115,6 +183,19 @@ export class EvaluationPage implements OnInit {
   }
 
   ngOnInit() {
+    // Deep-link /bulletin/:studentId/:trimester (depuis notifications/dashboard) :
+    // ouvre directement le bulletin d'un élève sans repasser par la liste.
+    const studentIdParam = this.route.snapshot.paramMap.get('studentId');
+    const trimesterParam = this.route.snapshot.paramMap.get('trimester');
+    if (studentIdParam) {
+      const studentId = Number(studentIdParam);
+      const trimester = Number(trimesterParam) || 1;
+      if (!Number.isNaN(studentId)) {
+        this.selectedTrimester.set(trimester);
+        this.loadBulletin(studentId);
+        return;
+      }
+    }
     this.loadEvaluations();
   }
   // Filtrées par recherche
@@ -295,8 +376,151 @@ export class EvaluationPage implements OnInit {
    * Change le mode d'affichage
    */
   changeViewMode(mode: any): void {
-    if (mode && (mode === 'list' || mode === 'bulletin' || mode === 'stats')) {
+    if (mode && (mode === 'list' || mode === 'saisie' || mode === 'bulletin' || mode === 'stats')) {
       this.viewMode.set(mode as ViewMode);
+      if (mode === 'saisie' && !this.classes().length) {
+        this.loadClasses();
+        this.loadIndividuelleData();
+      }
+    }
+  }
+
+  // --- Saisie de notes ---
+
+  async loadClasses() {
+    this.classes.set(await this.classeService.getClasses());
+  }
+
+  async onSaisieClasseChange() {
+    const classeId = this.saisieClasseId();
+    this.saisieMatiereId.set(null);
+    this.classeMatieres.set([]);
+    this.saisieDraft.set({});
+    this.saisieMaxScore.set(20);
+    this.saisieStudentId.set(null);
+    if (!classeId) return;
+    const detail = await this.classeService.getClasseDetail(classeId);
+    this.classeMatieres.set(detail.matieres ?? []);
+  }
+
+  async onSaisieParamsChange() {
+    const classeId = this.saisieClasseId();
+    const matiereId = this.saisieMatiereId();
+    if (!classeId || !matiereId) return;
+    // Repart d'une note maximale par défaut à chaque changement de
+    // classe/matière/type/date : sinon, en l'absence de notes existantes
+    // pour la nouvelle combinaison, la valeur restait celle laissée par la
+    // sélection précédente au lieu de revenir à 20 par défaut.
+    this.saisieMaxScore.set(20);
+    const items = await this.evaluationService.getRoster(
+      classeId, matiereId, this.selectedTrimester(), this.saisieEvalType(), this.saisieDate()
+    );
+    const d: Record<number, { score: number | null; comment: string }> = {};
+    for (const it of items) {
+      d[it.student_id] = { score: it.score, comment: it.comment ?? '' };
+      if (it.max_score) this.saisieMaxScore.set(it.max_score);
+    }
+    this.saisieDraft.set(d);
+  }
+
+  setSaisieScore(studentId: number, score: number | null) {
+    const d = { ...this.saisieDraft() };
+    const current = d[studentId] ?? { score: null, comment: '' };
+    d[studentId] = { ...current, score };
+    this.saisieDraft.set(d);
+  }
+
+  setSaisieComment(studentId: number, comment: string) {
+    const d = { ...this.saisieDraft() };
+    const current = d[studentId] ?? { score: null, comment: '' };
+    d[studentId] = { ...current, comment };
+    this.saisieDraft.set(d);
+  }
+
+  saisieMarkedCount(): number {
+    return Object.values(this.saisieDraft()).filter(v => v.score !== null && v.score !== undefined).length;
+  }
+
+  async saveSaisie() {
+    const classeId = this.saisieClasseId();
+    const matiereId = this.saisieMatiereId();
+    if (!classeId || !matiereId) return;
+    const entries = Object.entries(this.saisieDraft())
+      .filter(([, v]) => v.score !== null && v.score !== undefined)
+      .map(([studentId, v]) => ({ student: Number(studentId), score: v.score as number, comment: v.comment }));
+    if (!entries.length) return;
+
+    this.saving.set(true);
+    const ok = await this.evaluationService.bulkSubmit({
+      classe: classeId,
+      matiere: matiereId,
+      eval_type: this.saisieEvalType(),
+      trimester: this.selectedTrimester(),
+      date: this.saisieDate(),
+      max_score: this.saisieMaxScore(),
+      entries,
+    });
+    this.saving.set(false);
+    if (ok) {
+      await this.onSaisieParamsChange();
+    }
+  }
+
+  /** Charge les listes complètes (élèves/matières/enseignants) pour le
+   * formulaire de saisie individuelle — même principe que le formulaire
+   * d'ajout d'évaluation de l'admin Django (un élève choisi directement,
+   * pas de passage obligé par une classe). */
+  async loadIndividuelleData() {
+    const [students, matieres, teachers] = await Promise.all([
+      this.studentService.getStudents(),
+      this.matiereService.getMatieres(),
+      this.enseignantService.getTeachers(),
+    ]);
+    this.allStudents.set(students);
+    this.allMatieres.set(matieres);
+    this.allTeachers.set(teachers);
+
+    // Un enseignant connecté est présélectionné sur lui-même (modifiable —
+    // un admin peut vouloir noter au nom d'un autre professeur).
+    const currentUserId = this.auth.user()?.id;
+    const self = teachers.find(t => t.user?.id === currentUserId);
+    if (self?.id) this.indivTeacherId.set(self.id);
+  }
+
+  studentLabel(s: Student): string {
+    return `${s.user.first_name ?? ''} ${s.user.last_name ?? ''}`.trim() || s.user.username || 'Élève';
+  }
+
+  teacherLabel(t: Enseignant): string {
+    return `${t.user.first_name ?? ''} ${t.user.last_name ?? ''}`.trim() || t.user.username || 'Enseignant';
+  }
+
+  indivReady(): boolean {
+    return !!(this.indivStudentId() && this.indivMatiereId() && this.indivScore() !== null && this.indivScore() !== undefined);
+  }
+
+  async submitIndividuelle() {
+    if (!this.indivReady()) return;
+    this.indivSaving.set(true);
+    const result = await this.evaluationService.create({
+      student: this.indivStudentId()!,
+      matiere: this.indivMatiereId()!,
+      teacher: this.indivTeacherId(),
+      eval_type: this.indivEvalType(),
+      score: this.indivScore()!,
+      max_score: this.indivMaxScore(),
+      date: this.indivDate(),
+      trimester: this.indivTrimester(),
+      cycle: this.indivCycle(),
+      comment: this.indivComment(),
+    });
+    this.indivSaving.set(false);
+    if (result) {
+      // Repart sur un formulaire vierge, prêt pour la note suivante — sauf
+      // élève/matière/enseignant/type/date, souvent identiques d'une saisie
+      // à l'autre (plusieurs notes de suite pour la même classe/matière).
+      this.indivScore.set(null);
+      this.indivComment.set('');
     }
   }
 

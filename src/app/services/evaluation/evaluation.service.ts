@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from '../../../environments/environment';
-import { Evaluation, MatiereFinalNote, Bulletin } from '../../models/student-info/model';
+import { Evaluation, MatiereFinalNote, Bulletin, EvaluationRosterEntry, BulkEvaluationEntry } from '../../models/student-info/model';
 import { ToastController } from '@ionic/angular/standalone';
 
 export interface EvaluationFilter {
@@ -26,6 +26,7 @@ export class EvaluationService {
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
   totalCount = signal<number>(0);
+  roster = signal<EvaluationRosterEntry[]>([]);
 
   /**
    * Récupère toutes les évaluations avec pagination
@@ -138,6 +139,37 @@ export class EvaluationService {
   }
 
   /**
+   * Saisie individuelle d'une évaluation (un élève à la fois) — même
+   * endpoint que l'admin Django utilise pour son formulaire d'ajout.
+   * Endpoint: POST /evaluations/
+   */
+  async create(payload: {
+    student: number;
+    matiere: number;
+    teacher?: number | null;
+    eval_type: string;
+    score: number;
+    max_score: number;
+    date?: string;
+    trimester: number;
+    cycle?: string | null;
+    comment?: string;
+  }): Promise<Evaluation | null> {
+    this.error.set(null);
+    try {
+      const r = await this.api.post<Evaluation>(this.baseUrl, payload);
+      await this.showSuccessToast('Note enregistrée');
+      return r.data;
+    } catch (e: any) {
+      const data = e?.response?.data;
+      const msg = data ? String(Object.values(data)[0]) : "Impossible d'enregistrer la note";
+      this.error.set(msg);
+      await this.showErrorToast(msg);
+      return null;
+    }
+  }
+
+  /**
    * Récupère la note finale normalisée (/20) pour une matière
    * Endpoint: GET /evaluations/{id}/matiere-final-note/
    */
@@ -213,6 +245,66 @@ export class EvaluationService {
       return null;
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  /**
+   * Grille de saisie : élèves d'une classe + note existante pré-remplie pour
+   * une matière/trimestre/type/date donnés.
+   * Endpoint: GET /evaluations/roster/?classe=&matiere=&trimester=&eval_type=&date=
+   */
+  async getRoster(
+    classeId: number,
+    matiereId: number,
+    trimester: number,
+    evalType: string,
+    date?: string
+  ): Promise<EvaluationRosterEntry[]> {
+    this.loading.set(true);
+    this.error.set(null);
+    try {
+      const params: Record<string, any> = { classe: classeId, matiere: matiereId, trimester, eval_type: evalType };
+      if (date) params['date'] = date;
+      const r = await this.api.get<EvaluationRosterEntry[]>(`${this.baseUrl}roster/`, { params });
+      const items = r.data ?? [];
+      this.roster.set(items);
+      return items;
+    } catch (e: any) {
+      const errorMsg = e?.response?.status === 403
+        ? "Vous ne pouvez noter que vos propres classes."
+        : 'Impossible de charger la grille de saisie';
+      this.error.set(errorMsg);
+      await this.showErrorToast(errorMsg);
+      return [];
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  /**
+   * Enregistre les notes de toute une classe en un appel.
+   * Endpoint: POST /evaluations/bulk/
+   */
+  async bulkSubmit(payload: {
+    classe: number;
+    matiere: number;
+    eval_type: string;
+    trimester: number;
+    date: string;
+    max_score: number;
+    entries: BulkEvaluationEntry[];
+  }): Promise<boolean> {
+    this.error.set(null);
+    try {
+      await this.api.post(`${this.baseUrl}bulk/`, payload);
+      await this.showSuccessToast('Notes enregistrées');
+      return true;
+    } catch (e: any) {
+      const data = e?.response?.data;
+      const msg = data ? String(Object.values(data)[0]) : "Erreur lors de l'enregistrement des notes";
+      this.error.set(msg);
+      await this.showErrorToast(msg);
+      return false;
     }
   }
 

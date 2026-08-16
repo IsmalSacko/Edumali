@@ -13,6 +13,10 @@
         <ion-label>Liste</ion-label>
         <ion-icon name="list"></ion-icon>
       </ion-segment-button>
+      <ion-segment-button [value]="'saisie'">
+        <ion-label>Saisie</ion-label>
+        <ion-icon name="book-outline"></ion-icon>
+      </ion-segment-button>
       <ion-segment-button [value]="'bulletin'">
         <ion-label>Bulletin</ion-label>
         <ion-icon name="document-text-outline"></ion-icon>
@@ -151,6 +155,229 @@
       <p>Aucune évaluation trouvée pour ce trimestre.</p>
     </ion-card-content>
   </ion-card>
+  }
+  }
+
+  <!-- MODE: SAISIE (grille de notes pour l'enseignant/admin) -->
+  @if (viewMode() === 'saisie') {
+  <ion-segment [value]="saisieSubMode()" (ionChange)="saisieSubMode.set($any($event.detail.value))" class="saisie-submode">
+    <ion-segment-button value="individuelle">
+      <ion-label>Un élève à la fois</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="groupee">
+      <ion-label>Classe entière</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  @if (saisieSubMode() === 'individuelle') {
+  <!-- Formulaire direct, un élève à la fois — mêmes champs que l'ajout
+       d'évaluation dans l'admin Django (élève, matière, enseignant, type,
+       note, note max, date, trimestre, cycle, commentaire). -->
+  <ion-card class="filter-card">
+    <ion-card-header>
+      <ion-card-title>Nouvelle note</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item fill="outline">
+        <ion-label position="floating">Étudiant *</ion-label>
+        <ion-select [(ngModel)]="indivStudentId" interface="popover">
+          @for (s of allStudents(); track s.id) {
+          <ion-select-option [value]="s.id">{{ studentLabel(s) }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Matière *</ion-label>
+        <ion-select [(ngModel)]="indivMatiereId" interface="popover">
+          @for (m of allMatieres(); track m.id) {
+          <ion-select-option [value]="m.id">{{ m.nom }} ({{ m.cycle_display }})</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Enseignant</ion-label>
+        <ion-select [(ngModel)]="indivTeacherId" interface="popover">
+          <ion-select-option [value]="null">—</ion-select-option>
+          @for (t of allTeachers(); track t.id) {
+          <ion-select-option [value]="t.id">{{ teacherLabel(t) }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Type d'évaluation *</ion-label>
+        <ion-select [(ngModel)]="indivEvalType" interface="popover">
+          <ion-select-option value="CC">Contrôle continu</ion-select-option>
+          <ion-select-option value="EX">Examen</ion-select-option>
+          <ion-select-option value="TP">Travaux pratiques</ion-select-option>
+          <ion-select-option value="DS">Devoir surveillé</ion-select-option>
+          <ion-select-option value="RA">Rattrapage</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Note obtenue *</ion-label>
+        <ion-input type="number" [(ngModel)]="indivScore"></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Note maximale *</ion-label>
+        <ion-input type="number" [(ngModel)]="indivMaxScore"></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Date</ion-label>
+        <ion-input type="date" [(ngModel)]="indivDate"></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Trimestre *</ion-label>
+        <ion-select [(ngModel)]="indivTrimester" interface="popover">
+          <ion-select-option [value]="1">1er trimestre</ion-select-option>
+          <ion-select-option [value]="2">2ème trimestre</ion-select-option>
+          <ion-select-option [value]="3">3ème trimestre</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Cycle</ion-label>
+        <ion-select [(ngModel)]="indivCycle" interface="popover">
+          <ion-select-option [value]="null">—</ion-select-option>
+          <ion-select-option value="primaire">Primaire 1ère-6ème</ion-select-option>
+          <ion-select-option value="secondaire">Secondaire 7ème-9ème</ion-select-option>
+          <ion-select-option value="lycee">Lycée 10ème-12ème</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Commentaire</ion-label>
+        <ion-textarea [(ngModel)]="indivComment" [autoGrow]="true"></ion-textarea>
+      </ion-item>
+
+      <ion-button expand="block" class="save-btn" [disabled]="indivSaving() || !indivReady()" (click)="submitIndividuelle()">
+        @if (indivSaving()) {
+        <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+        Enregistrer la note
+        }
+      </ion-button>
+      @if (!indivSaving() && !indivReady()) {
+      <p class="save-hint">Étudiant, matière et note sont requis.</p>
+      }
+    </ion-card-content>
+  </ion-card>
+  } @else {
+  <ion-card class="filter-card">
+    <ion-card-content>
+      <ion-item fill="outline">
+        <ion-label position="floating">Classe</ion-label>
+        <ion-select [(ngModel)]="saisieClasseId" (ionChange)="onSaisieClasseChange()" interface="popover">
+          @for (c of classes(); track c.id) {
+          <ion-select-option [value]="c.id">{{ c.nom }} ({{ c.annee_display }})</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Matière</ion-label>
+        <ion-select [(ngModel)]="saisieMatiereId" (ionChange)="onSaisieParamsChange()" interface="popover"
+          [disabled]="!saisieClasseId()">
+          @for (m of classeMatieres(); track m.id) {
+          <ion-select-option [value]="m.id">{{ m.nom }} (coef {{ m.coefficient }})</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Type</ion-label>
+        <ion-select [(ngModel)]="saisieEvalType" (ionChange)="onSaisieParamsChange()" interface="popover">
+          <ion-select-option value="CC">Contrôle continu</ion-select-option>
+          <ion-select-option value="EX">Examen</ion-select-option>
+          <ion-select-option value="TP">Travaux pratiques</ion-select-option>
+          <ion-select-option value="DS">Devoir surveillé</ion-select-option>
+          <ion-select-option value="RA">Rattrapage</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Date</ion-label>
+        <ion-input type="date" [(ngModel)]="saisieDate" (ionChange)="onSaisieParamsChange()"></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-label position="floating">Note maximale</ion-label>
+        <ion-input type="number" [(ngModel)]="saisieMaxScore"></ion-input>
+      </ion-item>
+
+      @if (roster().length) {
+      <ion-item fill="outline">
+        <ion-label position="floating">Élève</ion-label>
+        <ion-select [(ngModel)]="saisieStudentId" interface="popover">
+          <ion-select-option [value]="null">Tous les élèves de la classe</ion-select-option>
+          @for (s of roster(); track s.student_id) {
+          <ion-select-option [value]="s.student_id">{{ s.student_name }} ({{ s.matricule }})</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+      }
+    </ion-card-content>
+  </ion-card>
+
+  @if (rosterLoading()) {
+  <div class="loading-container">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+  } @else if (saisieClasseId() && saisieMatiereId() && filteredRoster().length) {
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Notes — {{ saisieMarkedCount() }}/{{ roster().length }} saisies</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      @for (entry of filteredRoster(); track entry.student_id) {
+      <div class="evaluation-item">
+        <div class="eval-left">
+          <span>{{ entry.student_name }}</span>
+          <span class="eval-type">{{ entry.matricule }}</span>
+        </div>
+        <div class="eval-right saisie-inputs">
+          <ion-input type="number" min="0" [max]="saisieMaxScore()" placeholder="/{{ saisieMaxScore() }}"
+            [value]="saisieDraft()[entry.student_id]?.score ?? null"
+            (ionInput)="setSaisieScore(entry.student_id, $any($event.target).value === '' ? null : +$any($event.target).value)">
+          </ion-input>
+        </div>
+      </div>
+      <ion-textarea fill="outline" placeholder="Commentaire (optionnel)" [autoGrow]="true" class="saisie-comment"
+        [value]="saisieDraft()[entry.student_id]?.comment ?? ''"
+        (ionInput)="setSaisieComment(entry.student_id, $any($event.target).value ?? '')"></ion-textarea>
+      }
+
+      <ion-button expand="block" class="save-btn" [disabled]="saving() || !saisieMarkedCount()" (click)="saveSaisie()">
+        @if (saving()) {
+        <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+        Enregistrer les notes
+        }
+      </ion-button>
+      @if (!saving() && !saisieMarkedCount()) {
+      <p class="save-hint">Saisissez au moins une note pour activer ce bouton.</p>
+      }
+    </ion-card-content>
+  </ion-card>
+  } @else if (saisieClasseId() && saisieMatiereId()) {
+  <ion-card color="medium">
+    <ion-card-content>
+      <p>Aucun élève dans cette classe.</p>
+    </ion-card-content>
+  </ion-card>
+  } @else {
+  <ion-card color="medium">
+    <ion-card-content>
+      <p>Choisissez une classe et une matière pour saisir les notes.</p>
+    </ion-card-content>
+  </ion-card>
+  }
   }
   }
 

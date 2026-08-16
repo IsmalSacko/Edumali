@@ -33,14 +33,16 @@ export function mapAlert(d: any): Alert {
     };
 }
 
+// Construit l'URL complète d'un média si le back renvoie un chemin relatif.
+// imageUrl (pas apiUrl, qui se termine par /api) : les médias sont servis à la racine.
+function mediaUrl(path?: string | null): string | undefined {
+    if (!path) return undefined;
+    if (path.startsWith('http')) return path;
+    return `${environment.imageUrl}${path.replace(/^\//, '')}`;
+}
+
 export function mapSchoolProfile(d: any): SchoolProfile {
     if (!d) return { name: '', directeur: '' } as SchoolProfile;
-
-    // Construire l'URL complète du logo si elle est relative
-    let logoUrl = d.logo ?? undefined;
-    if (logoUrl && !logoUrl.startsWith('http')) {
-        logoUrl = `${environment.apiUrl}${logoUrl}`;
-    }
 
     // Récupérer le nom du directeur depuis directeur_name retourné par l'API
     const directeurName = d.directeur_name || '';
@@ -48,10 +50,10 @@ export function mapSchoolProfile(d: any): SchoolProfile {
     return {
         id: d.id,
         name: d.name ?? '',
-        logo: logoUrl,
-        cachet: d.cachet ?? undefined,
+        logo: mediaUrl(d.logo),
+        cachet: mediaUrl(d.cachet),
         directeur: directeurName,
-        signature_directeur: d.signature_directeur ?? undefined,
+        signature_directeur: mediaUrl(d.signature_directeur),
     };
 }
 

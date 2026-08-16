@@ -7,6 +7,7 @@ export interface RegisterData {
   password: string;
   passwordConfirm?: string;
   role: Role;
+  school_code: string;
 }
 
 export type Role = 'teacher' | 'parent' | 'student' | 'surveillant' | 'comptable';

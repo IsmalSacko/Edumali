@@ -1,14 +1,14 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonPopover, IonDatetime, IonSegment, IonSegmentButton } from '@ionic/angular/standalone';
+import { IonContent, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonSegment, IonSegmentButton } from '@ionic/angular/standalone';
 import { DashboardService } from 'src/app/services/dashboard/dashboard.service';
 import { EmploisService } from 'src/app/services/emplois-du-temps/emplois-service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { StatService } from 'src/app/services/stats/stat-service';
 import { DashboardStats } from 'src/app/models/dashboard/dashboard';
-import { barChart, star, starOutline } from 'ionicons/icons';
+import { starOutline } from 'ionicons/icons';
 
 
 @Component({
@@ -25,19 +25,13 @@ import { barChart, star, starOutline } from 'ionicons/icons';
     IonCardContent,
     IonCardHeader,
     IonCardTitle,
-    IonPopover,
-    IonDatetime,
     CanvasJSAngularChartsModule,
     IonSegment,
-    IonSegmentButton,
-    IonButton
+    IonSegmentButton
   ]
 })
 export class StatPage implements OnInit {
-  barChart = barChart;
-  starOutline = star;
-  startt = starOutline
-  showDatePopover = false;
+  starOutline = starOutline;
   selectedDate: string | null = null;
 
   private dashboardService = inject(DashboardService);
@@ -364,19 +358,6 @@ export class StatPage implements OnInit {
     if (this.period === 'month') return 'Mois courant';
     if (this.period === 'quarter') return 'Trimestre courant';
     return 'Année courante';
-  }
-
-  openDatePicker(_: Event) {
-    this.showDatePopover = true;
-  }
-
-  onDateChange(e: any) {
-    this.selectedDate = e.detail?.value ?? null;
-    this.showDatePopover = false;
-  }
-
-  onPopoverDismiss() {
-    this.showDatePopover = false;
   }
 
 }

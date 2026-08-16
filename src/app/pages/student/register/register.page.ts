@@ -42,6 +42,7 @@ export class RegisterPage {
   constructor() {
     addIcons({ personAddOutline, mailOutline, lockClosedOutline });
     this.form = this.fb.group({
+      school_code: ['', [Validators.required]],
       username: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],

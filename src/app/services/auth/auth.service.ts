@@ -68,17 +68,50 @@ export class AuthService {
   }
 
   // login: returns response data
-  async login(username: string, password: string) {
-    const response = await axios.post(this.loginUrl, { username, password });
-    const data = response.data;
-    if (data?.access) this.access = data.access;
-    if (data?.refresh) this.setRefresh(data.refresh);
-    console.log('Logged in, access token set.' + (this.access ? '✅' + this.access : '❌'));
-    // Charger les infos utilisateur et mettre à jour le signal global
-    await this.loadCurrentUser();
-    return data;
+  // schoolCode identifie l'école (multi-tenant : chaque école a son propre
+  // schéma de données). Le backend embarque ensuite le schéma résolu dans le
+  // JWT (claim school_schema), donc il n'est plus nécessaire de le renvoyer
+  // sur les requêtes suivantes.
+  async login(username: string, password: string, schoolCode: string) {
+    try {
+      const response = await axios.post(this.loginUrl, { username, password, school_code: schoolCode });
+      const data = response.data;
+      if (data?.access) this.access = data.access;
+      if (data?.refresh) this.setRefresh(data.refresh);
+      console.log('Logged in, access token set.' + (this.access ? '✅' + this.access : '❌'));
+      // Charger les infos utilisateur et mettre à jour le signal global
+      await this.loadCurrentUser();
+      return data;
+    } catch (err) {
+      throw new Error(this.extractErrorMessage(err));
+    }
   }
 
+  // Extrait un message lisible depuis une erreur axios (le backend renvoie
+  // des erreurs de validation DRF, ex: {"school_code": ["École introuvable..."]})
+  private extractErrorMessage(err: unknown): string {
+    const data = (err as any)?.response?.data;
+    if (data && typeof data === 'object') {
+      const firstValue = Object.values(data)[0];
+      if (Array.isArray(firstValue) && firstValue.length) return String(firstValue[0]);
+      if (typeof firstValue === 'string') return firstValue;
+      if (typeof data.detail === 'string') return data.detail;
+    }
+    return err instanceof Error ? err.message : 'Connexion impossible';
+  }
+
+
+  // Liste publique des écoles actives, pour le sélecteur d'école au login
+  // (GET /api/public/schools/, AllowAny côté back — pas besoin de token).
+  async getActiveSchools(): Promise<{ code: string; name: string }[]> {
+    try {
+      const r = await axios.get(`${this.base}/public/schools/`);
+      return (r.data ?? []) as { code: string; name: string }[];
+    } catch (err) {
+      console.warn('getActiveSchools error', err);
+      return [];
+    }
+  }
 
   logout() {
     this.access = null;

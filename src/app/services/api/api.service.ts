@@ -1,17 +1,18 @@
 // api.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig, AxiosError } from 'axios';
 import { AuthService } from '../auth/auth.service';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  private auth = inject(AuthService);
   private axios: AxiosInstance;
   private isRefreshing = false;
   private refreshPromise: Promise<string | null> | null = null;
 
-  constructor(private auth: AuthService) {
-    this.axios = axios.create({ baseURL: environment.apiUrl }); 
+  constructor() {
+    this.axios = axios.create({ baseURL: environment.apiUrl });
 
     // Add access token to headers
     this.axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {

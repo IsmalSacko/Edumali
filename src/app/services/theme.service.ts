@@ -98,7 +98,7 @@ export class ThemeService {
    * Récupère le thème initial depuis localStorage ou par défaut 'light'
    */
   private getInitialTheme(): ThemeName {
-    const saved = localStorage.getItem('edumali-theme');
+    const saved = localStorage.getItem('scolmali-theme');
     if (saved && this.themes[saved as ThemeName]) {
       return saved as ThemeName;
     }
@@ -112,7 +112,7 @@ export class ThemeService {
     if (!this.themes[themeName]) return;
     this.currentTheme.set(themeName);
     this.applyTheme(themeName);
-    localStorage.setItem('edumali-theme', themeName);
+    localStorage.setItem('scolmali-theme', themeName);
   }
 
   /**
@@ -124,35 +124,53 @@ export class ThemeService {
   }
 
   /**
-   * Applique le thème en définissant les variables CSS et les classes
+   * Applique le thème en définissant les variables CSS et les classes.
+   * Pose aussi les dérivés (-rgb/-shade/-tint/-contrast, steps) que les
+   * composants Ionic (ion-button, ion-badge, ion-progress-bar...) attendent
+   * pour bien rendre en dehors du thème 'light' d'origine.
    */
   private applyTheme(themeName: ThemeName): void {
     const theme = this.themes[themeName];
     const root = document.documentElement;
 
-    // Définir les variables CSS
     root.style.setProperty('--ion-background-color', theme.colors.background);
+    root.style.setProperty('--ion-background-color-rgb', hexToRgbString(theme.colors.background));
     root.style.setProperty('--ion-text-color', theme.colors.text);
-    root.style.setProperty('--ion-color-primary', theme.colors.primary);
-    root.style.setProperty('--ion-color-secondary', theme.colors.secondary);
+    root.style.setProperty('--ion-text-color-rgb', hexToRgbString(theme.colors.text));
     root.style.setProperty('--ion-toolbar-background', theme.colors.background);
     root.style.setProperty('--ion-item-background', theme.colors.background);
     root.style.setProperty('--ion-card-background', theme.colors.background);
 
-    // Ajouter/retirer la classe dark pour Ionic
+    this.applyColorSet('primary', theme.colors.primary);
+    this.applyColorSet('secondary', theme.colors.secondary);
+
+    // Steps de gris dérivés du fond/texte (mélange linéaire), utilisés par
+    // Ionic pour les séparateurs/placeholders (--ion-color-step-50 .. -950).
+    for (let step = 50; step <= 950; step += 50) {
+      root.style.setProperty(`--ion-color-step-${step}`, mix(theme.colors.background, theme.colors.text, step / 1000));
+    }
+
     if (theme.isDark) {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
 
-    // Retirer tous les thèmes spécifiques
     root.classList.remove('theme-blue', 'theme-green', 'theme-purple', 'theme-orange');
-
-    // Ajouter la classe spécifique du thème (pour blue, green, purple, orange)
     if (themeName !== 'light' && themeName !== 'dark') {
       root.classList.add(`theme-${themeName}`);
     }
+  }
+
+  private applyColorSet(name: 'primary' | 'secondary', hex: string): void {
+    const root = document.documentElement;
+    const contrast = luminance(hex) > 0.55 ? '#000000' : '#ffffff';
+    root.style.setProperty(`--ion-color-${name}`, hex);
+    root.style.setProperty(`--ion-color-${name}-rgb`, hexToRgbString(hex));
+    root.style.setProperty(`--ion-color-${name}-contrast`, contrast);
+    root.style.setProperty(`--ion-color-${name}-contrast-rgb`, hexToRgbString(contrast));
+    root.style.setProperty(`--ion-color-${name}-shade`, shade(hex, 0.12));
+    root.style.setProperty(`--ion-color-${name}-tint`, tint(hex, 0.1));
   }
 
   /**
@@ -161,4 +179,51 @@ export class ThemeService {
   getTheme(): ThemeConfig {
     return this.themes[this.currentTheme()];
   }
+}
+
+// --- Utilitaires couleur (pas de dépendance externe) ---
+
+function clamp(v: number): number {
+  return Math.max(0, Math.min(255, v));
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace('#', '');
+  const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+  const num = parseInt(full, 16);
+  return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + [r, g, b].map(v => clamp(Math.round(v)).toString(16).padStart(2, '0')).join('');
+}
+
+function hexToRgbString(hex: string): string {
+  const [r, g, b] = hexToRgb(hex);
+  return `${r}, ${g}, ${b}`;
+}
+
+/** Assombrit une couleur hex d'un ratio 0..1 (mélange vers le noir) */
+function shade(hex: string, ratio: number): string {
+  const [r, g, b] = hexToRgb(hex);
+  return rgbToHex(r * (1 - ratio), g * (1 - ratio), b * (1 - ratio));
+}
+
+/** Éclaircit une couleur hex d'un ratio 0..1 (mélange vers le blanc) */
+function tint(hex: string, ratio: number): string {
+  const [r, g, b] = hexToRgb(hex);
+  return rgbToHex(r + (255 - r) * ratio, g + (255 - g) * ratio, b + (255 - b) * ratio);
+}
+
+/** Mélange linéaire entre deux couleurs hex, ratio 0 (a) .. 1 (b) */
+function mix(hexA: string, hexB: string, ratio: number): string {
+  const [ar, ag, ab] = hexToRgb(hexA);
+  const [br, bg, bb] = hexToRgb(hexB);
+  return rgbToHex(ar + (br - ar) * ratio, ag + (bg - ag) * ratio, ab + (bb - ab) * ratio);
+}
+
+/** Luminance relative approximative (0 = noir, 1 = blanc) pour choisir un contraste lisible */
+function luminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 }

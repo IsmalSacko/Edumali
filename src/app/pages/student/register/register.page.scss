@@ -19,7 +19,15 @@
 
 }
 
-.edumali-logo img {
+.field {
+    margin-bottom: 14px;
+}
+
+.field:last-of-type {
+    margin-bottom: 0;
+}
+
+.scolmali-logo img {
     height: 150px;
     width: auto;
     border-radius: 50%;

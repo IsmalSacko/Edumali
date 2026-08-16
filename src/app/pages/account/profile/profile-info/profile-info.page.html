@@ -36,7 +36,7 @@
                   <ion-badge color="medium" *ngIf="profile()?.is_staff">Staff</ion-badge>
                 </div>
               </div>
-              <h2>{{ profile()?.first_name }} {{ profile()?.last_name }}</h2>
+              <h2>{{ displayName() }}</h2>
               <p class="role">{{ profile()?.role || 'Utilisateur' }}</p>
             </ion-card-content>
           </ion-card>
@@ -79,7 +79,7 @@
                       <ion-icon name="person-outline"></ion-icon>
                       <div>
                         <p>Nom complet</p>
-                        <h3>{{ profile()?.first_name }} {{ profile()?.last_name }}</h3>
+                        <h3>{{ displayName() }}</h3>
                       </div>
                     </div>
                   </ion-col>

@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administration</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="settings-content">
+  @if (loading()) {
+  <div class="loading-wrap"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else {
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="school-outline"></ion-icon>
+        Profil de l'établissement
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item fill="outline">
+        <ion-label position="floating">Nom de l'établissement</ion-label>
+        <ion-input [(ngModel)]="name"></ion-input>
+      </ion-item>
+
+      <div class="media-grid">
+        <div class="media-field">
+          <p class="media-label">Logo</p>
+          <div class="media-preview">
+            @if (logoPreview() || profile()?.logo) {
+            <img [src]="logoPreview() || profile()!.logo" alt="Logo" />
+            } @else {
+            <ion-icon name="school-outline"></ion-icon>
+            }
+          </div>
+          <label class="upload-btn">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            Choisir
+            <input type="file" accept="image/*" hidden (change)="onFileSelected($event, 'logo')" />
+          </label>
+        </div>
+
+        <div class="media-field">
+          <p class="media-label">Cachet</p>
+          <div class="media-preview">
+            @if (cachetPreview() || profile()?.cachet) {
+            <img [src]="cachetPreview() || profile()!.cachet" alt="Cachet" />
+            } @else {
+            <ion-icon name="school-outline"></ion-icon>
+            }
+          </div>
+          <label class="upload-btn">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            Choisir
+            <input type="file" accept="image/*" hidden (change)="onFileSelected($event, 'cachet')" />
+          </label>
+        </div>
+
+        <div class="media-field">
+          <p class="media-label">Signature du directeur</p>
+          <div class="media-preview">
+            @if (signaturePreview() || profile()?.signature_directeur) {
+            <img [src]="signaturePreview() || profile()!.signature_directeur" alt="Signature" />
+            } @else {
+            <ion-icon name="school-outline"></ion-icon>
+            }
+          </div>
+          <label class="upload-btn">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            Choisir
+            <input type="file" accept="image/*" hidden (change)="onFileSelected($event, 'signature')" />
+          </label>
+        </div>
+      </div>
+
+      @if (profile()?.directeur) {
+      <p class="directeur-info">Directeur actuel : {{ profile()!.directeur }}</p>
+      }
+
+      <ion-button expand="block" [disabled]="saving()" (click)="save()">
+        @if (saving()) {
+        <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+        <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+        Enregistrer
+        }
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="color-palette-outline"></ion-icon>
+        Apparence
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="theme-grid">
+        @for (theme of themeService.availableThemes; track theme.name) {
+        <button class="theme-swatch" [class.active]="themeService.currentTheme() === theme.name"
+          (click)="selectTheme(theme.name)">
+          <span class="swatch-dot" [class]="'swatch-' + theme.name"></span>
+          {{ theme.label }}
+          @if (themeService.currentTheme() === theme.name) {
+          <ion-icon name="checkmark-outline"></ion-icon>
+          }
+        </button>
+        }
+      </div>
+    </ion-card-content>
+  </ion-card>
+  }
+</ion-content>

@@ -37,9 +37,9 @@
 	align-items: center;
 	gap: 8px;
 	padding: 8px 10px;
-	background: rgba(34, 211, 238, 0.12);
-	color: #67e8f9;
-	border: 1px solid rgba(34, 211, 238, 0.24);
+	background: color-mix(in srgb, var(--ion-color-secondary) 15%, transparent);
+	color: var(--ion-color-secondary-shade, var(--ion-color-secondary));
+	border: 1px solid color-mix(in srgb, var(--ion-color-secondary) 30%, transparent);
 	border-radius: 999px;
 	font-weight: 600;
 	font-size: 12px;
@@ -54,7 +54,7 @@ h1 {
 
 .subtitle {
 	margin: 0;
-	color: #94a3b8;
+	color: color-mix(in srgb, var(--ion-text-color) 65%, transparent);
 	max-width: 520px;
 }
 
@@ -83,7 +83,7 @@ h1 {
 
 .field ion-input,
 .field ion-label {
-	color: #e2e8f0;
+	color: var(--ion-text-color);
 }
 
 ion-note[color='danger'] {
@@ -95,15 +95,16 @@ ion-note[color='danger'] {
 	margin-top: 12px;
 	padding: 10px 12px;
 	border-radius: 10px;
-	background: rgba(248, 113, 113, 0.12);
-	color: #fecdd3;
-	border: 1px solid rgba(248, 113, 113, 0.35);
+	background: color-mix(in srgb, var(--ion-color-danger) 12%, transparent);
+	color: var(--ion-color-danger);
+	border: 1px solid color-mix(in srgb, var(--ion-color-danger) 35%, transparent);
 }
 
 .submit-btn {
 	margin-top: 16px;
-	--background: linear-gradient(120deg, #22d3ee, #10b981);
-	--box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
+	--background: linear-gradient(120deg, var(--ion-color-primary), var(--ion-color-secondary));
+	--color: var(--ion-color-primary-contrast);
+	--box-shadow: 0 10px 30px color-mix(in srgb, var(--ion-color-primary) 35%, transparent);
 	font-weight: 700;
 }
 

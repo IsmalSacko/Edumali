@@ -1,0 +1,33 @@
+.logs-content {
+  --background: var(--ion-background-color);
+}
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--ion-color-medium);
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 0 24px;
+}
+
+.pager-label {
+  font-size: 13px;
+  color: var(--ion-color-medium);
+}

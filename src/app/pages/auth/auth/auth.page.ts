@@ -16,6 +16,8 @@ import {
   IonIcon,
   IonNote,
   IonSpinner,
+  IonSelect,
+  IonSelectOption,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { eyeOutline, eyeOffOutline, logInOutline, shieldCheckmarkOutline } from 'ionicons/icons';
@@ -45,6 +47,8 @@ import { AuthService } from '../../../services/auth/auth.service';
     IonIcon,
     IonNote,
     IonSpinner,
+    IonSelect,
+    IonSelectOption,
   ]
 })
 export class AuthPage implements OnInit {
@@ -56,8 +60,11 @@ export class AuthPage implements OnInit {
   hidePassword = signal<boolean>(true);
   loading = signal<boolean>(false);
   errorMsg = signal<string>('');
+  schools = signal<{ code: string; name: string }[]>([]);
+  schoolsLoading = signal<boolean>(true);
 
   form = this.fb.nonNullable.group({
+    school: ['', [Validators.required]],
     username: ['', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(4)]],
   });
@@ -67,6 +74,8 @@ export class AuthPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.loadSchools();
+
     // Attendre que l'utilisateur soit chargé si un token existe
     // Attendre un peu pour que le signal soit mis à jour
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -77,6 +86,15 @@ export class AuthPage implements OnInit {
       const returnUrl = raw.startsWith('/') ? raw : '/home';
       this.router.navigateByUrl(returnUrl);
     }
+  }
+
+  /** Charge la liste des écoles actives pour le sélecteur ; en cas d'échec
+   * (réseau, endpoint indisponible), la liste reste vide et le template
+   * bascule sur un champ texte libre pour saisir le code établissement. */
+  async loadSchools() {
+    this.schoolsLoading.set(true);
+    this.schools.set(await this.auth.getActiveSchools());
+    this.schoolsLoading.set(false);
   }
 
   togglePasswordVisibility() {
@@ -90,9 +108,9 @@ export class AuthPage implements OnInit {
       return;
     }
     this.loading.set(true);
-    const { username, password } = this.form.getRawValue();
+    const { school, username, password } = this.form.getRawValue();
     try {
-      await this.auth.login(username, password);
+      await this.auth.login(username, password, school);
       const raw = this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
       const returnUrl = raw.startsWith('/') ? raw : '/home';
       await this.router.navigateByUrl(returnUrl);

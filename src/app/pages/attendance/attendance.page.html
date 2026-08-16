@@ -1,0 +1,130 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Présence</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="attendance-content">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (canMark()) {
+  <!-- Mode enseignant/admin/surveillant : appel de la classe -->
+  <ion-card class="filters-card">
+    <ion-card-content>
+      <ion-item fill="outline">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        <ion-label position="floating">Classe</ion-label>
+        <ion-select [(ngModel)]="selectedClasse" (ionChange)="onClasseOrDateChange()" interface="popover">
+          @for (c of classes(); track c.id) {
+          <ion-select-option [value]="c.id">{{ c.nom }} ({{ c.annee_display }})</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+
+      <ion-item fill="outline">
+        <ion-icon slot="start" name="calendar-outline"></ion-icon>
+        <ion-label position="floating">Date</ion-label>
+        <ion-input type="date" [(ngModel)]="selectedDate" (ionChange)="onClasseOrDateChange()"></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  @if (loadingRoster()) {
+  <div class="loading-wrap"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (selectedClasse() && roster().length) {
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Appel — {{ markedCount() }}/{{ roster().length }} marqués</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        @for (entry of roster(); track entry.student_id) {
+        <ion-item lines="full" class="roster-row">
+          <ion-label>
+            <h3>{{ entry.student_name }}</h3>
+            <p>{{ entry.matricule }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-segment [value]="draft()[entry.student_id]?.status ?? undefined"
+          (ionChange)="setStatus(entry.student_id, $any($event.detail.value))" class="status-segment">
+          <ion-segment-button value="present">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <ion-label>Présent</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="absent">
+            <ion-icon name="close-circle-outline"></ion-icon>
+            <ion-label>Absent</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="justified">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <ion-label>Justifié</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+        <ion-item fill="outline" class="remark-field">
+          <ion-label position="floating">Remarque (optionnel)</ion-label>
+          <ion-input [value]="draft()[entry.student_id]?.remark ?? ''"
+            (ionInput)="setRemark(entry.student_id, $any($event.target).value)"></ion-input>
+        </ion-item>
+        }
+      </ion-list>
+
+      <ion-button expand="block" class="save-btn" [disabled]="saving() || !markedCount()" (click)="saveRoster()">
+        @if (saving()) {
+        <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+        <ion-icon slot="start" name="save-outline"></ion-icon>
+        Enregistrer l'appel
+        }
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  } @else if (selectedClasse()) {
+  <div class="empty-state">Aucun élève dans cette classe.</div>
+  } @else {
+  <div class="empty-state">Choisissez une classe et une date pour commencer l'appel.</div>
+  }
+
+  } @else {
+  <!-- Mode parent/élève : historique lecture seule -->
+  @if (myStudents().length > 1) {
+  <ion-card class="filters-card">
+    <ion-card-content>
+      <ion-item fill="outline">
+        <ion-label position="floating">Enfant</ion-label>
+        <ion-select [(ngModel)]="selectedStudentId" (ionChange)="onStudentChange()" interface="popover">
+          @for (s of myStudents(); track s.id) {
+          <ion-select-option [value]="s.id">{{ s.user.first_name }} {{ s.user.last_name }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  }
+
+  @if (loadingHistory()) {
+  <div class="loading-wrap"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (history().length) {
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        @for (a of history(); track a.id) {
+        <ion-item lines="full">
+          <ion-label>
+            <h3>{{ a.date }}</h3>
+            @if (a.remark) {
+            <p>{{ a.remark }}</p>
+            }
+          </ion-label>
+          <ion-badge slot="end" [color]="statusColor(a.status)">{{ statusLabels[a.status] }}</ion-badge>
+        </ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  } @else {
+  <div class="empty-state">Aucune présence enregistrée pour le moment.</div>
+  }
+  }
+</ion-content>

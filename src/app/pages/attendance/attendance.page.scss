@@ -1,0 +1,51 @@
+.attendance-content {
+  --background: var(--ion-background-color);
+}
+
+.filters-card {
+  margin: 12px;
+}
+
+.filters-card ion-item {
+  margin-bottom: 14px;
+}
+
+.filters-card ion-item:last-child {
+  margin-bottom: 0;
+}
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--ion-color-medium);
+}
+
+.roster-row {
+  --background: transparent;
+}
+
+.status-segment {
+  margin: 4px 0 10px;
+}
+
+.remark-field {
+  margin-bottom: 16px;
+}
+
+.save-btn {
+  margin-top: 12px;
+}
+
+@media (min-width: 768px) {
+  .attendance-content ion-card {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

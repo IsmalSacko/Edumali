@@ -1,9 +1,13 @@
 import { Component, inject, effect } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { Router, NavigationStart } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { NavPage } from "./shared/nav/nav.page";
 import { FooterPage } from './shared/footer/footer.page';
 import { AuthService } from './services/auth/auth.service';
+import { ThemeService } from './services/theme.service';
 import { AdminRestrictedModalComponent } from './shared/modals/admin-restricted-modal/admin-restricted-modal.component';
 
 
@@ -16,6 +20,7 @@ export class AppComponent {
   private router = inject(Router);
   private modalCtrl = inject(ModalController);
   private auth = inject(AuthService);
+  private themeService = inject(ThemeService);
 
   constructor() {
     this.router.events.subscribe(ev => {
@@ -34,6 +39,17 @@ export class AppComponent {
         void this.presentAdminModal();
       }
     });
+
+    // Style natif (status bar / clavier) — no-op sur le web. Ces plugins
+    // étaient déjà des dépendances Capacitor mais jamais appelés jusqu'ici.
+    if (Capacitor.isNativePlatform()) {
+      Keyboard.setResizeMode({ mode: KeyboardResize.Native }).catch(() => {});
+      effect(() => {
+        const theme = this.themeService.getTheme();
+        StatusBar.setStyle({ style: theme.isDark ? Style.Dark : Style.Light }).catch(() => {});
+        StatusBar.setBackgroundColor({ color: theme.colors.background }).catch(() => {});
+      });
+    }
   }
 
   private async presentAdminModal() {

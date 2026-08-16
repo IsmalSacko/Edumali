@@ -17,10 +17,14 @@ import {
   informationCircleOutline,
   callOutline,
   moonOutline,
-  checkmarkOutline, calendarOutline
+  checkmarkOutline, calendarOutline,
+  chatbubbleOutline,
+  notificationsOutline,
 } from 'ionicons/icons';
 import { ThemeService } from '../../services/theme.service';
 import { EmploisService } from 'src/app/services/emplois-du-temps/emplois-service';
+import { MessagingService } from 'src/app/services/messaging/messaging.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-footer',
@@ -44,19 +48,27 @@ export class FooterPage implements OnInit {
   private router = inject(Router);
   themeService = inject(ThemeService);
   EmploiService = inject(EmploisService);
+  private messagingService = inject(MessagingService);
+  private auth = inject(AuthService);
 
   // True = mobile, False = web/desktop
   isMobile = signal<boolean>(false);
   themeMenuOpen = signal<boolean>(false);
   themePopoverEvent: Event | null = null;
   EmploisCount = signal<number | null>(null);
+  unreadMessages = this.messagingService.unreadCount;
+  currentUser = this.auth.user;
+
   constructor() {
-    addIcons({ homeOutline, peopleOutline, schoolOutline, calendarOutline, clipboardOutline, moonOutline, settingsOutline, checkmarkOutline, logoFacebook, logoTwitter, logoLinkedin, informationCircleOutline, callOutline, });
+    addIcons({ homeOutline, peopleOutline, schoolOutline, calendarOutline, clipboardOutline, moonOutline, settingsOutline, checkmarkOutline, logoFacebook, logoTwitter, logoLinkedin, informationCircleOutline, callOutline, chatbubbleOutline, notificationsOutline });
   }
 
   ngOnInit() {
     this.detectMobile();
     this.loadEmploisCount();
+    if (this.auth.access) {
+      this.messagingService.refreshUnreadCount();
+    }
     window.addEventListener('resize', () => this.detectMobile());
   }
 

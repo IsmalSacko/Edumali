@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Journal d'activité</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [value]="searchText()" (ionInput)="onSearchChange($event.detail.value ?? '')"
+      placeholder="Rechercher une action, un utilisateur..."></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="logs-content">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+  <div class="loading-wrap"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (filteredLogs().length) {
+  <ion-list>
+    @for (log of pagedLogs(); track log.id) {
+    <ion-item lines="full">
+      <ion-icon slot="start" name="document-text-outline" color="medium"></ion-icon>
+      <ion-label>
+        <h2>{{ log.action }}</h2>
+        <p>{{ log.description }}</p>
+        <p class="meta">{{ userLabel(log) }} · {{ log.timestamp | date: 'short' }}</p>
+      </ion-label>
+    </ion-item>
+    }
+  </ion-list>
+
+  @if (totalPages() > 1) {
+  <div class="pager">
+    <ion-button fill="clear" [disabled]="currentPage() === 1" (click)="prevPage()">
+      <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <span class="pager-label">Page {{ currentPage() }} / {{ totalPages() }}</span>
+    <ion-button fill="clear" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+      <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+  }
+  } @else {
+  <div class="empty-state">Aucune action enregistrée.</div>
+  }
+</ion-content>

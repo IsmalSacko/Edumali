@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { Classe, ClasseListe } from '../../models/classe/classes';
 import { environment } from '../../../environments/environment';
@@ -7,9 +7,8 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class ClasseService {
-  private readonly base = environment.apiUrl  + '/classes/classes/';
-
-  constructor(private api: ApiService) {}
+  private api = inject(ApiService);
+  private readonly base = environment.apiUrl + '/classes/classes/';
 
   async getClasses(): Promise<ClasseListe[]> {
     const { data } = await this.api.get<ClasseListe[]>(this.base);

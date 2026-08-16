@@ -34,12 +34,20 @@ export class DashboardService {
     const response = await this.api.get<Alert[]>(this.globalAlertsUrl);
     return (response.data ?? []).map(mapAlert);
   }
-  // Méthode pour obtenir le profil de l'école
+  // Méthode pour obtenir le profil de l'école. Ne doit jamais rejeter : cet
+  // appel fait partie d'un Promise.all avec les stats/alertes (voir
+  // home.page.ts::loadStats) — le laisser rejeter faisait échouer tout le
+  // chargement du dashboard (stats comprises) pour un seul appel en échec.
   async getSchoolProfile(): Promise<SchoolProfile> {
-    const response = await this.api.get<any>(`${this.base}/dashboard/school-profiles/`);
-    // L'API retourne un tableau, prendre le premier élément
-    const data = Array.isArray(response.data) ? response.data[0] : response.data;
-    return mapSchoolProfile(data);
+    try {
+      const response = await this.api.get<any>(`${this.base}/dashboard/school-profiles/`);
+      // L'API retourne un tableau, prendre le premier élément
+      const data = Array.isArray(response.data) ? response.data[0] : response.data;
+      return mapSchoolProfile(data);
+    } catch (err) {
+      console.error('Error fetching school profile:', err);
+      return mapSchoolProfile(undefined);
+    }
   }
   // Méthode pour obtenir les journaux d'actions récentes
   async getActionLogs(limit: number = 10): Promise<ActionLog[]> {
@@ -66,6 +74,29 @@ export class DashboardService {
     } catch (err) {
       console.error(`Error marking alert ${alertId} as read:`, err);
       return false;
+    }
+  }
+
+  // Crée (si aucun profil n'existe encore, id undefined) ou met à jour le
+  // profil d'établissement. multipart/form-data car logo/cachet/signature
+  // sont des ImageField côté back (apps/dashboard/models.py::SchoolProfile).
+  async saveSchoolProfile(
+    id: number | undefined,
+    data: { name?: string; logo?: File; cachet?: File; signature_directeur?: File }
+  ): Promise<SchoolProfile | null> {
+    const form = new FormData();
+    if (data.name !== undefined) form.append('name', data.name);
+    if (data.logo) form.append('logo', data.logo);
+    if (data.cachet) form.append('cachet', data.cachet);
+    if (data.signature_directeur) form.append('signature_directeur', data.signature_directeur);
+
+    try {
+      const url = id ? `${this.base}/dashboard/school-profiles/${id}/` : `${this.base}/dashboard/school-profiles/`;
+      const response = id ? await this.api.patch<any>(url, form) : await this.api.post<any>(url, form);
+      return mapSchoolProfile(response.data);
+    } catch (err) {
+      console.error('Error saving school profile:', err);
+      return null;
     }
   }
 }

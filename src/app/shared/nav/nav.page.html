@@ -2,43 +2,61 @@
   <ion-toolbar class="navbar">
     <ion-buttons class="nav-links" slot="start">
       <ion-button routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" fill="clear">
-        <img src="assets/logo-edumali.png" class="nav-home-img" alt="Accueil" slot="start" />
+        <img src="assets/logo-scolmali.png" class="nav-home-img" alt="Accueil" slot="start" />
         <ion-label>Accueil</ion-label>
       </ion-button>
       <ion-button routerLink="/students" routerLinkActive="active" fill="clear">
         <ion-icon class="nav-icon students" name="people-outline" slot="start"></ion-icon>
         <ion-label>Élèves</ion-label>
       </ion-button>
-      <ion-button routerLink="/teachers" routerLinkActive="active" fill="clear">
+      <ion-button routerLink="/teachers" routerLinkActive="active" fill="clear" title="Enseignants">
         <ion-icon class="nav-icon teachers" name="school-outline" slot="start"></ion-icon>
-        <ion-label>Enseignants</ion-label>
+        <ion-label>Prof</ion-label>
       </ion-button>
-      <ion-button routerLink="/classes" routerLinkActive="active" fill="clear">
+      <ion-button routerLink="/classes" routerLinkActive="active" fill="clear" title="Classes & Matières">
         <ion-icon class="nav-icon classes" name="layers-outline" slot="start"></ion-icon>
-        <ion-label>Classes & Matières</ion-label>
+        <ion-label>Classes</ion-label>
       </ion-button>
       <ion-button class="footer-btn" routerLink="/emplois-du-temps" routerLinkActive="active" fill="clear">
         <ion-icon name="calendar-outline" class="nav-icon timetable" slot="start"></ion-icon>
         <ion-label>Emploi</ion-label>
         <ion-badge color="danger">{{ EmploisCount() }}</ion-badge>
       </ion-button>
-      <ion-button routerLink="/evaluations" routerLinkActive="active" fill="clear">
+      <ion-button routerLink="/evaluations" routerLinkActive="active" fill="clear" title="Évaluations">
         <ion-icon class="nav-icon evaluations" name="clipboard-outline" slot="start"></ion-icon>
-        <ion-label>Évaluations</ion-label>
+        <ion-label>Éval.</ion-label>
       </ion-button>
-      <ion-button routerLink="/stats" routerLinkActive="active" fill="clear">
+      <ion-button routerLink="/attendance" routerLinkActive="active" fill="clear" title="Présence">
+        <ion-icon class="nav-icon attendance" name="checkmark-circle-outline" slot="start"></ion-icon>
+        <ion-label>Prés.</ion-label>
+      </ion-button>
+      <ion-button routerLink="/messages" routerLinkActive="active" fill="clear" title="Messages">
+        <ion-icon class="nav-icon messages" name="chatbubble-outline" slot="start"></ion-icon>
+        <ion-label>Msg</ion-label>
+        @if (unreadMessages()) {
+        <ion-badge color="danger">{{ unreadMessages() }}</ion-badge>
+        }
+      </ion-button>
+      <ion-button routerLink="/stats" routerLinkActive="active" fill="clear" title="Statistiques">
         <ion-icon class="nav-icon stats" name="bar-chart-outline" slot="start"></ion-icon>
-        <ion-label>Statistiques</ion-label>
+        <ion-label>Stats</ion-label>
       </ion-button>
-      @if (currentUser()?.role === 'admin') {
-      <ion-button routerLink="/settings" routerLinkActive="active" fill="clear">
-        <ion-icon class="nav-icon settings" name="settings-outline" slot="start"></ion-icon>
-        <ion-label>Administration</ion-label>
+      @if (currentUser()?.role === 'admin' || currentUser()?.role === 'comptable') {
+      <ion-button routerLink="/payments" routerLinkActive="active" fill="clear" title="Paiements">
+        <ion-icon class="nav-icon payments" name="cash-outline" slot="start"></ion-icon>
+        <ion-label>Paiem.</ion-label>
       </ion-button>
       }
+      <!-- Journal/Administration : dans le popover profil (voir plus bas), pas ici —
+           la barre déborde déjà sur les écrans moyens avant même ces deux entrées. -->
     </ion-buttons>
 
     <ion-buttons slot="end" class="user-actions">
+      @if (currentUser()) {
+      <ion-button routerLink="/notifications" routerLinkActive="active" fill="clear" title="Notifications">
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+      </ion-button>
+      }
       <!-- Bouton changer thème -->
       <ion-button id="theme-menu-trigger" class="theme-btn" [class]="'theme-' + themeService.currentTheme()"
         fill="clear" (click)="openThemeMenu($event)" title="Changer le thème">
@@ -87,11 +105,36 @@
                 <ion-icon class="nav-icon evaluations" slot="start" name="clipboard-outline"></ion-icon>
                 <ion-label>Évaluations</ion-label>
               </ion-item>
+              <ion-item routerLink="/attendance">
+                <ion-icon class="nav-icon attendance" slot="start" name="checkmark-circle-outline"></ion-icon>
+                <ion-label>Présence</ion-label>
+              </ion-item>
+              <ion-item routerLink="/messages">
+                <ion-icon class="nav-icon messages" slot="start" name="chatbubble-outline"></ion-icon>
+                <ion-label>Messages</ion-label>
+                @if (unreadMessages()) {
+                <ion-badge color="danger">{{ unreadMessages() }}</ion-badge>
+                }
+              </ion-item>
+              <ion-item routerLink="/notifications">
+                <ion-icon class="nav-icon notifications" slot="start" name="notifications-outline"></ion-icon>
+                <ion-label>Notifications</ion-label>
+              </ion-item>
               <ion-item routerLink="/stats">
                 <ion-icon class="nav-icon stats" slot="start" name="bar-chart-outline"></ion-icon>
                 <ion-label>Statistiques</ion-label>
               </ion-item>
+              @if (currentUser()?.role === 'admin' || currentUser()?.role === 'comptable') {
+              <ion-item routerLink="/payments">
+                <ion-icon class="nav-icon payments" slot="start" name="cash-outline"></ion-icon>
+                <ion-label>Paiements</ion-label>
+              </ion-item>
+              }
               @if (currentUser()?.role === 'admin') {
+              <ion-item routerLink="/logs">
+                <ion-icon class="nav-icon logs" slot="start" name="document-text-outline"></ion-icon>
+                <ion-label>Journal</ion-label>
+              </ion-item>
               <ion-item routerLink="/settings">
                 <ion-icon class="nav-icon settings" slot="start" name="settings-outline"></ion-icon>
                 <ion-label>Administration</ion-label>
@@ -130,6 +173,10 @@
           <ion-label>Mon profil</ion-label>
         </ion-item>
         @if (currentUser()?.role === 'admin') {
+        <ion-item routerLink="/logs">
+          <ion-icon slot="start" name="document-text-outline"></ion-icon>
+          <ion-label>Journal d'activité</ion-label>
+        </ion-item>
         <ion-item routerLink="/settings">
           <ion-icon slot="start" name="settings-outline"></ion-icon>
           <ion-label>Paramètres</ion-label>

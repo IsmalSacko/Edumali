@@ -3,10 +3,6 @@
 	box-shadow: 0 12px 40px color-mix(in srgb, var(--ion-text-color) 10%, transparent);
 }
 
-:root {
-	--my-background-color-rgb: #d3d3d3;
-}
-
 .navbar {
 	--background: var(--ion-background-color);
 	--color: var(--ion-text-color);
@@ -23,9 +19,7 @@
 }
 
 .nav-logout-btn:hover {
-	background: linear-gradient(90deg,
-			color-mix(in srgb, #d3d3d3 20%, black 0%),
-			color-mix(in srgb, #d3d3d3 20%, black 0%));
+	background: color-mix(in srgb, var(--ion-color-danger) 12%, transparent);
 }
 
 .brand {
@@ -50,22 +44,24 @@
 	font-size: 11px;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
-	color: #67e8f9;
+	color: var(--ion-color-secondary);
 	margin: 0;
 }
 
 .brand-text .title {
 	font-size: 14px;
 	font-weight: 700;
-	color: #e2e8f0;
+	color: var(--ion-text-color);
 }
 
 .nav-links {
 	gap: 4px;
 	padding-left: 12px;
+	flex-wrap: nowrap;
 }
 
 .nav-links ion-button {
+	flex-shrink: 0;
 	--color: var(--ion-text-color);
 	--padding-start: 12px;
 	--padding-end: 12px;

@@ -111,7 +111,9 @@ export class ClassePage implements OnInit {
     return this.filteredClasses().reduce((sum, c) => sum + c.nombre_eleves, 0);
   });
 
-  constructor(private classeService: ClasseService) {
+  private classeService = inject(ClasseService);
+
+  constructor() {
     addIcons({
       layersOutline,
       searchOutline,

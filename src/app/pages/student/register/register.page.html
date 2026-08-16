@@ -2,11 +2,11 @@
   <ion-content class="register-container" [fullscreen]="true">
     <section class="hero-section">
       <div class="hero">
-        <h1>Créer un compte Edumali</h1>
+        <h1>Créer un compte ScolMali</h1>
         <p class="subtitle">Rejoignez-nous pour gérer efficacement votre établissement scolaire.</p>
       </div>
-      <div class="edumali-logo">
-        <img src="assets/logo-edumali.png" alt="Edumali Logo" />
+      <div class="scolmali-logo">
+        <img src="assets/logo-scolmali.png" alt="ScolMali Logo" />
       </div>
     </section>
     <section class="form-section">
@@ -14,6 +14,17 @@
 
         <ion-card-content>
           <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <ion-item fill="outline" class="field">
+              <ion-label position="floating">Code établissement</ion-label>
+              <ion-input type="text" autocomplete="organization" formControlName="school_code"></ion-input>
+            </ion-item>
+            @if (form.get('school_code')?.touched && form.get('school_code')?.invalid) {
+            <div class="field-error">
+              <ion-text color="danger" *ngIf="form.get('school_code')?.errors?.['required']">Le code établissement est
+                requis</ion-text>
+            </div>
+            }
+
             <ion-item fill="outline" class="field">
               <ion-label position="floating">Nom d'utilisateur</ion-label>
               <ion-input type="text" autocomplete="username" formControlName="username">
@@ -69,7 +80,7 @@
             </div>
             }
             <ion-item fill="outline" class="field">
-              <ion-label>Rôle</ion-label>
+              <ion-label position="floating">Rôle</ion-label>
               <ion-select formControlName="role" interface="popover">
                 @for (r of roleChoices; track r.value) {
                 <ion-select-option [value]="r.value">{{ r.label }}</ion-select-option>

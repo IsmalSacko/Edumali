@@ -82,6 +82,24 @@ export interface Bulletin {
 	grades: BulletinGrade[];
 }
 
+// Une ligne de la grille de saisie (GET /evaluations/roster/)
+export interface EvaluationRosterEntry {
+	student_id: number;
+	student_name: string;
+	matricule: string;
+	evaluation_id: number | null;
+	score: number | null;
+	max_score: number | null;
+	comment: string;
+	date: string | null;
+}
+
+export interface BulkEvaluationEntry {
+	student: number;
+	score: number;
+	comment?: string;
+}
+
 
 export class EvaluationModel implements Evaluation {
 	id: number;
