@@ -65,8 +65,8 @@ export class FooterPage implements OnInit {
 
   ngOnInit() {
     this.detectMobile();
-    this.loadEmploisCount();
     if (this.auth.access) {
+      this.loadEmploisCount();
       this.messagingService.refreshUnreadCount();
     }
     window.addEventListener('resize', () => this.detectMobile());
@@ -95,7 +95,11 @@ export class FooterPage implements OnInit {
   }
 
   async loadEmploisCount() {
-    const emplois = await this.EmploiService.getAll();
-    this.EmploisCount.set(this.EmploiService.countEmplois(emplois));
+    try {
+      const emplois = await this.EmploiService.getAll();
+      this.EmploisCount.set(this.EmploiService.countEmplois(emplois));
+    } catch {
+      // silencieux : le badge garde simplement sa valeur précédente
+    }
   }
 }
