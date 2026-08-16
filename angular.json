@@ -46,11 +46,25 @@
           },
           "configurations": {
             "production": {
+              // La minification JS (optimization.scripts) casse le mécanisme
+              // de révélation de page d'Ionic en production : `.ion-page-
+              // invisible` (opacity:0) n'est jamais retiré — page blanche au
+              // premier chargement, reproduit même hors VPS/nginx (build
+              // servi en statique en local). CSS/fonts restent optimisés ;
+              // seul le JS ne l'est plus, d'où le budget relevé ci-dessous.
+              // TODO: identifier précisément ce que le minifieur casse
+              // (tree-shaking trop agressif sur Ionic/Stencil ?) pour
+              // pouvoir un jour réactiver la minification JS.
+              "optimization": {
+                "scripts": false,
+                "styles": true,
+                "fonts": true
+              },
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
