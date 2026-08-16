@@ -149,8 +149,15 @@ export class NavPage implements OnInit {
   }
 
   async loadEmploisCount() {
-    const emplois = await this.EmploiService.getAll();
-    this.EmploisCount.set(this.EmploiService.countEmplois(emplois));
+    // Un compteur de badge ne doit jamais faire planter la nav (même
+    // logique que messagingService.refreshUnreadCount) — un token en
+    // session périmé/invalide ne doit pas remonter en erreur console.
+    try {
+      const emplois = await this.EmploiService.getAll();
+      this.EmploisCount.set(this.EmploiService.countEmplois(emplois));
+    } catch {
+      // silencieux : le badge garde simplement sa valeur précédente
+    }
   }
 
 }

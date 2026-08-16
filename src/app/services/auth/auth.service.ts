@@ -30,7 +30,10 @@ export class AuthService {
       this._initialized = true;
       this.loadCurrentUser().catch(err => {
         console.error('Failed to load user on startup:', err);
-        this._access = null;
+        // Passe par le setter (pas this._access = null) : sinon le token
+        // périmé reste dans sessionStorage et redéclenche le même échec de
+        // requête à chaque rechargement de page tant que l'onglet est ouvert.
+        this.access = null;
         this.user.set(null);
       });
     }
