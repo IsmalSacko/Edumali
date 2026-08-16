@@ -75,8 +75,8 @@ export class NavPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loadEmploisCount();
     if (this.auth.access) {
+      this.loadEmploisCount();
       this.messagingService.refreshUnreadCount();
     }
   }
