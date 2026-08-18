@@ -10,6 +10,11 @@
 	box-shadow: 0 -8px 24px color-mix(in srgb, var(--ion-text-color) 10%, transparent);
 	margin-top: 24px;
 	/* espace de sécurité pour ne pas coller le contenu */
+	/* Sur Android edge-to-edge (barre de gestes / navigation système), le
+	   footer est collé au bord réel de l'écran (ion-app en 100vh) : sans ce
+	   padding, les icônes se confondent avec les boutons système du
+	   téléphone. */
+	padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .footer-nav-bar {

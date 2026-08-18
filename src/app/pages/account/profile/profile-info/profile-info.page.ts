@@ -36,7 +36,6 @@ import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { DashboardService } from '../../../../services/dashboard/dashboard.service';
 import { ActionLog, Alert } from '../../../../models/altert/alert';
-import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-profile-inf',
@@ -193,7 +192,7 @@ export class ProfileInfPage {
   // ouvre le navigateur système sur mobile et se comporte comme
   // window.open sur le web.
   async openAdminBackend() {
-    await Browser.open({ url: this.auth.getSchoolAdminUrl() });
+    await this.auth.openSchoolAdmin();
   }
 
   openEditModal() { this.editOpen.set(true); }

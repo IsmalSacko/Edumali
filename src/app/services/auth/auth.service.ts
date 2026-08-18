@@ -5,10 +5,11 @@ import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Browser } from '@capacitor/browser';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // access token en mémoire/sessionStorage
+  // access token en mémoire/localStorage
   private _access: string | null = null;
   private readonly base = environment.apiUrl;
   private readonly loginUrl = `${this.base}/auth/jwt/create/`;
@@ -22,34 +23,60 @@ export class AuthService {
   private _initialized = false;
 
   constructor() {
-    // restore access if page reloaded
-    this._access = sessionStorage.getItem('access_token');
+    // localStorage, pas sessionStorage : sur mobile (Capacitor), le process
+    // est tué à chaque fermeture d'app — sessionStorage ne survit pas,
+    // contrairement à un onglet de navigateur resté ouvert (c'était la
+    // cause d'une reconnexion systématique à chaque relance de l'app).
+    this._access = localStorage.getItem('access_token');
 
-    // Charger l'utilisateur au démarrage si connecté
-    if (this._access && !this._initialized) {
-      this._initialized = true;
-      this.loadCurrentUser().catch(err => {
-        console.error('Failed to load user on startup:', err);
-        // Passe par le setter (pas this._access = null) : sinon le token
-        // périmé reste dans sessionStorage et redéclenche le même échec de
-        // requête à chaque rechargement de page tant que l'onglet est ouvert.
-        this.access = null;
-        this.user.set(null);
-      });
+    if (this._initialized) return;
+    this._initialized = true;
+
+    if (this._access) {
+      // Access token présent : tente de charger l'utilisateur, et seulement
+      // s'il est réellement périmé (échec), retombe sur le refresh token.
+      this.loadCurrentUser().catch(() => this.restoreFromRefreshToken());
+    } else {
+      // Pas d'access token (probable après un redémarrage de l'app, sa
+      // durée de vie étant courte) mais peut-être un refresh token encore
+      // valide (plus longue durée) : on tente de rebondir dessus avant
+      // d'abandonner et de forcer une reconnexion.
+      this.restoreFromRefreshToken();
+    }
+  }
+
+  /** Échange le refresh token stocké contre un nouvel access token, puis
+   * recharge l'utilisateur. Efface la session si le refresh échoue
+   * (token périmé/révoqué). */
+  private async restoreFromRefreshToken() {
+    const refresh = this.getRefresh();
+    if (!refresh) return;
+    try {
+      const r = await axios.post(`${this.base}/auth/jwt/refresh/`, { refresh });
+      if (r.data?.access) {
+        this.access = r.data.access;
+        await this.loadCurrentUser();
+      }
+    } catch (err) {
+      console.error('Refresh token invalide, reconnexion nécessaire:', err);
+      this.access = null;
+      this.removeRefresh();
+      this.user.set(null);
     }
   }
 
   set access(token: string | null) {
     this._access = token;
-    if (token) sessionStorage.setItem('access_token', token);
-    else sessionStorage.removeItem('access_token');
+    if (token) localStorage.setItem('access_token', token);
+    else localStorage.removeItem('access_token');
   }
 
   get access(): string | null {
     return this._access;
   }
 
-  // refresh token en localStorage (simple)
+  // refresh token + code école en localStorage (survivent à la fermeture
+  // de l'app, contrairement à sessionStorage — voir constructor()).
   private refreshKey = 'refresh_token';
   private schoolCodeKey = 'school_code';
   setRefresh(token: string) {
@@ -85,7 +112,7 @@ export class AuthService {
       // Mémorisé pour getSchoolAdminUrl() — le code école saisi ici est
       // aussi le sous-domaine de l'école (voir apps/tenancy/signals.py côté
       // back : Domain = slugify(code) + BASE_DOMAIN).
-      sessionStorage.setItem(this.schoolCodeKey, schoolCode);
+      localStorage.setItem(this.schoolCodeKey, schoolCode);
       console.log('Logged in, access token set.' + (this.access ? '✅' + this.access : '❌'));
       // Charger les infos utilisateur et mettre à jour le signal global
       await this.loadCurrentUser();
@@ -124,7 +151,7 @@ export class AuthService {
   logout() {
     this.access = null;
     localStorage.removeItem(this.refreshKey);
-    sessionStorage.removeItem(this.schoolCodeKey);
+    localStorage.removeItem(this.schoolCodeKey);
     // Réinitialiser l'utilisateur global
     this.user.set(null);
   }
@@ -137,7 +164,7 @@ export class AuthService {
   // explicite ex. après un reload avant que loadCurrentUser ait resitué
   // le contexte école).
   getSchoolAdminUrl(): string {
-    const code = sessionStorage.getItem(this.schoolCodeKey);
+    const code = localStorage.getItem(this.schoolCodeKey);
     // Slash final obligatoire : nginx (docker/nginx/default.conf, back) ne
     // route vers Django que sur `^/(admin|platform-admin)/` — sans le
     // slash, la requête tombe dans le fallback SPA Angular et sert
@@ -145,6 +172,27 @@ export class AuthService {
     return environment.baseDomain && code
       ? `https://${code}.${environment.baseDomain}/admin/`
       : `${environment.adminUrl}/`;
+  }
+
+  // Ouvre le Django admin de l'école dans le navigateur. Centralisé ici
+  // (au lieu de dupliquer Browser.open() dans chaque composant) pour que
+  // l'échec soit visible au lieu de silencieux : sur certains téléphones
+  // réels, Browser.open() rejette (pas de navigateur compatible Custom
+  // Tabs...) et un rejet non attrapé ne montre rien à l'utilisateur — d'où
+  // ce try/catch avec une alerte qui expose l'erreur réelle.
+  async openSchoolAdmin(): Promise<void> {
+    const url = this.getSchoolAdminUrl();
+    try {
+      await Browser.open({ url });
+    } catch (err) {
+      console.error('Browser.open a échoué', url, err);
+      const alert = await this.alertCtrl.create({
+        header: "Impossible d'ouvrir l'admin",
+        message: `${url}\n\n${err instanceof Error ? err.message : String(err)}`,
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
   }
 
   async currentUserRole() {

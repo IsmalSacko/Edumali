@@ -25,7 +25,6 @@ import { ThemeService } from '../../services/theme.service';
 import { EmploisService } from 'src/app/services/emplois-du-temps/emplois-service';
 import { MessagingService } from 'src/app/services/messaging/messaging.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-footer',
@@ -85,7 +84,7 @@ export class FooterPage implements OnInit {
   // (/settings, déplacée dans le menu Profil) — elle ouvre maintenant
   // directement le Django admin de l'école, ce que le nom laissait attendre.
   async openAdminBackend() {
-    await Browser.open({ url: this.auth.getSchoolAdminUrl() });
+    await this.auth.openSchoolAdmin();
   }
 
   openThemeMenu(ev: Event) {
