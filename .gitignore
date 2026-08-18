@@ -23,9 +23,10 @@ log.txt
 /platforms
 /plugins
 
-# Capacitor (régénérable via `npx cap add android` + `npx cap sync`)
-/android
-/ios
+# Capacitor : android/ et ios/ ont leur propre .gitignore (généré par
+# `npx cap add`) qui exclut déjà correctement le build, les assets copiés
+# et les fichiers générés — le reste (signature, icônes, MainActivity
+# personnalisée...) est du code source réel, pas régénérable, à suivre.
 
 # Compiled output
 /dist

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ScolMali</string>
+    <string name="title_activity_main">ScolMali</string>
+    <string name="package_name">com.scolmali.app</string>
+    <string name="custom_url_scheme">com.scolmali.app</string>
+</resources>
