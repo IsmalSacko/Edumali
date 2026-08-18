@@ -13,7 +13,7 @@
 	   zone de sécurité qu'Ionic pose normalement sur ion-toolbar — sans ça,
 	   le contenu (logo, cloche, avatar...) est collé sous la barre de statut
 	   sur Android edge-to-edge. */
-	padding-top: calc(20px + env(safe-area-inset-top, 0px));
+	padding-top: calc(20px + var(--sa-top));
 	border-bottom: 1px solid color-mix(in srgb, var(--ion-border-color) 40%, transparent);
 }
 

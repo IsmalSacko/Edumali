@@ -10,7 +10,7 @@
 
 /* Décaler le hero vers le bas pour éviter qu'il colle à la barre de navigation */
 .hero-section {
-    margin-top: calc(env(safe-area-inset-top, 0px) + 50px);
+    margin-top: calc(var(--sa-top) + 50px);
     margin-left: 20px;
     margin-right: 20px;
 
@@ -18,7 +18,7 @@
 
 @media (max-width: 900px) {
     .hero-section {
-        margin-top: calc(env(safe-area-inset-top, 0px) + 40px);
+        margin-top: calc(var(--sa-top) + 40px);
         margin-left: 10px;
 
     }

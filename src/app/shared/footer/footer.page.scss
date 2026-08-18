@@ -14,7 +14,7 @@
 	   footer est collé au bord réel de l'écran (ion-app en 100vh) : sans ce
 	   padding, les icônes se confondent avec les boutons système du
 	   téléphone. */
-	padding-bottom: env(safe-area-inset-bottom, 0px);
+	padding-bottom: var(--sa-bottom);
 }
 
 .footer-nav-bar {

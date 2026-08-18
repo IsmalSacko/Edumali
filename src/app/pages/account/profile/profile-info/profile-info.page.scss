@@ -10,11 +10,11 @@
 	--color: var(--ion-text-color);
 	color: var(--ion-text-color);
 	/* Override global padding for profile page - needs more space */
-	--padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 110px) !important;
+	--padding-bottom: calc(var(--sa-bottom) + 110px) !important;
 }
 
 .profile-content::part(scroll) {
-	padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 110px) !important;
+	padding-bottom: calc(var(--sa-bottom) + 110px) !important;
 }
 
 .backdrop {
