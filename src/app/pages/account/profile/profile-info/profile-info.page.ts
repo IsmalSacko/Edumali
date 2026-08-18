@@ -3,7 +3,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import {
   IonContent,
   IonHeader,
@@ -29,13 +29,14 @@ import {
   IonModal,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline, refreshOutline, alertCircleOutline } from 'ionicons/icons';
+import { pencilOutline, lockClosedOutline, callOutline, mailOutline, personOutline, calendarOutline, checkmarkCircleOutline, timeOutline, refreshOutline, alertCircleOutline, settingsOutline, buildOutline } from 'ionicons/icons';
 import { ProfileService } from '../../../../services/account/profile-service';
 import { ProfileInfo } from '../../../../models/profile/profile';
 import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { DashboardService } from '../../../../services/dashboard/dashboard.service';
 import { ActionLog, Alert } from '../../../../models/altert/alert';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-profile-inf',
@@ -44,6 +45,7 @@ import { ActionLog, Alert } from '../../../../models/altert/alert';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     ReactiveFormsModule,
     IonContent,
     IonHeader,
@@ -111,7 +113,7 @@ export class ProfileInfPage {
       calendarOutline,
       checkmarkCircleOutline,
       timeOutline,
-      refreshOutline, alertCircleOutline
+      refreshOutline, alertCircleOutline, settingsOutline, buildOutline
     });
     this.loadProfile();
     this.loadAlerts();
@@ -184,6 +186,14 @@ export class ProfileInfPage {
     const base = (environment.imageUrl || environment.apiUrl || '').replace(/\/+$/, '');
     const path = photo.startsWith('/') ? photo : `/${photo}`;
     return `${base}${path}`;
+  }
+
+  // window.open('_blank') n'ouvre rien dans la webview Capacitor (pas de
+  // gestion des nouvelles fenêtres) : passe par le plugin Browser, qui
+  // ouvre le navigateur système sur mobile et se comporte comme
+  // window.open sur le web.
+  async openAdminBackend() {
+    await Browser.open({ url: this.auth.getSchoolAdminUrl() });
   }
 
   openEditModal() { this.editOpen.set(true); }

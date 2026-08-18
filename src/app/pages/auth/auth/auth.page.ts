@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -16,8 +16,6 @@ import {
   IonIcon,
   IonNote,
   IonSpinner,
-  IonSelect,
-  IonSelectOption,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { eyeOutline, eyeOffOutline, logInOutline, shieldCheckmarkOutline } from 'ionicons/icons';
@@ -47,8 +45,6 @@ import { AuthService } from '../../../services/auth/auth.service';
     IonIcon,
     IonNote,
     IonSpinner,
-    IonSelect,
-    IonSelectOption,
   ]
 })
 export class AuthPage implements OnInit {
@@ -62,6 +58,17 @@ export class AuthPage implements OnInit {
   errorMsg = signal<string>('');
   schools = signal<{ code: string; name: string }[]>([]);
   schoolsLoading = signal<boolean>(true);
+  schoolQuery = signal<string>('');
+  showSchoolList = signal<boolean>(false);
+
+  filteredSchools = computed(() => {
+    const q = this.schoolQuery().trim().toLowerCase();
+    const list = this.schools();
+    if (!q) return list;
+    return list.filter(
+      (s) => s.name.toLowerCase().includes(q) || s.code.toLowerCase().includes(q)
+    );
+  });
 
   form = this.fb.nonNullable.group({
     school: ['', [Validators.required]],
@@ -99,6 +106,37 @@ export class AuthPage implements OnInit {
 
   togglePasswordVisibility() {
     this.hidePassword.update((v) => !v);
+  }
+
+  onSchoolSearch(ev: CustomEvent) {
+    const value = (ev.detail?.value ?? '') as string;
+    this.schoolQuery.set(value);
+    this.showSchoolList.set(true);
+    // Tant qu'aucune option n'est re-choisie dans la liste, le code
+    // sélectionné précédemment n'est plus valide (l'utilisateur retape).
+    this.form.controls.school.setValue('');
+  }
+
+  onSchoolFocus() {
+    this.showSchoolList.set(true);
+  }
+
+  onSchoolBlur() {
+    // Délai pour laisser le (mousedown) de selectSchool() s'exécuter avant
+    // que la liste ne se referme (blur arrive avant click sinon).
+    setTimeout(() => this.showSchoolList.set(false), 150);
+  }
+
+  selectSchool(s: { code: string; name: string }) {
+    this.form.controls.school.setValue(s.code);
+    this.schoolQuery.set(s.name);
+    this.showSchoolList.set(false);
+    // Pré-remplissage pratique : convention observée où le compte admin
+    // d'une école a pour identifiant le code école en minuscules. Reste
+    // entièrement modifiable, et ne touche jamais un champ déjà rempli.
+    if (!this.form.controls.username.value) {
+      this.form.controls.username.setValue(s.code.toLowerCase());
+    }
   }
 
   async submit() {

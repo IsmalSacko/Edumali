@@ -23,6 +23,10 @@ log.txt
 /platforms
 /plugins
 
+# Capacitor (régénérable via `npx cap add android` + `npx cap sync`)
+/android
+/ios
+
 # Compiled output
 /dist
 /tmp

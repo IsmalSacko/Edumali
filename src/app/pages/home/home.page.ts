@@ -2,8 +2,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import {
-  IonHeader,
-  IonToolbar,
   IonContent,
   IonGrid,
   IonRow,
@@ -38,8 +36,6 @@ import { DashboardStats } from '../../models/dashboard/dashboard';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [IonToast, IonSpinner, IonRefresherContent, IonRefresher, IonItem, IonLabel,
-    IonHeader,
-    IonToolbar,
     IonContent,
     IonGrid,
     IonRow,

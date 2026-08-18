@@ -22,14 +22,20 @@
             <ion-spinner name="dots" slot="end"></ion-spinner>
           </ion-item>
           } @else if (schools().length) {
-          <ion-item fill="outline" class="field">
-            <ion-label position="floating">Établissement</ion-label>
-            <ion-select interface="popover" formControlName="school">
-              @for (s of schools(); track s.code) {
-              <ion-select-option [value]="s.code">{{ s.name }}</ion-select-option>
+          <div class="school-combobox">
+            <ion-item fill="outline" class="field">
+              <ion-label position="floating">Établissement</ion-label>
+              <ion-input type="text" autocomplete="off" [value]="schoolQuery()"
+                (ionInput)="onSchoolSearch($event)" (ionFocus)="onSchoolFocus()" (ionBlur)="onSchoolBlur()"></ion-input>
+            </ion-item>
+            @if (showSchoolList() && filteredSchools().length) {
+            <div class="school-suggestions">
+              @for (s of filteredSchools(); track s.code) {
+              <div class="school-suggestion-item" (mousedown)="selectSchool(s)">{{ s.name }}</div>
               }
-            </ion-select>
-          </ion-item>
+            </div>
+            }
+          </div>
           } @else {
           <ion-item fill="outline" class="field">
             <ion-label position="floating">Code établissement</ion-label>

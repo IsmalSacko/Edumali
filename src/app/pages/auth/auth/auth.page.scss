@@ -86,6 +86,39 @@ h1 {
 	color: var(--ion-text-color);
 }
 
+.school-combobox {
+	position: relative;
+}
+
+.school-suggestions {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: calc(100% + 4px);
+	z-index: 20;
+	max-height: 220px;
+	overflow-y: auto;
+	background: var(--ion-background-color);
+	border: 1px solid rgba(148, 163, 184, 0.35);
+	border-radius: 12px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.school-suggestion-item {
+	padding: 12px 14px;
+	font-size: 14px;
+	color: var(--ion-text-color);
+	cursor: pointer;
+}
+
+.school-suggestion-item:hover {
+	background: color-mix(in srgb, var(--ion-color-primary) 10%, transparent);
+}
+
+.school-suggestion-item + .school-suggestion-item {
+	border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
 ion-note[color='danger'] {
 	margin-top: 6px;
 	display: block;

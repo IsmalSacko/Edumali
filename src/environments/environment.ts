@@ -6,7 +6,10 @@ export const environment = {
   production: false,
   apiUrl: 'http://localhost:8000/api',
   imageUrl: 'http://localhost:8000/',
-  adminUrl: 'http://localhost:8000/admin'
+  adminUrl: 'http://localhost:8000/admin',
+  // Pas de sous-domaine par école en local : AuthService.getSchoolAdminUrl()
+  // retombe sur adminUrl ci-dessus quand baseDomain est absent.
+  baseDomain: null as string | null,
 };
 /*
  * For easier debugging in development mode, you can import the following file

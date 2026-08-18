@@ -51,6 +51,7 @@ export class AuthService {
 
   // refresh token en localStorage (simple)
   private refreshKey = 'refresh_token';
+  private schoolCodeKey = 'school_code';
   setRefresh(token: string) {
     localStorage.setItem(this.refreshKey, token);
   }
@@ -81,6 +82,10 @@ export class AuthService {
       const data = response.data;
       if (data?.access) this.access = data.access;
       if (data?.refresh) this.setRefresh(data.refresh);
+      // Mémorisé pour getSchoolAdminUrl() — le code école saisi ici est
+      // aussi le sous-domaine de l'école (voir apps/tenancy/signals.py côté
+      // back : Domain = slugify(code) + BASE_DOMAIN).
+      sessionStorage.setItem(this.schoolCodeKey, schoolCode);
       console.log('Logged in, access token set.' + (this.access ? '✅' + this.access : '❌'));
       // Charger les infos utilisateur et mettre à jour le signal global
       await this.loadCurrentUser();
@@ -119,8 +124,27 @@ export class AuthService {
   logout() {
     this.access = null;
     localStorage.removeItem(this.refreshKey);
+    sessionStorage.removeItem(this.schoolCodeKey);
     // Réinitialiser l'utilisateur global
     this.user.set(null);
+  }
+
+  // URL de l'admin Django de l'école de l'utilisateur connecté. Construite à
+  // partir du code école (== sous-domaine, voir login() ci-dessus) plutôt
+  // que de window.location.origin : sur mobile (Capacitor) l'origine de la
+  // webview ne correspond à aucune vraie école. Repli sur adminUrl si le
+  // code n'est pas connu (env. locale sans baseDomain, ou session sans login
+  // explicite ex. après un reload avant que loadCurrentUser ait resitué
+  // le contexte école).
+  getSchoolAdminUrl(): string {
+    const code = sessionStorage.getItem(this.schoolCodeKey);
+    // Slash final obligatoire : nginx (docker/nginx/default.conf, back) ne
+    // route vers Django que sur `^/(admin|platform-admin)/` — sans le
+    // slash, la requête tombe dans le fallback SPA Angular et sert
+    // index.html au lieu du Django admin.
+    return environment.baseDomain && code
+      ? `https://${code}.${environment.baseDomain}/admin/`
+      : `${environment.adminUrl}/`;
   }
 
   async currentUserRole() {

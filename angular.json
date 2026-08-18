@@ -86,6 +86,36 @@
               "sourceMap": true,
               "namedChunks": true
             },
+            "mobile": {
+              // Build Capacitor : mêmes réglages que "production" (voir le
+              // commentaire ci-dessus sur optimization.scripts), mais avec
+              // environment.mobile.ts — origin ne pointe vers aucune vraie
+              // école dans la webview Capacitor.
+              "optimization": {
+                "scripts": false,
+                "styles": true,
+                "fonts": true
+              },
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "8kb",
+                  "maximumError": "16kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mobile.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "ci": {
               "progress": false
             }
@@ -148,7 +178,10 @@
     }
   },
   "cli": {
-    "schematicCollections": ["@ionic/angular-toolkit"]
+    "schematicCollections": [
+      "@ionic/angular-toolkit"
+    ],
+    "analytics": false
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {

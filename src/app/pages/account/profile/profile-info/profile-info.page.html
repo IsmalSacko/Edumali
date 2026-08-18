@@ -121,6 +121,15 @@
                   <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
                   Changer le mot de passe
                 </ion-button>
+                <ion-button *ngIf="profile()?.role === 'admin'" expand="block" fill="outline"
+                  (click)="openAdminBackend()">
+                  <ion-icon slot="start" name="settings-outline"></ion-icon>
+                  Administration Django
+                </ion-button>
+                <ion-button *ngIf="profile()?.role === 'admin'" expand="block" fill="outline" routerLink="/settings">
+                  <ion-icon slot="start" name="build-outline"></ion-icon>
+                  Paramètres de l'établissement
+                </ion-button>
               </div>
             </ion-card-content>
           </ion-card>

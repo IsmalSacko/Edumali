@@ -28,6 +28,7 @@ import { ThemeService } from '../../services/theme.service';
 import { environment } from '../../../environments/environment';
 import { EmploisService } from 'src/app/services/emplois-du-temps/emplois-service';
 import { MessagingService } from 'src/app/services/messaging/messaging.service';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-nav',
@@ -137,6 +138,13 @@ export class NavPage implements OnInit {
   logout() {
     this.auth.logout();
     this.router.navigateByUrl('/login');
+  }
+
+  // "Administration" (menu hamburger) ouvrait la page Profil
+  // établissement/Apparence (/settings, déplacée dans le menu Profil) —
+  // ouvre maintenant directement le Django admin de l'école.
+  async openAdminBackend() {
+    await Browser.open({ url: this.auth.getSchoolAdminUrl() });
   }
 
   onImageError(event: any) {
